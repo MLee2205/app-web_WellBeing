@@ -1,0 +1,67 @@
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  max-width: 700px;
+  margin: auto;
+  padding: 20px;
+  background: url("../images/w4.png") no-repeat center center fixed;
+  padding: 20px;
+  background-size: cover;
+    margin: 0;
+  min-height: 100vh;
+}
+
+h1.app-name {
+  text-align: center;
+  color: #2196F3;
+  font-size: 2.8em;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+h2 {
+  text-align: center;
+  color: blue;
+  margin-bottom: 25px;
+}
+
+#ingredientsList {
+  text-align: center;
+}
+
+#ingredientsList h2 {
+  margin-top: 20px;
+  color: purple;
+}
+
+#ingredientsList ul {
+  list-style-type: disc;
+  margin: 10px auto 20px;
+  padding-left: 0;
+  display: inline-block;
+  text-align: left;
+}
+
+#ingredientsList li {
+  margin-bottom: 5px;
+  color: yellow;
+}
+
+#exportBtn {
+  display: block;
+  margin: 30px auto;
+  padding: 12px 20px;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1em;
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(76, 175, 80, 0.4);
+  transition: background-color 0.3s ease;
+}
+
+#exportBtn:hover {
+  background-color: #388e3c;
+}
+
+

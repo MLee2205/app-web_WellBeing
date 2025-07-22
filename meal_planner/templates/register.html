@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- ✅ pour le responsive -->
+    <title>Inscription - WellBeing</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-papJt0CXkIijV2rf2vN+0rmnU6ll9HRA2HPlJ9hoQb1d2wUog9M7xFBS1rpXJm0S7aa0DA3yzZ4nC7f6fQuKjQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <div class="form-container animate">
+        <h1>Créer un compte</h1>
+        <form id="registerForm">
+            <div class="input-group">
+                <i class="fas fa-envelope"></i>
+                <input type="email" id="email" placeholder="Email" required>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="password" placeholder="Mot de passe" required>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-user"></i>
+                <input type="text" id="name" placeholder="Nom" required>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-user"></i>
+                <input type="text" id="renom" placeholder="Prénom / Surnom" required>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-calendar"></i>
+                <input type="number" id="annee_naissance" placeholder="Année de naissance" min="1900" max="2025" required>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-venus-mars"></i>
+                <select id="sexe" name="sexe" required>
+                    <option value="">-- Sexe --</option>
+                    <option value="Homme">Homme</option>
+                    <option value="Femme">Femme</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-weight"></i>
+                <input type="number" id="poids" placeholder="Poids (kg)" min="0" required>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-ruler-vertical"></i>
+                <input type="number" id="taille" placeholder="Taille (cm)" min="0" required>
+            </div>
+            <button type="summit" id="btn-register">S'inscrire</button>
+<button type="summit" id="btn-modifier">Modifier</button>
+
+        </form>
+    </div>
+    <script src="{{ url_for('static', filename='js/register.js') }}"></script>
+</body>
+</html>
+

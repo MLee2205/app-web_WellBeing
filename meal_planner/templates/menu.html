@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menus équilibrés - Wellbeing</title>
+    
+     <link rel="stylesheet" href="{{ url_for('static', filename='css/menus.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+     
+    </style>
+</head>
+<body>
+<!-- Particules d'arrière-plan -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo">
+                <i class="fas fa-leaf"></i>
+                WellBeing
+            </a>
+            <ul class="nav-links">
+                <li><a href="/menus">Menus</a></li>
+                <li><a href="/">Acceuil</a></li>
+               
+                <li><a href="/register">S'inscrire</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="background-overlay"></div>
+    
+    <div class="container">
+        <header class="fade-in">
+            <h1>🍽️ Menus Équilibrés</h1>
+            <div class="subtitle">Découvrez des combinaisons parfaites de saveurs camerounaises et américaines</div>
+        </header>
+
+        <div class="preferences-section fade-in">
+            <h3 class="preferences-title">Personnalisez votre menu</h3>
+            
+            <div class="preference-group">
+                <label for="dietSelect">Type de régime :</label>
+                <select id="dietSelect">
+                    <option value="mixed">Équilibré (recommandé)</option>
+                    <option value="vegetarian">Végétarien</option>
+                    <option value="low-carb">Faible en glucides</option>
+                </select>
+            </div>
+
+            <div class="preference-group">
+                <label for="cuisineSelect">Cuisine préférée :</label>
+                <select id="cuisineSelect">
+                    <option value="both">Camerounais et Américain</option>
+                    <option value="camerounais">Camerounais uniquement</option>
+                    <option value="américain">Américain uniquement</option>
+                </select>
+            </div>
+
+            <div class="button-group">
+                <button id="regenBtn">
+                    <span>🔄</span>
+                    Générer un menu personnalisé
+                </button>
+                <button id="randomBtn">
+                    <span>🎲</span>
+                    Menu surprise
+                </button>
+            </div>
+        </div>
+
+        <div class="menus-section">
+            <div id="menus" class="loading">
+                Génération de votre menu personnalisé...
+            </div>
+        </div>
+
+        <div class="gallery-section fade-in">
+            <h2 class="gallery-title">Inspiration Culinaire</h2>
+            <div class="menu-gallery">
+                <div class="gallery-item"><img src="{{ url_for('static', filename='images/1.jpeg') }}" alt="Plat Camerounais"></div>
+                <div class="gallery-item"><img src="{{ url_for('static', filename='images/2.jpeg') }}" alt="Plat Américain"></div>
+                <div class="gallery-item"><img src="{{ url_for('static', filename='images/3.jpeg') }}" alt="Menu Équilibré"></div>
+                <div class="gallery-item"><img src="{{ url_for('static', filename='images/4.jpeg') }}" alt="Petit Déjeuner"></div>
+                <div class="gallery-item"><img src="{{ url_for('static', filename='images/5.jpeg') }}" alt="Déjeuner"></div>
+                <div class="gallery-item"><img src="{{ url_for('static', filename='images/6.jpeg') }}" alt="Dîner"></div>
+                <div class="gallery-item"><img src="{{ url_for('static', filename='images/7.jpeg') }}" alt="Cuisine Fusion"></div>
+                <div class="gallery-item"><img src="{{ url_for('static', filename='images/8.jpeg') }}" alt="Plats Traditionnels"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="info-panel">
+        <strong>💡 Astuce</strong><br>
+        Personnalisez vos préférences pour des suggestions adaptées à vos goûts et besoins nutritionnels.
+    </div>
+ <!-- Footer -->
+    <footer>
+        <div class="social-links">
+            <a href="https://facebook.com" target="_blank" title="Facebook">
+                <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="https://wa.me/680588024" target="_blank" title="WhatsApp">
+                <i class="fab fa-whatsapp"></i>
+            </a>
+            <a href="https://linkedin.com" target="_blank" title="LinkedIn">
+                <i class="fab fa-linkedin-in"></i>
+            </a>
+            <a href="mailto:jecy.meffo@facsciences-uy1.cm" title="Email">
+                <i class="fas fa-envelope"></i>
+            </a>
+        </div>
+        <p>&copy; 2025 WellBeing. Conçu  par MEFFO Lea</p>
+        <p style="margin-top: 0.5rem; opacity: 0.7;">
+            Intelligence Artificielle • Nutrition Personnalisée • Bien-être
+        </p>
+    </footer>
+
+<script src="{{ url_for('static', filename='js/menus.js') }}"></script>
+</body>
+</html>

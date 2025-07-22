@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Mon Profil - WellBeing</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/profil.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="profile-container animate">
+        <h1>Mon Profil</h1>
+        <form id="profileForm">
+            <div class="input-group">
+                <i class="fas fa-envelope"></i>
+                <input type="email" id="email" placeholder="Email" required>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-user"></i>
+                <input type="text" id="name" placeholder="Nom" required>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-user"></i>
+                <input type="text" id="renom" placeholder="Prénom / Surnom" required>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-calendar"></i>
+                <input type="number" id="annee_naissance" placeholder="Année de naissance" min="1900" max="2025" required>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-venus-mars"></i>
+                <select id="sexe" required>
+                    <option value="">-- Sexe --</option>
+                    <option value="Homme">Homme</option>
+                    <option value="Femme">Femme</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-weight"></i>
+                <input type="number" id="poids" placeholder="Poids (kg)" min="0" required>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-ruler-vertical"></i>
+                <input type="number" id="taille" placeholder="Taille (cm)" min="0" required>
+            </div>
+            <div class="btn-group">
+                <button type="submit">💾 Enregistrer</button>
+                <button type="button" id="goToNutritionBtn" class="secondary">📊 Nutrition</button>
+            </div>
+        </form>
+    </div>
+    <script src="{{ url_for('static', filename='js/profil.js') }}"></script>
+</body>
+</html>
+

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Analyse nutritionnelle - WellBeing</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/nutrition.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="nutrition-container animate">
+    <h1><i class="fas fa-apple-alt"></i> Analyse nutritionnelle et adaptation</h1>
+
+    <form id="preferencesForm" class="preferences">
+      <strong>Préférences / Allergies :</strong>
+      <label><input type="checkbox" name="preferences" value="végétarien" /> Végétarien</label>
+      <label><input type="checkbox" name="preferences" value="sans gluten" /> Sans gluten</label>
+      <label><input type="checkbox" name="preferences" value="sans arachides" /> Sans arachides</label>
+      <label><input type="checkbox" name="preferences" value="sans porc" /> Sans porc</label>
+    </form>
+
+    <h2>Choisissez vos 4 plats préférés</h2>
+    <form id="menuForm" class="menus">
+      <label><input type="checkbox" name="menu" value="Poulet DG"> Poulet DG</label>
+      <label><input type="checkbox" name="menu" value="Ndolé"> Ndolé</label>
+      <label><input type="checkbox" name="menu" value="Cheeseburger"> Cheeseburger</label>
+      <label><input type="checkbox" name="menu" value="Hot dog"> Hot dog</label>
+      <label><input type="checkbox" name="menu" value="Pizza"> Pizza</label>
+      <label><input type="checkbox" name="menu" value="Sandwich au thon"> Sandwich au thon</label>
+      <label><input type="checkbox" name="menu" value="Salade César"> Salade César</label>
+      <label><input type="checkbox" name="menu" value="Brochettes de bœuf"> Brochettes de bœuf</label>
+      <label><input type="checkbox" name="menu" value="Poisson braisé"> Poisson braisé</label>
+    </form>
+
+    <button id="calculateBtn"><i class="fas fa-cogs"></i> Calculer et adapter le menu</button>
+
+    <div id="imcResult" class="imc">IMC non calculé pour l’instant...</div>
+    <canvas id="imcChart"></canvas>
+    <div id="results">Aucun résultat pour l'instant...</div>
+  </div>
+  <script src="{{ url_for('static', filename='js/nutrition.js') }}"></script>
+</body>
+</html>
+

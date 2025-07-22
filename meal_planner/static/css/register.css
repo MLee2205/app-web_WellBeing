@@ -1,0 +1,262 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    background: url("../images/w6.png") no-repeat center center fixed;
+    background-size: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #333;  /* couleur du texte, adapte si besoin */
+}
+
+
+/* Effet de brillance subtile */
+.form-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.1), 
+        transparent
+    );
+    animation: shine 3s infinite;
+}
+
+@keyframes shine {
+    0% { left: -100%; }
+    50% { left: 100%; }
+    100% { left: 100%; }
+}
+
+.form-container h1 {
+    text-align: center;
+    color: #ffffff;
+    margin-bottom: 25px;
+    font-weight: 700;
+    font-size: 1.8rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    letter-spacing: -0.5px;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.9);
+    margin: 12px 0;
+    border-radius: 12px;
+    padding: 12px 15px;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.input-group:hover {
+    background: rgba(255, 255, 255, 0.95);
+    transform: translateY(-1px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.input-group:focus-within {
+    background: rgba(255, 255, 255, 1);
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+}
+
+.input-group i {
+    color: #4CAF50;
+    margin-right: 12px;
+    font-size: 1.2em;
+    min-width: 20px;
+    transition: color 0.3s ease;
+}
+
+.input-group:focus-within i {
+    color: #2E7D32;
+}
+
+.input-group input, 
+.input-group select {
+    border: none;
+    outline: none;
+    width: 100%;
+    background: transparent;
+    font-size: 1em;
+    color: #333;
+    font-weight: 500;
+}
+
+.input-group input::placeholder {
+    color: #666;
+    font-weight: 400;
+}
+
+button {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    margin-top: 20px;
+    font-size: 1.1em;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.2), 
+        transparent
+    );
+    transition: left 0.5s ease;
+}
+
+button:hover {
+    background: linear-gradient(135deg, #45a049 0%, #3d8b40 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+}
+
+button:hover::before {
+    left: 100%;
+}
+
+button:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+}
+
+@keyframes fadeSlideIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive tablette */
+@media (max-width: 768px) {
+    body {
+        padding: 20px 10px;
+        background-attachment: scroll;
+    }
+    
+    .form-container {
+        max-width: 90%;
+        padding: 30px 25px;
+        border-radius: 18px;
+    }
+    
+    .form-container h1 {
+        font-size: 1.6rem;
+        margin-bottom: 20px;
+    }
+    
+    .input-group {
+        padding: 10px 12px;
+        margin: 10px 0;
+        border-radius: 10px;
+    }
+    
+    .input-group i {
+        font-size: 1.1em;
+        margin-right: 10px;
+    }
+    
+    .input-group input,
+    .input-group select {
+        font-size: 0.95em;
+    }
+    
+    button {
+        font-size: 1em;
+        padding: 13px;
+        border-radius: 10px;
+    }
+}
+
+/* Responsive mobile */
+@media (max-width: 480px) {
+    body {
+        padding: 15px 5px;
+        background-attachment: scroll;
+    }
+    
+    /* Réduction des étoiles sur mobile pour les performances */
+    body::after {
+        animation-duration: 20s;
+        opacity: 0.7;
+    }
+    
+    .stars-layer1,
+    .stars-layer2,
+    .stars-layer3 {
+        display: none; /* Masquer les couches supplémentaires sur très petits écrans */
+    }
+    
+    .form-container {
+        max-width: 95%;
+        padding: 25px 20px;
+        border-radius: 16px;
+    }
+    
+    .form-container h1 {
+        font-size: 1.4rem;
+        margin-bottom: 18px;
+    }
+    
+    .input-group {
+        padding: 8px 10px;
+        margin: 8px 0;
+        border-radius: 8px;
+    }
+    
+    .input-group i {
+        font-size: 1em;
+        margin-right: 8px;
+    }
+    
+    .input-group input,
+    .input-group select {
+        font-size: 0.9em;
+    }
+    
+    button {
+        font-size: 0.95em;
+        padding: 12px;
+        border-radius: 8px;
+    }
+}
+
+/* Animation pour les petits écrans */
+@media (max-width: 480px) {
+    @keyframes backgroundShift {
+        0% {
+            background-position: center center;
+        }
+        100% {
+            background-position: center 5%;
+        }
+    }
+}
+
+/* Ajout du HTML nécessaire pour les étoiles via JavaScript */
+/* Cette partie sera ajoutée dynamiquement ou dans votre HTML */

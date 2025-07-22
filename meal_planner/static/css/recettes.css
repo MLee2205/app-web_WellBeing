@@ -1,0 +1,69 @@
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  max-width: 900px;
+  margin: auto;
+  background: url("../images/w3.png") no-repeat center center fixed;
+  padding: 20px;
+  background-size: cover;
+    margin: 0;
+  min-height: 100vh;
+  color: #333;
+}
+
+h1 {
+  color: #4CAF50;
+  text-align: center;
+  margin-bottom: 30px;
+  font-weight: 700;
+  font-size: 2.5em;
+}
+
+
+.recette {
+  background: white;
+  padding: 20px;
+  margin-bottom: 25px;
+  border-radius: 20px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+  transition: box-shadow 0.3s ease;
+  margin-left: 200px;
+}
+.recette:hover {
+  box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+}
+
+.recette h2 {
+  color: #2e7d32;
+  margin-bottom: 15px;
+  font-size: 1.8em;
+}
+
+.recette pre {
+  white-space: pre-wrap;
+  background: #f0f0f0;
+  padding: 15px;
+  border-radius: 8px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 1em;
+  line-height: 1.4em;
+  overflow-x: auto;
+}
+
+a.liste-courses-btn {
+  display: inline-block;
+  margin-top: 30px;
+  padding: 12px 20px;
+  background: #4CAF50;
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  border-radius: 8px;
+  box-shadow: 0 3px 8px rgba(76, 175, 80, 0.4);
+  transition: background-color 0.3s ease;
+}
+
+a.liste-courses-btn:hover {
+  background-color: #388e3c;
+  box-shadow: 0 6px 15px rgba(56, 142, 60, 0.6);
+}
+
