@@ -4,12 +4,46 @@
   <meta charset="UTF-8" />
   <title>Recettes des plats</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/recettes.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
-  <h1>Recettes adaptées</h1>
-  <div id="recettes">Chargement...</div>
+<!-- Navigation -->
+<nav id="navbar">
+  <div class="nav-container">
+    <a href="/" class="logo">
+      <i class="fas fa-leaf"></i>
+      WellBeing
+    </a>
+    <ul class="nav-links">
+      <li><a href="/">Acceuil</a></li>
+      <li><a href="/menus">Menus</a></li>
+      <li><a href="/nutrition">Nutrition</a></li>
+      <li><a href="/register">S'inscrire</a></li>
+    </ul>
+  </div>
+</nav>
 
-  <script src="{{ url_for('static', filename='js/recettes.js') }}"></script>
+<main class="main-wrapper">
+  <div class="content">
+    <h1>Recettes adaptées</h1>
+    <div id="recettes">Chargement...</div>
+    <button id="exportBtn">Exporter en PDF 📄</button>
+  </div>
+</main>
+
+<footer>
+  <div class="social-links">
+    <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook-f"></i></a>
+    <a href="https://wa.me/680588024" target="_blank"><i class="fab fa-whatsapp"></i></a>
+    <a href="https://linkedin.com" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+    <a href="mailto:jecy.meffo@facsciences-uy1.cm"><i class="fas fa-envelope"></i></a>
+  </div>
+  <p style="color:white">&copy; 2025 WellBeing. Conçu par MEFFO Lea</p>
+  <p style="margin-top: 0.5rem; opacity: 1; color:white">Intelligence Artificielle • Nutrition Personnalisée • Bien-être</p>
+</footer>
+
+<script src="{{ url_for('static', filename='js/recettes.js') }}"></script>
 </body>
 </html>
 

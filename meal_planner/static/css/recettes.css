@@ -1,33 +1,99 @@
+/* Body et structure */
 body {
+  margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  max-width: 900px;
-  margin: auto;
-  background: url("../images/w3.png") no-repeat center center fixed;
-  padding: 20px;
-  background-size: cover;
-    margin: 0;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: url("../images/w3.png") no-repeat center center fixed;
+  background-size: cover;
   color: #333;
 }
 
+.main-wrapper {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 80px; /* pour laisser la place au navbar fixé */
+}
+
+.content {
+  max-width: 900px;
+  width: 90%;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(6px);
+  border-radius: 15px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+}
+
+/* Navigation */
+nav {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  padding: 1rem 2rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  z-index: 100;
+}
+
+.nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+}
+
+.nav-links a {
+  color: white;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.nav-links a:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Titres et contenu */
 h1 {
   color: #4CAF50;
   text-align: center;
   margin-bottom: 30px;
   font-weight: 700;
-  font-size: 2.5em;
+  font-size: 2.2em;
 }
-
 
 .recette {
   background: white;
   padding: 20px;
   margin-bottom: 25px;
-  border-radius: 20px;
+  border-radius: 15px;
   box-shadow: 0 3px 8px rgba(0,0,0,0.1);
   transition: box-shadow 0.3s ease;
-  margin-left: 200px;
 }
+
 .recette:hover {
   box-shadow: 0 6px 15px rgba(0,0,0,0.2);
 }
@@ -35,7 +101,7 @@ h1 {
 .recette h2 {
   color: #2e7d32;
   margin-bottom: 15px;
-  font-size: 1.8em;
+  font-size: 1.5em;
 }
 
 .recette pre {
@@ -43,12 +109,33 @@ h1 {
   background: #f0f0f0;
   padding: 15px;
   border-radius: 8px;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: 'Courier New', monospace;
   font-size: 1em;
   line-height: 1.4em;
   overflow-x: auto;
 }
 
+/* Bouton export */
+#exportBtn {
+  display: block;
+  margin: 30px auto;
+  padding: 12px 20px;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1em;
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(76, 175, 80, 0.4);
+  transition: background-color 0.3s ease;
+}
+
+#exportBtn:hover {
+  background-color: #388e3c;
+}
+
+
+/* Bouton */
 a.liste-courses-btn {
   display: inline-block;
   margin-top: 30px;
@@ -65,5 +152,46 @@ a.liste-courses-btn {
 a.liste-courses-btn:hover {
   background-color: #388e3c;
   box-shadow: 0 6px 15px rgba(56, 142, 60, 0.6);
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 3rem 2rem;
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.social-links {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.social-links a {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.social-links a:hover {
+  background: #4CAF50;
+  transform: translateY(-5px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .nav-links {
+    display: none;
+  }
 }
 

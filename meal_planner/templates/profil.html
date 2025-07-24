@@ -7,6 +7,23 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+<!-- Navigation -->
+<nav id="navbar">
+    <div class="nav-container">
+        <a href="/" class="logo">
+            <i class="fas fa-leaf"></i>
+            WellBeing
+        </a>
+        <ul class="nav-links">
+            <li><a href="/">Accueil</a></li>
+            <li><a href="/menus">Menus</a></li>
+            <li><a href="/nutrition">Nutrition</a></li>
+            <li><a href="/register">S'inscrire</a></li>
+        </ul>
+    </div>
+    
+</nav>
+<main class="main-wrapper">
     <div class="profile-container animate">
         <h1>Mon Profil</h1>
         <form id="profileForm">
@@ -48,6 +65,19 @@
             </div>
         </form>
     </div>
+  </main>  
+    <!-- Footer -->
+<footer>
+    <div class="social-links">
+        <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://wa.me/680588024" target="_blank"><i class="fab fa-whatsapp"></i></a>
+        <a href="https://linkedin.com" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+        <a href="mailto:jecy.meffo@facsciences-uy1.cm"><i class="fas fa-envelope"></i></a>
+    </div>
+     <p style="color:white">&copy; 2025 WellBeing. Conçu par MEFFO Lea</p>
+    <p style="margin-top: 0.5rem; opacity: 1;color:white">Intelligence Artificielle • Nutrition Personnalisée • Bien-être</p>
+</footer>
+    
     <script src="{{ url_for('static', filename='js/profil.js') }}"></script>
 </body>
 </html>

@@ -5,9 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- ✅ pour le responsive -->
     <title>Inscription - WellBeing</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-papJt0CXkIijV2rf2vN+0rmnU6ll9HRA2HPlJ9hoQb1d2wUog9M7xFBS1rpXJm0S7aa0DA3yzZ4nC7f6fQuKjQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+   
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 </head>
 <body>
+<!-- Navigation -->
+<nav id="navbar">
+    <div class="nav-container">
+        <a href="/" class="logo">
+            <i class="fas fa-leaf"></i>
+            WellBeing
+        </a>
+        <ul class="nav-links">
+            <li><a href="/">Accueil</a></li>
+            <li><a href="/menus">Menus</a></li>
+            <li><a href="/nutrition">Nutrition</a></li>
+            <li><a href="/register">S'inscrire</a></li>
+        </ul>
+    </div>
+    
+</nav>
+<main class="main-wrapper">
     <div class="form-container animate">
         <h1>Créer un compte</h1>
         <form id="registerForm">
@@ -48,10 +67,23 @@
                 <input type="number" id="taille" placeholder="Taille (cm)" min="0" required>
             </div>
             <button type="summit" id="btn-register">S'inscrire</button>
-<button type="summit" id="btn-modifier">Modifier</button>
+
 
         </form>
     </div>
+   </main>
+    <!-- Footer -->
+<footer>
+    <div class="social-links">
+        <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://wa.me/680588024" target="_blank"><i class="fab fa-whatsapp"></i></a>
+        <a href="https://linkedin.com" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+        <a href="mailto:jecy.meffo@facsciences-uy1.cm"><i class="fas fa-envelope"></i></a>
+    </div>
+     <p style="color:white">&copy; 2025 WellBeing. Conçu par MEFFO Lea</p>
+    <p style="margin-top: 0.5rem; opacity: 1;color:white">Intelligence Artificielle • Nutrition Personnalisée • Bien-être</p>
+</footer>
+    
     <script src="{{ url_for('static', filename='js/register.js') }}"></script>
 </body>
 </html>

@@ -5,6 +5,7 @@ import json
 import re
 import logging
 from datetime import datetime
+import random
 
 bp = Blueprint('menu', __name__)
 
@@ -69,22 +70,56 @@ def get_fallback_menu():
                 {"name": "Poisson braisé + Riz au gras", "type": "camerounais"},
                 {"name": "Mac and Cheese + Salade verte", "type": "américain"}
             ]
+        },
+        {
+            "Petit déjeuner": [
+                {"name": "Gateau de maïs + Lait caillé", "type": "camerounais"},
+                {"name": "Omelette Denver + Toast", "type": "américain"}
+            ],
+            "Déjeuner": [
+                {"name": "Okok + Baton de manioc", "type": "camerounais"},
+                {"name": "Club Sandwich + Chips", "type": "américain"}
+            ],
+            "Dîner": [
+                {"name": "Sauce jaune + Couscous de maïs", "type": "camerounais"},
+                {"name": "Steak + Purée maison", "type": "américain"}
+            ]
+        },
+        {
+            "Petit déjeuner": [
+                {"name": "Bouillie de mil + Arachides", "type": "camerounais"},
+                {"name": "Cereal Bowl + Fruits frais", "type": "américain"}
+            ],
+            "Déjeuner": [
+                {"name": "Sanga + Riz nature", "type": "camerounais"},
+                {"name": "Chicken Wrap + Salade César", "type": "américain"}
+            ],
+            "Dîner": [
+                {"name": "Brochettes de boeuf + Légumes sautés", "type": "camerounais"},
+                {"name": "Pizza Pepperoni + Salade verte", "type": "américain"}
+            ]
+        },
+        {
+            "Petit déjeuner": [
+                {"name": "Pain au lait + Thé gingembre", "type": "camerounais"},
+                {"name": "Waffles + Sirop de fraise", "type": "américain"}
+            ],
+            "Déjeuner": [
+                {"name": "Poisson fumé + Macabo", "type": "camerounais"},
+                {"name": "Hot Dog + Frites", "type": "américain"}
+            ],
+            "Dîner": [
+                {"name": "Bongo tchobi + Manioc vapeur", "type": "camerounais"},
+                {"name": "Roast Chicken + Gratin dauphinois", "type": "américain"}
+            ]
         }
     ]
-    
-    # Sélectionner un menu aléatoire basé sur l'heure
-    import random
-    random.seed(datetime.now().hour)
     return random.choice(menus_variés)
 
 @bp.route('/menus', methods=['GET'])
 def generate_menus():
-    """
-    Génère un menu équilibré avec des options personnalisées
-    """
-    # Récupérer les préférences depuis les paramètres de requête
-    dietary_preference = request.args.get('diet', 'mixed')  # mixed, vegetarian, low-carb
-    cuisine_preference = request.args.get('cuisine', 'both')  # camerounais, américain, both
+    dietary_preference = request.args.get('diet', 'mixed')
+    cuisine_preference = request.args.get('cuisine', 'both')
     
     if not co:
         logger.info("Utilisation du menu de fallback (Cohere indisponible)")
@@ -92,13 +127,9 @@ def generate_menus():
         return jsonify({
             'menu': menu,
             'source': 'fallback',
-            'preferences': {
-                'diet': dietary_preference,
-                'cuisine': cuisine_preference
-            }
+            'preferences': {'diet': dietary_preference, 'cuisine': cuisine_preference}
         })
 
-    # Construire le prompt basé sur les préférences
     cuisine_instruction = {
         'camerounais': 'Inclue uniquement des plats camerounais traditionnels',
         'américain': 'Inclue uniquement des plats américains',
@@ -133,60 +164,34 @@ Instructions:
             prompt=prompt,
             max_tokens=400,
             temperature=0.8,
-            stop_sequences=['}']  # S'arrêter après le JSON
+            stop_sequences=['}']
         )
+        text = response.generations[0].text.strip() + '}'
+        text = re.sub(r'^[^{]*', '', text)
+        text = re.sub(r'}[^}]*$', '}', text)
 
-        text = response.generations[0].text.strip() + '}'  # Rajouter la } finale
-        logger.info("Réponse brute de Cohere reçue")
+        menu = json.loads(text)
+        if not all(k in menu for k in ["Petit déjeuner", "Déjeuner", "Dîner"]):
+            raise ValueError("Structure de menu invalide")
 
-        # Nettoyer le texte avant parsing
-        text = re.sub(r'^[^{]*', '', text)  # Enlever tout ce qui précède le {
-        text = re.sub(r'}[^}]*$', '}', text)  # Enlever tout ce qui suit le }
-
-        try:
-            menu = json.loads(text)
-            
-            # Valider la structure du menu
-            required_keys = ["Petit déjeuner", "Déjeuner", "Dîner"]
-            if not all(key in menu for key in required_keys):
-                raise ValueError("Structure de menu invalide")
-                
-            # Valider que chaque catégorie a des plats
-            for category in required_keys:
-                if not isinstance(menu[category], list) or len(menu[category]) == 0:
-                    raise ValueError(f"Catégorie {category} invalide")
-                    
-            logger.info("Menu généré avec succès par Cohere")
-            return jsonify({
-                'menu': menu,
-                'source': 'ai_generated',
-                'preferences': {
-                    'diet': dietary_preference,
-                    'cuisine': cuisine_preference
-                },
-                'timestamp': datetime.now().isoformat()
-            })
-            
-        except (json.JSONDecodeError, ValueError) as e:
-            logger.warning(f"Erreur parsing JSON: {e}, utilisation du fallback")
-            raise e
-
+        return jsonify({
+            'menu': menu,
+            'source': 'ai_generated',
+            'preferences': {'diet': dietary_preference, 'cuisine': cuisine_preference},
+            'timestamp': datetime.now().isoformat()
+        })
     except Exception as e:
-        logger.error(f"Erreur lors de la génération: {e}")
+        logger.warning(f"Erreur génération ou parsing, fallback : {e}")
         menu = get_fallback_menu()
         return jsonify({
             'menu': menu,
             'source': 'fallback_after_error',
             'error': str(e),
-            'preferences': {
-                'diet': dietary_preference,
-                'cuisine': cuisine_preference
-            }
+            'preferences': {'diet': dietary_preference, 'cuisine': cuisine_preference}
         }), 200
 
 @bp.route('/menus/preferences', methods=['GET'])
 def get_menu_preferences():
-    """Retourne les options de préférences disponibles"""
     return jsonify({
         'dietary_options': [
             {'value': 'mixed', 'label': 'Équilibré (recommandé)'},
@@ -202,10 +207,10 @@ def get_menu_preferences():
 
 @bp.route('/menus/random', methods=['GET'])
 def get_random_menu():
-    """Génère un menu aléatoire parmi les fallbacks"""
     menu = get_fallback_menu()
     return jsonify({
         'menu': menu,
         'source': 'random_fallback',
         'timestamp': datetime.now().isoformat()
     })
+

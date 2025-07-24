@@ -14,29 +14,28 @@
     --glass-border: rgba(255, 255, 255, 0.2);
 }
 
-/* Body & fond */
+/* Body */
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     min-height: 100vh;
-    background: var(--bg-gradient);
-    color: white;
+    background: url("../images/w5.png") no-repeat center center fixed;
+    background-size: cover;
+    color: #333;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
 }
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  max-width: 900px;
-  margin: auto;
-  background: url("../images/w5.png") no-repeat center center fixed;
-  padding: 20px;
-  background-size: cover;
-    margin: 0;
-  min-height: 100vh;
-  color: #333;
+
+/* Main wrapper */
+.main-wrapper {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 100px; /* espace pour navbar fixée */
 }
+
 /* Navbar */
-.navbar {
+.navbar, #navbar {
     position: fixed;
     top: 0; left: 0; right: 0;
     background: rgba(255, 255, 255, 0.15);
@@ -44,15 +43,15 @@ body {
     border-bottom: 1px solid var(--glass-border);
     z-index: 100;
     padding: 1rem 2rem;
-    box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .nav-container {
     max-width: 1200px;
     margin: 0 auto;
     display: flex;
-    align-items: center;
     justify-content: space-between;
+    align-items: center;
 }
 
 .logo {
@@ -82,7 +81,7 @@ body {
     padding: 0.5rem 1rem;
     border-radius: 8px;
     font-weight: 600;
-    transition: background 0.3s ease;
+    transition: background 0.3s ease, transform 0.2s;
 }
 
 .nav-links a:hover,
@@ -91,7 +90,7 @@ body {
     transform: translateY(-2px);
 }
 
-/* Container Profil */
+/* Profil container */
 .profile-container {
     margin: 120px auto 60px;
     max-width: 420px;
@@ -111,10 +110,9 @@ body {
     background: linear-gradient(45deg, #ffffff, #e0e7ff);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    background-clip: text;
 }
 
-/* Input Group */
+/* Input group */
 .input-group {
     display: flex;
     align-items: center;
@@ -122,15 +120,13 @@ body {
     border-radius: 12px;
     margin-bottom: 15px;
     padding: 12px 15px;
-    box-shadow: inset 0 2px 5px rgba(255, 255, 255, 0.3);
+    box-shadow: inset 0 2px 5px rgba(255,255,255,0.3);
 }
 
 .input-group i {
-    color: #fbbf24; /* or orange doré */
+    color: #fbbf24;
     font-size: 1.4rem;
     margin-right: 15px;
-    min-width: 28px;
-    text-align: center;
 }
 
 .input-group input,
@@ -157,91 +153,74 @@ body {
     justify-content: center;
 }
 
-
-
-
-
-.btn-primary {
+.btn-group button {
     flex: 1;
-    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-    border: none;
-    color: white;
-    padding: 18px 0;                /* plus haut qu'avant (14px) */
+    padding: 18px 0;
+    border-radius: 50px;
+    font-size: 1.2rem;
     font-weight: 700;
-    font-size: 2rem;            /* légèrement plus grand */
-    border-radius: 50px;
     cursor: pointer;
-    box-shadow: 0 10px 35px rgba(99, 102, 241, 0.4); /* plus de relief */
     transition: background 0.3s ease, transform 0.2s;
 }
 
-.btn-primary:hover {
-    background: linear-gradient(45deg, #4f46e5, #16a34a);
-    transform: translateY(-3px);  /* petit effet lift */
-}
-
-.btn-secondary {
-    flex: 1;
-    background: rgba(255, 255, 255, 0.2);
+.btn-group button[type="submit"] {
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
     color: white;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-radius: 50px;
-    font-weight: 600;
-    font-size: 2rem;           /* un peu plus grand aussi */
-    padding: 18px 0;              /* même hauteur que le bouton primaire */
-    cursor: pointer;
-    transition: background 0.3s ease, transform 0.2s;
+    border: none;
+    box-shadow: 0 10px 35px rgba(99,102,241,0.4);
 }
 
-.btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.35);
+.btn-group button[type="submit"]:hover {
+    background: linear-gradient(45deg, #4f46e5, #16a34a);
+    transform: translateY(-3px);
+}
+
+.btn-group .secondary {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    border: 2px solid rgba(255,255,255,0.3);
+}
+
+.btn-group .secondary:hover {
+    background: rgba(255,255,255,0.35);
     transform: translateY(-3px);
 }
 
 /* Animation */
 @keyframes fadeSlideIn {
-    from {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 /* Footer */
 footer {
-    margin-top: auto;
-    background: rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(25px);
-    padding: 2rem;
     text-align: center;
-    border-top: 1px solid var(--glass-border);
+    padding: 3rem 2rem;
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(255,255,255,0.1);
     color: white;
 }
 
 .social-links {
     display: flex;
     justify-content: center;
-    gap: 1.5rem;
-    margin-bottom: 1rem;
+    gap: 1rem;
+    margin: 2rem 0;
 }
 
 .social-links a {
-    width: 45px;
-    height: 45px;
+    width: 50px; height: 50px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255,255,255,0.1);
+    display: flex; align-items: center; justify-content: center;
     color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    text-decoration: none;
     transition: all 0.3s ease;
 }
 
 .social-links a:hover {
-    background: var(--primary-color);
+    background: #4CAF50;
     transform: translateY(-5px);
 }
 
@@ -258,16 +237,12 @@ footer {
         padding: 2rem;
         width: 90%;
     }
-
     .btn-group {
         flex-direction: column;
     }
-
-    .btn-primary, .btn-secondary {
+    .btn-group button {
         width: 100%;
-        flex: none;
     }
-
     .nav-links {
         display: none;
     }

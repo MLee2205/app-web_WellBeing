@@ -55,7 +55,7 @@ def update_profile(user_id):
     user.annee_naissance = data.get('annee_naissance', user.annee_naissance)
     user.sexe = data.get('sexe', user.sexe)
     user.poids = data.get('poids', user.poids)    
-    user.masse = data.get('taille', user.taille) 
+    user.taille = data.get('taille', user.taille) 
     db.session.commit()
     return jsonify({'message': 'Profil mis à jour avec succès'})
 
