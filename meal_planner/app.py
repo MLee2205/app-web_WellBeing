@@ -5,7 +5,7 @@ from routes import user as user_routes
 from routes import menus as menu_routes
 from routes import nutrition as nutrition_routes
 from routes import recettes as recettes_routes
-from routes import courses as courses_routes
+#from routes import courses as courses_routes
 
 def create_app():
     """Factory pattern pour créer l'application Flask"""
@@ -20,7 +20,7 @@ def create_app():
     app.register_blueprint(menu_routes.bp, url_prefix='/api')
     app.register_blueprint(nutrition_routes.bp, url_prefix='/api')
     app.register_blueprint(recettes_routes.bp, url_prefix='/api')
-    app.register_blueprint(courses_routes.bp)
+    #app.register_blueprint(courses_routes.bp)
     
     # Routes principales
     @app.route('/')

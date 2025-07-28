@@ -17,10 +17,11 @@ body {
 
 
 .main-wrapper {
-  flex: 1;
-  display: flex;
-  justify-content: center;  /* centre horizontalement */
-  align-items: center;      /* centre verticalement */
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 80px; /* ajuste selon la hauteur réelle du nav */
 }
 
   /* Navigation */
@@ -320,12 +321,13 @@ input[name="menu"]:disabled {
 
  /* Footer */
         footer {
-            text-align: center;
-            padding: 3rem 2rem;
-            background: rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(20px);
-            border-top: 1px solid var(--glass-border);
-        }
+    text-align: center;
+    padding: 1rem 0.5rem;
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid var(--glass-border);
+}
+
 
         .social-links {
             display: flex;
