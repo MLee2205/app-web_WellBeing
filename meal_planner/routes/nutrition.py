@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify, session, render_template
-import cohere
+
+import google.generativeai as genai
 import os
 import json
 import random
@@ -8,7 +9,7 @@ from datetime import datetime
 import re
 
 bp = Blueprint('nutrition', __name__)
-co = cohere.Client(os.environ.get('COHERE_API_KEY'))
+genai.configure(api_key=os.environ.get('GEMINI_API_KEY'))
 
 # Menus prédéfinis par IMC
 menus_par_imc = {
@@ -37,7 +38,7 @@ menus_par_imc = {
             {"name": "Poulet grillé", "calories": 350, "protein": 40, "carbs": 5, "fat": 12},
             {"name": "Riz complet", "calories": 200, "protein": 5, "carbs": 45, "fat": 2},
             {"name": "Brocolis vapeur", "calories": 50, "protein": 3, "carbs": 10, "fat": 0},
-            {"name": "Pomme", "calories": 80, "protein": 0, "carbs": 20, "fat": 0}
+            {"name": "Pomme sauté", "calories": 80, "protein": 0, "carbs": 20, "fat": 0}
         ]
     ],
     "Surpoids": [
@@ -180,9 +181,13 @@ Adapte le menu selon l'IMC et les préférences. Assure-toi que le JSON soit par
         source_menu = "fallback"
 
         try:
-            print("[INFO] Envoi prompt à Cohere...")
-            response = co.generate(model='command-light', prompt=prompt, max_tokens=400)
-            raw_response = response.generations[0].text.strip()
+            
+            print("[INFO] Envoi prompt à Gemini...")
+            model = genai.GenerativeModel('gemini-1.5-flash-latest')
+            response = model.generate_content(prompt)
+            raw_response = response.text.strip()
+            print(f"[DEBUG] Réponse IA brute: {raw_response}")
+
             print(f"[DEBUG] Réponse IA brute: {raw_response}")
 
             # Parser la réponse de l'IA

@@ -1,18 +1,30 @@
 from flask import Blueprint, request, jsonify
-import cohere
+import google.generativeai as genai
 import os
 
 bp = Blueprint('recettes', __name__)
-co = cohere.Client(os.environ.get('COHERE_API_KEY'))
+
+# Configurer Gemini avec la clé d'API depuis les variables d'environnement
+genai.configure(api_key=os.environ.get('GEMINI_API_KEY'))
 
 @bp.route('/recettes', methods=['POST'])
 def generate_recettes():
-    data = request.get_json()
-    plats = data.get('plats', [])
-    recettes = []
+    """
+    Génère des recettes pour une liste de plats donnée.
+    Renvoie un JSON contenant la recette générée pour chaque plat.
+    """
+    try:
+        data = request.get_json(silent=True) or {}
+        plats = data.get('plats', [])
 
-    for plat in plats:
-        prompt = f"""
+        if not plats:
+            return jsonify({"error": "Aucun plat fourni."}), 400
+
+        recettes = []
+        model = genai.GenerativeModel('gemini-1.5-flash-latest')
+
+        for plat in plats:
+            prompt = f"""
 Tu es un chef cuisinier expert.
 
 Donne-moi une recette simple et claire pour préparer : "{plat}".
@@ -30,27 +42,28 @@ Exemple attendu :
   "recette": "Texte de la recette étape par étape"
 }}
 """
-        try:
-            response = co.generate(
-                model='command-light',
-                prompt=prompt,
-                max_tokens=300
-            )
-            text = response.generations[0].text.strip()
-            print(f"Réponse brute Cohere pour {plat}:", text)
+            try:
+                # Appel à Gemini
+                response = model.generate_content(prompt)
+                text = response.text.strip()
 
-            # Au lieu de parser, on renvoie directement le texte brut
-            recettes.append({
-                "name": plat,
-                "raw_response": text
-            })
+                print(f"[DEBUG] Réponse brute Gemini pour '{plat}': {text}")
 
-        except Exception as e:
-            print(f"Erreur pour le plat {plat} :", e)
-            recettes.append({
-                "name": plat,
-                "raw_response": f"Erreur lors de la génération de la recette: {e}"
-            })
+                recettes.append({
+                    "name": plat,
+                    "raw_response": text
+                })
 
-    return jsonify({"recettes": recettes})
+            except Exception as e:
+                print(f"[ERROR] Erreur pour le plat '{plat}': {e}")
+                recettes.append({
+                    "name": plat,
+                    "raw_response": f"Erreur lors de la génération de la recette: {e}"
+                })
+
+        return jsonify({"recettes": recettes})
+
+    except Exception as e:
+        print(f"[ERROR] Erreur générale dans /recettes: {e}")
+        return jsonify({"error": str(e)}), 500
 

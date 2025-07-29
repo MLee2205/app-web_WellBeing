@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
-import cohere
 import os
+import google.generativeai as genai
 import json
 import re
 import logging
@@ -13,128 +13,93 @@ bp = Blueprint('menu', __name__)
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Récupérer la clé depuis la variable d'environnement
-api_key = os.environ.get('COHERE_API_KEY')
+# Récupérer la clé Gemini
+api_key = os.environ.get('GEMINI_API_KEY')
 if not api_key:
-    logger.warning("COHERE_API_KEY non définie, utilisation du mode fallback")
-    co = None
+    logger.warning("GEMINI_API_KEY non définie, utilisation du mode fallback")
+    model = None
 else:
     try:
-        co = cohere.Client(api_key)
-        logger.info("Client Cohere initialisé avec succès")
+        genai.configure(api_key=api_key)
+        model = genai.GenerativeModel('models/gemini-2.5-pro')
+        logger.info("Client Gemini initialisé avec succès")
     except Exception as e:
-        logger.error(f"Erreur lors de l'initialisation de Cohere: {e}")
-        co = None
+        logger.error(f"Erreur lors de l'initialisation de Gemini: {e}")
+        model = None
 
-def get_fallback_menu():
-    """Menu de fallback avec plus de variété"""
+def get_fallback_menus():
+    """Fallback avec plusieurs menus camerounais uniquement"""
     menus_variés = [
         {
             "Petit déjeuner": [
-                {"name": "Beignets haricots + Bouillie de maïs", "type": "camerounais"},
-                {"name": "Pancakes aux myrtilles + Sirop d'érable", "type": "américain"}
+                {"name": "Beignets haricots + Bouillie de maïs", "type": "camerounais"}
             ],
             "Déjeuner": [
-                {"name": "Ndolé aux crevettes + Plantain bouilli", "type": "camerounais"},
-                {"name": "Caesar Salad + Pain grillé à l'ail", "type": "américain"}
+                {"name": "Ndolé aux crevettes + Plantain bouilli", "type": "camerounais"}
             ],
             "Dîner": [
-                {"name": "Poulet DG + Riz parfumé", "type": "camerounais"},
-                {"name": "BBQ Ribs + Purée de pommes de terre", "type": "américain"}
+                {"name": "Poulet DG + Riz parfumé", "type": "camerounais"}
             ]
         },
         {
             "Petit déjeuner": [
-                {"name": "Akassa + Poisson fumé", "type": "camerounais"},
-                {"name": "French Toast + Bacon croustillant", "type": "américain"}
+                {"name": "Akassa + Poisson fumé", "type": "camerounais"}
             ],
             "Déjeuner": [
-                {"name": "Eru + Igname pilée", "type": "camerounais"},
-                {"name": "Cheeseburger + Frites maison", "type": "américain"}
+                {"name": "Eru + Igname pilée", "type": "camerounais"}
             ],
             "Dîner": [
-                {"name": "Koki beans + Plantain frit", "type": "camerounais"},
-                {"name": "Grilled Salmon + Légumes vapeur", "type": "américain"}
+                {"name": "Koki beans + Plantain frit", "type": "camerounais"}
             ]
         },
         {
             "Petit déjeuner": [
-                {"name": "Pap de maïs + Œufs brouillés", "type": "camerounais"},
-                {"name": "Bagel + Cream cheese + Saumon", "type": "américain"}
+                {"name": "Pap de maïs + Œufs brouillés", "type": "camerounais"}
             ],
             "Déjeuner": [
-                {"name": "Mbongo tchobi + Bâton de manioc", "type": "camerounais"},
-                {"name": "Buffalo Wings + Coleslaw", "type": "américain"}
+                {"name": "Mbongo tchobi + Bâton de manioc", "type": "camerounais"}
             ],
             "Dîner": [
-                {"name": "Poisson braisé + Riz au gras", "type": "camerounais"},
-                {"name": "Mac and Cheese + Salade verte", "type": "américain"}
+                {"name": "Poisson braisé + Riz au gras", "type": "camerounais"}
             ]
         },
         {
             "Petit déjeuner": [
-                {"name": "Gateau de maïs + Lait caillé", "type": "camerounais"},
-                {"name": "Omelette Denver + Toast", "type": "américain"}
+                {"name": "Gateau de maïs + Lait caillé", "type": "camerounais"}
             ],
             "Déjeuner": [
-                {"name": "Okok + Baton de manioc", "type": "camerounais"},
-                {"name": "Club Sandwich + Chips", "type": "américain"}
+                {"name": "Okok + Baton de manioc", "type": "camerounais"}
             ],
             "Dîner": [
-                {"name": "Sauce jaune + Couscous de maïs", "type": "camerounais"},
-                {"name": "Steak + Purée maison", "type": "américain"}
+                {"name": "Sauce jaune + Couscous de maïs", "type": "camerounais"}
             ]
         },
         {
             "Petit déjeuner": [
-                {"name": "Bouillie de mil + Arachides", "type": "camerounais"},
-                {"name": "Cereal Bowl + Fruits frais", "type": "américain"}
+                {"name": "Bouillie de mil + Arachides", "type": "camerounais"}
             ],
             "Déjeuner": [
-                {"name": "Sanga + Riz nature", "type": "camerounais"},
-                {"name": "Chicken Wrap + Salade César", "type": "américain"}
+                {"name": "Sanga + Riz nature", "type": "camerounais"}
             ],
             "Dîner": [
-                {"name": "Brochettes de boeuf + Légumes sautés", "type": "camerounais"},
-                {"name": "Pizza Pepperoni + Salade verte", "type": "américain"}
-            ]
-        },
-        {
-            "Petit déjeuner": [
-                {"name": "Pain au lait + Thé gingembre", "type": "camerounais"},
-                {"name": "Waffles + Sirop de fraise", "type": "américain"}
-            ],
-            "Déjeuner": [
-                {"name": "Poisson fumé + Macabo", "type": "camerounais"},
-                {"name": "Hot Dog + Frites", "type": "américain"}
-            ],
-            "Dîner": [
-                {"name": "Bongo tchobi + Manioc vapeur", "type": "camerounais"},
-                {"name": "Roast Chicken + Gratin dauphinois", "type": "américain"}
+                {"name": "Brochettes de boeuf + Légumes sautés", "type": "camerounais"}
             ]
         }
     ]
-    return random.choice(menus_variés)
+    return menus_variés
 
 @bp.route('/menus', methods=['GET'])
 def generate_menus():
     dietary_preference = request.args.get('diet', 'mixed')
-    cuisine_preference = request.args.get('cuisine', 'both')
     
-    if not co:
-        logger.info("Utilisation du menu de fallback (Cohere indisponible)")
-        menu = get_fallback_menu()
+    if not model:
+        logger.info("Utilisation du fallback (Gemini indisponible)")
+        menus = get_fallback_menus()
         return jsonify({
-            'menu': menu,
+            'menus': menus,
             'source': 'fallback',
-            'preferences': {'diet': dietary_preference, 'cuisine': cuisine_preference}
+            'preferences': {'diet': dietary_preference, 'cuisine': 'camerounais'}
         })
-
-    cuisine_instruction = {
-        'camerounais': 'Inclue uniquement des plats camerounais traditionnels',
-        'américain': 'Inclue uniquement des plats américains',
-        'both': 'Inclue des plats camerounais et américains variés'
-    }.get(cuisine_preference, 'Inclue des plats camerounais et américains variés')
 
     diet_instruction = {
         'vegetarian': 'Tous les plats doivent être végétariens',
@@ -143,51 +108,46 @@ def generate_menus():
     }.get(dietary_preference, 'Équilibre protéines, légumes et glucides')
 
     prompt = f"""
-Génère un menu équilibré sous forme JSON strictement structuré comme suit :
-{{
-  "Petit déjeuner": [ {{"name": "Nom du plat", "type": "camerounais ou américain"}}, {{"name": "Nom du plat", "type": "camerounais ou américain"}} ],
-  "Déjeuner": [ {{"name": "Nom du plat", "type": "camerounais ou américain"}}, {{"name": "Nom du plat", "type": "camerounais ou américain"}} ],
-  "Dîner": [ {{"name": "Nom du plat", "type": "camerounais ou américain"}}, {{"name": "Nom du plat", "type": "camerounais ou américain"}} ]
-}}
+Génère 5 menus camerounais équilibrés sous forme JSON strictement structuré comme suit :
+[
+  {{
+    "Petit déjeuner": [{{"name": "Nom du plat", "type": "camerounais"}}],
+    "Déjeuner": [{{"name": "Nom du plat", "type": "camerounais"}}],
+    "Dîner": [{{"name": "Nom du plat", "type": "camerounais"}}]
+  }},
+  ...
+]
 
 Instructions:
-- {cuisine_instruction}
 - {diet_instruction}
 - Ne mets RIEN d'autre que ce JSON valide
-- Assure-toi que chaque plat a un nom et un type
-- Varie les plats pour un menu équilibré
+- Chaque menu doit être différent et équilibré
 """
 
     try:
-        response = co.generate(
-            model='command-light',
-            prompt=prompt,
-            max_tokens=400,
-            temperature=0.8,
-            stop_sequences=['}']
-        )
-        text = response.generations[0].text.strip() + '}'
-        text = re.sub(r'^[^{]*', '', text)
-        text = re.sub(r'}[^}]*$', '}', text)
+        response = model.generate_content(prompt)
+        text = response.text.strip()
+        text = re.sub(r'^[^\[]*', '', text)
+        text = re.sub(r'\][^\]]*$', ']', text)
 
-        menu = json.loads(text)
-        if not all(k in menu for k in ["Petit déjeuner", "Déjeuner", "Dîner"]):
-            raise ValueError("Structure de menu invalide")
+        menus = json.loads(text)
+        if not isinstance(menus, list) or not all(isinstance(menu, dict) for menu in menus):
+            raise ValueError("Structure invalide")
 
         return jsonify({
-            'menu': menu,
+            'menus': menus,
             'source': 'ai_generated',
-            'preferences': {'diet': dietary_preference, 'cuisine': cuisine_preference},
+            'preferences': {'diet': dietary_preference, 'cuisine': 'camerounais'},
             'timestamp': datetime.now().isoformat()
         })
     except Exception as e:
         logger.warning(f"Erreur génération ou parsing, fallback : {e}")
-        menu = get_fallback_menu()
+        menus = get_fallback_menus()
         return jsonify({
-            'menu': menu,
+            'menus': menus,
             'source': 'fallback_after_error',
             'error': str(e),
-            'preferences': {'diet': dietary_preference, 'cuisine': cuisine_preference}
+            'preferences': {'diet': dietary_preference, 'cuisine': 'camerounais'}
         }), 200
 
 @bp.route('/menus/preferences', methods=['GET'])
@@ -197,19 +157,14 @@ def get_menu_preferences():
             {'value': 'mixed', 'label': 'Équilibré (recommandé)'},
             {'value': 'vegetarian', 'label': 'Végétarien'},
             {'value': 'low-carb', 'label': 'Faible en glucides'}
-        ],
-        'cuisine_options': [
-            {'value': 'both', 'label': 'Camerounais et Américain'},
-            {'value': 'camerounais', 'label': 'Camerounais uniquement'},
-            {'value': 'américain', 'label': 'Américain uniquement'}
         ]
     })
 
 @bp.route('/menus/random', methods=['GET'])
 def get_random_menu():
-    menu = get_fallback_menu()
+    menus = get_fallback_menus()
     return jsonify({
-        'menu': menu,
+        'menus': menus,
         'source': 'random_fallback',
         'timestamp': datetime.now().isoformat()
     })
