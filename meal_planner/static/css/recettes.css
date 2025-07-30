@@ -195,3 +195,13 @@ footer {
   }
 }
 
+.recette p {
+  white-space: pre-wrap;
+  background: #f8f8f8;
+  padding: 12px;
+  border-radius: 8px;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 1em;
+  line-height: 1.6em;
+}
+

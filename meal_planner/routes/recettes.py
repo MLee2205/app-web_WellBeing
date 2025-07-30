@@ -1,69 +1,63 @@
 from flask import Blueprint, request, jsonify
 import google.generativeai as genai
 import os
+import json
+import re
 
 bp = Blueprint('recettes', __name__)
-
-# Configurer Gemini avec la clé d'API depuis les variables d'environnement
 genai.configure(api_key=os.environ.get('GEMINI_API_KEY'))
+
+def parse_ai_response(text):
+    """Parse la réponse IA (JSON)"""
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError:
+        match = re.search(r'\{.*\}', text, re.DOTALL)
+        if match:
+            try:
+                return json.loads(match.group())
+            except json.JSONDecodeError:
+                pass
+    return None
 
 @bp.route('/recettes', methods=['POST'])
 def generate_recettes():
-    """
-    Génère des recettes pour une liste de plats donnée.
-    Renvoie un JSON contenant la recette générée pour chaque plat.
-    """
-    try:
-        data = request.get_json(silent=True) or {}
-        plats = data.get('plats', [])
+    data = request.get_json(silent=True) or {}
+    plats = data.get('plats', [])
+    if not plats:
+        return jsonify({"error": "Aucun plat fourni."}), 400
 
-        if not plats:
-            return jsonify({"error": "Aucun plat fourni."}), 400
+    recettes = []
+    model = genai.GenerativeModel('gemini-1.5-flash-latest')
 
-        recettes = []
-        model = genai.GenerativeModel('gemini-1.5-flash-latest')
-
-        for plat in plats:
-            prompt = f"""
+    for plat in plats:
+        prompt = f"""
 Tu es un chef cuisinier expert.
-
 Donne-moi une recette simple et claire pour préparer : "{plat}".
-
-IMPORTANT :
-- Répond STRICTEMENT et UNIQUEMENT avec un bloc JSON complet et valide.
-- N'écris absolument aucun texte avant ou après, aucune explication.
-- Utilise exactement les clés suivantes, en français : "name" et "recette".
-
-Le JSON doit commencer directement par {{ et finir par }}.
-
-Exemple attendu :
-{{
-  "name": "{plat}",
-  "recette": "Texte de la recette étape par étape"
-}}
+IMPORTANT : Réponds STRICTEMENT avec un JSON :
+{{"name":"Nom du plat","recette":"Texte"}}
 """
-            try:
-                # Appel à Gemini
-                response = model.generate_content(prompt)
-                text = response.text.strip()
-
-                print(f"[DEBUG] Réponse brute Gemini pour '{plat}': {text}")
-
+        try:
+            response = model.generate_content(prompt)
+            text = response.text.strip()
+            print(f"[DEBUG] Réponse brute Gemini pour '{plat}': {text}")
+            parsed = parse_ai_response(text)
+            if parsed and 'recette' in parsed:
+                recettes.append({
+                    "name": parsed.get('name', plat),
+                    "recette": parsed['recette']
+                })
+            else:
                 recettes.append({
                     "name": plat,
-                    "raw_response": text
+                    "recette": "❌ Impossible de générer la recette (réponse invalide)"
                 })
+        except Exception as e:
+            print(f"[ERROR] Erreur pour le plat '{plat}': {e}")
+            recettes.append({
+                "name": plat,
+                "recette": f"❌ Erreur lors de la génération: {e}"
+            })
 
-            except Exception as e:
-                print(f"[ERROR] Erreur pour le plat '{plat}': {e}")
-                recettes.append({
-                    "name": plat,
-                    "raw_response": f"Erreur lors de la génération de la recette: {e}"
-                })
-
-        return jsonify({"recettes": recettes})
-
-    except Exception as e:
-        print(f"[ERROR] Erreur générale dans /recettes: {e}")
-        return jsonify({"error": str(e)}), 500
+    return jsonify({"recettes": recettes})
 
