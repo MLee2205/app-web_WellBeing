@@ -35,6 +35,24 @@
       <label><input type="checkbox" name="preferences" value="sans porc" /> Sans porc</label>
     </form>
 
+<h2>Choisissez un type de jeûne</h2>
+<form id="fastingForm" class="fasting-options">
+  <label><input type="radio" name="fasting_type" value="quotidien" /> Chaque jour (pendant 40 jours)</label>
+  <label><input type="radio" name="fasting_type" value="1x_semaine" /> Une fois par semaine</label>
+  <label><input type="radio" name="fasting_type" value="2x_semaine" /> Deux fois par semaine</label>
+</form>
+
+<div id="user-metrics" class="user-metrics">
+  <label for="startFasting">Heure de début du jeûne :</label>
+  <input type="time" id="startFasting" name="startFasting">
+
+  <label for="endFasting">Heure de fin du jeûne :</label>
+  <input type="time" id="endFasting" name="endFasting">
+</div>
+
+
+
+
     <h2>Choisissez vos 4 plats préférés</h2>
     <form id="menuForm" class="menus">
       <label><input type="checkbox" name="menu" value="Poulet DG"> Poulet DG</label>

@@ -24,6 +24,80 @@ body {
     padding-top: 80px; /* ajuste selon la hauteur réelle du nav */
 }
 
+.fasting-section {
+    max-width: 600px;
+    margin: 40px auto;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 16px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.fasting-section h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #2c3e50;
+}
+
+.fasting-options {
+  display: flex;
+  flex-direction: row;         /* horizontale */
+  gap: 12px;                   /* espace entre les boutons */
+  justify-content: flex-start; /* aligné à gauche */
+  font-size: 14px;             /* plus petit */
+  flex-wrap: wrap;             /* passe à la ligne si nécessaire */
+  margin-bottom: 20px;
+}
+
+.fasting-options label {
+  background: #f0f0f0;
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  transition: background 0.3s;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.fasting-options label:hover {
+  background: #e0e0e0;
+}
+
+.fasting-options input[type="radio"] {
+  margin-right: 6px;
+}
+
+
+.fasting-hours {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.fasting-hours label {
+    font-weight: 500;
+    color: #34495e;
+}
+
+.fasting-hours input[type="time"] {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+}
+
+.fasting-hours input[type="time"]:focus {
+    border-color: #3498db;
+    outline: none;
+}
+
+
   /* Navigation */
         nav {
             position: fixed;

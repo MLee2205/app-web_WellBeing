@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import date
 
 db = SQLAlchemy()
 
@@ -9,7 +10,7 @@ class User(db.Model):
     password_hash = db.Column(db.String(255), nullable=False)
     name = db.Column(db.String(100))
     renom = db.Column(db.String(100))             
-    annee_naissance = db.Column(db.Integer)
+    date_naissance = db.Column(db.Date)
     sexe = db.Column(db.String(200))
     poids = db.Column(db.Float)
     taille = db.Column(db.Float)

@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from models.user import db, User
+from datetime import datetime
 
 bp = Blueprint('user', __name__)
 
@@ -11,12 +12,13 @@ def register():
 
     if User.query.filter_by(email=data['email']).first():
         return jsonify({'error': 'Utilisateur déjà existant'}), 400
+    date_naissance=datetime.strptime(data.get('date_naissance'), '%Y-%m-%d').date() if data.get('date_naissance') else None
 
     user = User(
         email=data['email'],
         name=data.get('name'),
         renom=data.get('renom'),
-        annee_naissance=data.get('annee_naissance'),
+        date_naissance=date_naissance,
         sexe=data.get('sexe'),
         poids=data.get('poids'),    
         taille=data.get('taille') 
@@ -38,7 +40,7 @@ def get_profile(user_id):
         'email': user.email,
         'name': user.name,
         'renom': user.renom,
-        'annee_naissance': user.annee_naissance,
+        'date_naissance': user.date_naissance.isoformat() if user.date_naissance else None,
         'sexe': user.sexe,
         'poids': user.poids,   
         'taille': user.taille
@@ -52,7 +54,8 @@ def update_profile(user_id):
     user.email = data.get('email', user.email)
     user.name = data.get('name', user.name)
     user.renom = data.get('renom', user.renom)
-    user.annee_naissance = data.get('annee_naissance', user.annee_naissance)
+    if data.get('date_naissance'):
+        user.date_naissance = datetime.strptime(data['date_naissance'], '%Y-%m-%d').date()
     user.sexe = data.get('sexe', user.sexe)
     user.poids = data.get('poids', user.poids)    
     user.taille = data.get('taille', user.taille) 

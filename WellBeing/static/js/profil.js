@@ -8,7 +8,7 @@ fetch(`/api/profile/${userId}`)
     document.getElementById('email').value = data.email || '';
     document.getElementById('name').value = data.name || '';
     document.getElementById('renom').value = data.renom || '';
-    document.getElementById('annee_naissance').value = data.annee_naissance || '';
+    document.getElementById('date_naissance').value = data.date_naissance || '';
     document.getElementById('sexe').value = data.sexe || '';
     document.getElementById('poids').value = data.poids || '';
     document.getElementById('taille').value = data.taille || '';
@@ -22,7 +22,7 @@ document.getElementById('profileForm').addEventListener('submit', e => {
         email: document.getElementById('email').value,
         name: document.getElementById('name').value,
         renom: document.getElementById('renom').value,
-        annee_naissance: parseInt(document.getElementById('annee_naissance').value),
+        date_naissance: document.getElementById('date_naissance').value,
         sexe: document.getElementById('sexe').value,
         poids: parseFloat(document.getElementById('poids').value),
         taille: parseFloat(document.getElementById('taille').value)

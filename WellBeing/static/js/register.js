@@ -5,7 +5,7 @@ document.getElementById('registerForm').addEventListener('submit', function(e) {
         password: document.getElementById('password').value,
         name: document.getElementById('name').value,
         renom: document.getElementById('renom').value,
-        annee_naissance: parseInt(document.getElementById('annee_naissance').value),
+        date_naissance: document.getElementById('date_naissance').value,
         sexe: document.getElementById('sexe').value,
         poids: parseFloat(document.getElementById('poids').value),
         taille: parseFloat(document.getElementById('taille').value)
