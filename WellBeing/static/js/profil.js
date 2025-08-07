@@ -42,3 +42,9 @@ document.getElementById('goToNutritionBtn').addEventListener('click', () => {
     window.location.href = '/nutrition';
 });
 
+document.getElementById('logoutBtn').addEventListener('click', () => {
+    // Appelle la route Flask qui vide la session et redirige
+    window.location.href = '/api/logout';
+});
+
+

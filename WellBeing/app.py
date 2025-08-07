@@ -5,8 +5,13 @@ from routes import user as user_routes
 from routes import menus as menu_routes
 from routes import nutrition as nutrition_routes
 from routes import recettes as recettes_routes
-#from routes import courses as courses_routes
+from routes import logout as logout_routes  # ajoute ce import
 
+# dans create_app()
+
+
+#from routes import courses as courses_routes
+from flask import session, redirect, url_for,request,flash
 def create_app():
     """Factory pattern pour créer l'application Flask"""
     app = Flask(__name__)
@@ -20,6 +25,7 @@ def create_app():
     app.register_blueprint(menu_routes.bp, url_prefix='/api')
     app.register_blueprint(nutrition_routes.bp, url_prefix='/api')
     app.register_blueprint(recettes_routes.bp, url_prefix='/api')
+    app.register_blueprint(logout_routes.bp,url_prefix='/api')  
     #app.register_blueprint(courses_routes.bp)
     
     # Routes principales
@@ -37,6 +43,7 @@ def create_app():
     
     @app.route('/profil')
     def profil():
+        print("USER ID in session:", session.get('user_id'))
         return render_template('profil.html')
         
     @app.route('/nutrition')
@@ -55,6 +62,9 @@ def create_app():
     @app.errorhandler(500)
     def internal_error(error):
         return render_template('500.html'), 500
+    
+
+   
     
     return app
 
