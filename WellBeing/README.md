@@ -149,18 +149,7 @@ curl -X POST http://127.0.0.1:5000/api/login \
 
 #Requête logout (utiliser le cookie de session obtenu)
 
- curl -X POST http://127.0.0.1:5000/api/logout \
-  -H "Content-Type: application/x-www-form-urlencoded" \
-  -b cookies.txt \
-  -d "confirm=yes"
-  
-  
-<!doctype html>
-<html lang=en>
-<title>Redirecting...</title>
-<h1>Redirecting...</h1>
-<p>You should be redirected automatically to the target URL: <a href="/">/</a>. If not, click the link.
-
+curl -b cookies.txt -L http://127.0.0.1:5000/api/logout
 
 
 

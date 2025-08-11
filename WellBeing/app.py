@@ -5,7 +5,7 @@ from routes import user as user_routes
 from routes import menus as menu_routes
 from routes import nutrition as nutrition_routes
 from routes import recettes as recettes_routes
-from routes import logout as logout_routes  # ajoute ce import
+#from routes import logout as logout_routes  # ajoute ce import
 
 # dans create_app()
 
@@ -25,7 +25,7 @@ def create_app():
     app.register_blueprint(menu_routes.bp, url_prefix='/api')
     app.register_blueprint(nutrition_routes.bp, url_prefix='/api')
     app.register_blueprint(recettes_routes.bp, url_prefix='/api')
-    app.register_blueprint(logout_routes.bp,url_prefix='/api')  
+    #app.register_blueprint(user_routes.bp,url_prefix='/api')  
     #app.register_blueprint(courses_routes.bp)
     
     # Routes principales
