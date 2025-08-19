@@ -1,10 +1,10 @@
 from flask import Flask, render_template
-from WellBeing.config import Config
-from models.user import db
-from routes import user as user_routes
-from routes import menus as menu_routes
-from routes import nutrition as nutrition_routes
-from routes import recettes as recettes_routes
+from .config import Config  # Import relatif
+from .models.user import db  # Import relatif
+from .routes import user as user_routes  # Import relatif
+from .routes import menus as menu_routes
+from .routes import nutrition as nutrition_routes
+from .routes import recettes as recettes_routes
 #from routes import logout as logout_routes  # ajoute ce import
 
 # dans create_app()
