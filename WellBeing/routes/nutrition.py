@@ -4,7 +4,7 @@ import google.generativeai as genai
 import os
 import json
 import random
-from models.user import User
+from ..models.user import User
 from datetime import datetime,date
 import re
 
