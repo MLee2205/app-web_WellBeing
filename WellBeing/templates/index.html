@@ -3,132 +3,266 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     
-    <title>WellBeing – Assistant IA de planification de repas</title>
+    <title>WellBeing – Votre assistant nutritionnel intelligent</title>
     
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
-    <style>
     
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
 </head>
 <body>
-    <!-- Particules d'arrière-plan -->
-    <div class="particles" id="particles"></div>
+    <!-- Floating Shapes Background -->
+    <div class="floating-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
+    <!-- Particles Background -->
+    <div id="particles-js"></div>
+    
+    <!-- Preloader -->
+    <div class="preloader">
+        <div class="loader">
+            <div class="loader-circle"></div>
+            <div class="loader-circle"></div>
+            <div class="loader-circle"></div>
+        </div>
+    </div>
 
     <!-- Navigation -->
     <nav id="navbar">
         <div class="nav-container">
-            <a href="/" class="logo">
-                <i class="fas fa-leaf"></i>
-                WellBeing
+            <a class="logo">
+                <img src="{{ url_for('static', filename='images/w10.jpeg') }}" alt="WellBeing Logo" class="logo-img">
+                <span class="logo-text">WellBeing</span>
             </a>
-            <ul class="nav-links">
-            <li><a href="/">Acceuil</a></li>
-                <li><a href="/menus">Menus</a></li>
-               <li><a href="/nutrition">Nutrition</a></li>
-                <li><a href="/register">S'inscrire</a></li>
-            </ul>
+           
+            
+            <div class="nav-right">
+                <ul class="nav-links">
+                    <li><a href="/" class="active">Accueil</a></li>
+                    <li><a href="/menus">Menus</a></li>
+                    <li><a href="/login">Connexion</a></li>
+                </ul>
+                
+                <div class="mobile-menu-btn">
+                    <div class="menu-line"></div>
+                    <div class="menu-line"></div>
+                    <div class="menu-line"></div>
+                </div>
+            </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
     <section class="hero">
         <div class="hero-content">
-            <h1>WellBeing</h1>
-            <p class="hero-subtitle">
-                Transformez votre alimentation avec l'intelligence artificielle. 
-                Des menus personnalisés, des recettes adaptées, une nutrition optimisée.
-            </p>
-
-           
-
-	<!-- Features Grid -->
-<div class="features animate-on-scroll">
-    <a href="/menus" class="feature-card">
-        <div class="feature-icon">
-            <i class="fas fa-brain"></i>
-        </div>
-        <h3>IA Personnalisée</h3>
-        <p>Menus équilibrés générés automatiquement selon vos préférences et allergies</p>
-    </a>
-
-    <a href="/nutrition" class="feature-card">
-        <div class="feature-icon">
-            <i class="fas fa-chart-line"></i>
-        </div>
-        <h3>Suivi Nutritionnel</h3>
-        <p>Calcul intelligent de vos apports et recommandations personnalisées</p>
-    </a>
-
-    <a href="/nutrition" class="feature-card">
-        <div class="feature-icon">
-            <i class="fas fa-utensils"></i>
-        </div>
-        <h3>Recettes Adaptées</h3>
-        <p>Instructions détaillées pour chaque plat généré par l'IA</p>
-    </a>
-
-    <a href="/nutrition" class="feature-card">
-        <div class="feature-icon">
-            <i class="fas fa-shopping-cart"></i>
-        </div>
-        <h3>Liste de Courses</h3>
-        <p>Génération automatique de vos ingrédients avec export PDF</p>
-    </a>
-</div>
-
-            <!-- CTA Buttons -->
+            <div class="hero-text">
+                <h1 class="hero-title">
+                    <span class="calligraphy">Transformez votre alimentation avec l'IA</span>
+                </h1>
+                
+                <p class="hero-subtitle">
+                    Des menus 100% personnalisés selon vos goûts, allergies et objectifs santé. 
+                    Découvrez une nouvelle façon de manger sainement avec notre assistant nutritionnel intelligent.
+                </p>
+                
+                <div class="hero-cta">
+                   
+                    <a href="#features" class="cta-btn secondary">
+                        Découvrir les fonctionnalités
+                    </a>
+                </div>
+            </div>
             
+            <div class="hero-image">
+                <div class="floating-image">
+                    <img src="https://via.placeholder.com/500x600/6366f1/ffffff?text=App+Preview" alt="Application WellBeing">
+                </div>
+            </div>
+        </div>
+        
+        <div class="scroll-indicator" onclick="document.getElementById('features').scrollIntoView({behavior: 'smooth'})">
+            <div class="mouse">
+                <div class="wheel"></div>
+            </div>
+            <span>Défiler</span>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="section-header">
+            <h2>Pourquoi choisir WellBeing ?</h2>
+            <p>Découvrez notre approche révolutionnaire de la nutrition personnalisée</p>
+        </div>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h3>IA Nutritionnelle Avancée</h3>
+                <p>Notre algorithme d'intelligence artificielle analyse vos besoins nutritionnels uniques et crée des menus parfaitement adaptés à votre profil, vos objectifs et vos préférences alimentaires.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-heartbeat"></i>
+                </div>
+                <h3>Santé & Bien-être Optimal</h3>
+                <p>Des recommandations basées sur votre profil médical, vos objectifs de santé et les dernières recherches en nutrition pour optimiser votre bien-être au quotidien.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <h3>Gain de Temps Précieux</h3>
+                <p>Fini les heures passées à planifier vos repas, chercher des recettes et faire les courses. WellBeing s'occupe de tout pour vous faire gagner un temps précieux.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-it-works">
+        <div class="section-header">
+            <h2>Comment ça marche ?</h2>
+            <p>3 étapes simples pour une alimentation parfaite</p>
+        </div>
+        
+        <div class="steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <h3>Créez votre profil nutritionnel</h3>
+                <p>Indiquez vos préférences alimentaires, restrictions, allergies et objectifs de santé pour une expérience totalement personnalisée.</p>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">2</div>
+                <h3>Analysez votre profil santé</h3>
+                <p>Calculez votre IMC, définissez vos objectifs et visualisez vos progrès grâce à nos outils d'analyse avancés.</p>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">3</div>
+                <h3>Recevez vos menus IA</h3>
+                <p>Notre intelligence artificielle génère automatiquement des plans alimentaires personnalisés avec recettes détaillées et listes de courses.</p>
+            </div>
         </div>
     </section>
 
     <!-- Stats Section -->
-    <section class="stats animate-on-scroll">
+    <section class="stats-section">
+        <div class="section-header">
+            <h2>WellBeing en chiffres</h2>
+            <p>Rejoignez notre communauté de <span class="highlight-text">plus de 15,000 utilisateurs satisfaits</span> à travers le monde</p>
+        </div>
+        
         <div class="stats-grid">
             <div class="stat-item">
-                <h3>1000+</h3>
-                <p>Recettes disponibles</p>
+                <div class="stat-circle">
+                    <h3 class="counter" data-target="2500">0</h3>
+                    <span>+</span>
+                </div>
+                <p class="stat-label">Recettes disponibles</p>
             </div>
+            
             <div class="stat-item">
-                <h3>95%</h3>
-                <p>Satisfaction utilisateur</p>
+                <div class="stat-circle">
+                    <h3 class="counter" data-target="98">0</h3>
+                    <span>%</span>
+                </div>
+                <p class="stat-label">Satisfaction utilisateur</p>
             </div>
+            
             <div class="stat-item">
-                <h3>24/7</h3>
-                <p>IA disponible</p>
+                <div class="stat-circle">
+                    <h3>24/7</h3>
+                </div>
+                <p class="stat-label">Assistance IA</p>
             </div>
-            <div class="stat-item">
-                <h3>0€</h3>
-                <p>Pour commencer</p>
-            </div>
+            
+            
+        </div>
+        
+        <div class="stats-cta">
+            <p class="community-text">
+                <i class="fas fa-users"></i> <strong class="highlight-text">15,000+</strong> personnes transforment déjà leur alimentation avec WellBeing
+            </p>
+            <a href="/login" class="cta-btn primary">
+                Rejoindre la communauté
+                <i class="fas fa-arrow-right"></i>
+            </a>
         </div>
     </section>
 
     <!-- Footer -->
     <footer>
-        <div class="social-links">
-            <a href="https://facebook.com" target="_blank" title="Facebook">
-                <i class="fab fa-facebook-f"></i>
-            </a>
-            <a href="https://wa.me/680588024" target="_blank" title="WhatsApp">
-                <i class="fab fa-whatsapp"></i>
-            </a>
-            <a href="https://linkedin.com" target="_blank" title="LinkedIn">
-                <i class="fab fa-linkedin-in"></i>
-            </a>
-            <a href="mailto:jecy.meffo@facsciences-uy1.cm" title="Email">
-                <i class="fas fa-envelope"></i>
-            </a>
+        <div class="footer-content">
+            <div class="footer-col">
+                <a class="logo">
+                    <img src="{{ url_for('static', filename='images/w10.jpeg') }}" alt="WellBeing Logo" class="logo-img">
+                    <span class="logo-text">WellBeing</span>
+                </a>
+                <p>L'avenir de la nutrition personnalisée grâce à l'intelligence artificielle. Transformez votre alimentation dès aujourd'hui.</p>
+                
+                <div class="social-links">
+                    <a href="https://facebook.com" target="_blank" title="Facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="https://wa.me/680588024" target="_blank" title="WhatsApp">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
+                    <a href="https://linkedin.com" target="_blank" title="LinkedIn">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="mailto:jecy.meffo@facsciences-uy1.cm" title="Email">
+                        <i class="fas fa-envelope"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Navigation</h4>
+                <ul>
+                    <li><a href="/"><i class="fas fa-home"></i> Accueil</a></li>
+                    <li><a href="/menus"><i class="fas fa-utensils"></i> Menus</a></li>
+                    <li><a href="/login"><i class="fas fa-sign-in-alt"></i> Connexion</a></li>
+                    
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Fonctionnalités</h4>
+                <ul>
+                    <li><a href="#"><i class="fas fa-brain"></i> IA Nutritionnelle</a></li>
+                    <li><a href="#"><i class="fas fa-chart-line"></i> Suivi Nutritionnel</a></li>
+                    <li><a href="#"><i class="fas fa-calculator"></i> Calcul IMC</a></li>
+                    <li><a href="#"><i class="fas fa-shopping-cart"></i> Liste de Courses</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Contact</h4>
+                <ul>
+                    <li><a href="mailto:jecy.meffo@facsciences-uy1.cm"><i class="fas fa-envelope"></i> jecy.meffo@facsciences-uy1.cm</a></li>
+                    <li><a href="tel:+237680588024"><i class="fas fa-phone"></i> +237 6 80 58 80 24</a></li>
+                    <li><a href="#"><i class="fas fa-map-marker-alt"></i> Yaoundé, Cameroun</a></li>
+                    <li><a href="#"><i class="fas fa-clock"></i> Support 24/7</a></li>
+                </ul>
+            </div>
         </div>
-        <p>&copy; 2025 WellBeing. Conçu  par MEFFO Lea</p>
-        <p style="margin-top: 0.5rem; opacity: 0.7;">
-            Intelligence Artificielle • Nutrition Personnalisée • Bien-être
-        </p>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2025 WellBeing. Tous droits réservés. Conçu  par MEFFO Lea</p>
+        </div>
     </footer>
 
-   
-        <script src="{{ url_for('static', filename='js/index.js') }}"></script>
-   
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
+    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
 </body>
 </html>

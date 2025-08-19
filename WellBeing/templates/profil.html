@@ -2,94 +2,168 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mon Profil - WellBeing</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/profil.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 </head>
 
 <body>
-<!-- Navigation -->
-<nav id="navbar">
-    <div class="nav-container">
-        <a href="/" class="logo">
-            <i class="fas fa-leaf"></i>
-            WellBeing
-        </a>
-        <ul class="nav-links">
-            <li><a href="/">Accueil</a></li>
-            <li><a href="/menus">Menus</a></li>
-            <li><a href="/nutrition">Nutrition</a></li>
-            <li><a href="/register">S'inscrire</a></li>
-        </ul>
-    </div>
     
-</nav>
-<main class="main-wrapper">
-    <div class="profile-container animate">
-        <h1>Mon Profil</h1>
-        <form id="profileForm">
-            <div class="input-group">
-                <i class="fas fa-envelope"></i>
-                <input type="email" id="email" placeholder="Email" required>
-            </div>
-            <div class="input-group">
-                <i class="fas fa-user"></i>
-                <input type="text" id="name" placeholder="Nom" required>
-            </div>
-            <div class="input-group">
-                <i class="fas fa-user"></i>
-                <input type="text" id="renom" placeholder="Prénom / Surnom" required>
-            </div>
-            <div class="input-group">
-                <i class="fas fa-calendar"></i>
-                <input type="date" id="date_naissance" required>
-
-            </div>
-            <div class="input-group">
-                <i class="fas fa-venus-mars"></i>
-                <select id="sexe" required>
-                    <option value="">-- Sexe --</option>
-                    <option value="Homme">Homme</option>
-                    <option value="Femme">Femme</option>
-                </select>
-            </div>
-            <div class="input-group">
-                <i class="fas fa-weight"></i>
-                <input type="number" id="poids" placeholder="Poids (kg)" min="0" required>
-            </div>
-            <div class="input-group">
-                <i class="fas fa-ruler-vertical"></i>
-                <input type="number" id="taille" placeholder="Taille (cm)" min="0" required>
-            </div>
-            <div class="btn-group">
-                <button type="submit">💾 Enregistrer</button>
-                <button type="button" id="goToNutritionBtn" class="secondary">📊 Nutrition</button>
-            </div>
-        </form>
+    <!-- Floating Shapes Background -->
+    <div class="floating-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
     </div>
-  </main>  
+ <!-- Particles Background -->
+ <div id="particles-js"></div>
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo">
+                <img src="{{ url_for('static', filename='images/w10.jpeg') }}" alt="WellBeing Logo" class="logo-img">
+                <span class="logo-text">WellBeing</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="/">Accueil</a></li>
+                <li><a href="/menus">Menus</a></li>
+                <li><a href="/login">Inscription</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="main-wrapper">
+        <div class="profile-container animate">
+            <div class="profile-header">
+                <h1><i class="fas fa-user-circle"></i> Mon Profil</h1>
+                <p>Gérez vos informations personnelles et préférences</p>
+            </div>
+            
+            <form id="profileForm" class="profile-form">
+                <div class="form-grid">
+                    <div class="input-group">
+                        <label for="email"><i class="fas fa-envelope"></i> Email</label>
+                        <input type="email" id="email" placeholder="votre@email.com" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="name"><i class="fas fa-user"></i> Nom</label>
+                        <input type="text" id="name" placeholder="Votre nom" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="renom"><i class="fas fa-user-tag"></i> Prénom / Surnom</label>
+                        <input type="text" id="renom" placeholder="Votre prénom ou surnom" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="date_naissance"><i class="fas fa-calendar"></i> Date de naissance</label>
+                        <input type="date" id="date_naissance" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="sexe"><i class="fas fa-venus-mars"></i> Sexe</label>
+                        <select id="sexe" required>
+                            <option value="">-- Sélectionnez --</option>
+                            <option value="Homme">Homme</option>
+                            <option value="Femme">Femme</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="poids"><i class="fas fa-weight"></i> Poids (kg)</label>
+                        <input type="number" id="poids" placeholder="Ex: 70" min="0" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="taille"><i class="fas fa-ruler-vertical"></i> Taille (cm)</label>
+                        <input type="number" id="taille" placeholder="Ex: 175" min="0" required>
+                    </div>
+                </div>
+                
+                <div class="btn-group">
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-save"></i> Enregistrer
+                    </button>
+                    <button type="button" id="goToNutritionBtn" class="btn-secondary">
+                        <i class="fas fa-chart-line"></i> Nutrition
+                    </button>
+                    <button type="button" id="logoutBtn" class="btn-logout">
+                        <i class="fas fa-sign-out-alt"></i> Déconnexion
+                    </button>
+                </div>
+            </form>
+            
+            
+            </div>
+        </div>
+    </main>  
+    
     <!-- Footer -->
-<footer>
-    <div class="social-links">
-        <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook-f"></i></a>
-        <a href="https://wa.me/680588024" target="_blank"><i class="fab fa-whatsapp"></i></a>
-        <a href="https://linkedin.com" target="_blank"><i class="fab fa-linkedin-in"></i></a>
-        <a href="mailto:jecy.meffo@facsciences-uy1.cm"><i class="fas fa-envelope"></i></a>
-    </div>
-     <p style="color:white">&copy; 2025 WellBeing. Conçu par MEFFO Lea</p>
-    <p style="margin-top: 0.5rem; opacity: 1;color:white">Intelligence Artificielle • Nutrition Personnalisée • Bien-être</p>
-</footer>
-    
+    <footer>
+        <div class="footer-content">
+            <div class="footer-col">
+                <a class="logo">
+                    <img src="{{ url_for('static', filename='images/w10.jpeg') }}" alt="WellBeing Logo" class="logo-img">
+                    <span class="logo-text">WellBeing</span>
+                </a>
+                <p>L'avenir de la nutrition personnalisée grâce à l'intelligence artificielle. Transformez votre alimentation dès aujourd'hui.</p>
+                
+                <div class="social-links">
+                    <a href="https://facebook.com" target="_blank" title="Facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="https://wa.me/680588024" target="_blank" title="WhatsApp">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
+                    <a href="https://linkedin.com" target="_blank" title="LinkedIn">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="mailto:jecy.meffo@facsciences-uy1.cm" title="Email">
+                        <i class="fas fa-envelope"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Navigation</h4>
+                <ul>
+                    <li><a href="/"><i class="fas fa-home"></i> Accueil</a></li>
+                    <li><a href="/menus"><i class="fas fa-utensils"></i> Menus</a></li>
+                    <li><a href="/login"><i class="fas fa-sign-in-alt"></i> Connexion</a></li>
+                    
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Fonctionnalités</h4>
+                <ul>
+                    <li><a href="#"><i class="fas fa-brain"></i> IA Nutritionnelle</a></li>
+                    <li><a href="#"><i class="fas fa-chart-line"></i> Suivi Nutritionnel</a></li>
+                    <li><a href="#"><i class="fas fa-calculator"></i> Calcul IMC</a></li>
+                    <li><a href="#"><i class="fas fa-shopping-cart"></i> Liste de Courses</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Contact</h4>
+                <ul>
+                    <li><a href="mailto:jecy.meffo@facsciences-uy1.cm"><i class="fas fa-envelope"></i> jecy.meffo@facsciences-uy1.cm</a></li>
+                    <li><a href="tel:+237680588024"><i class="fas fa-phone"></i> +237 6 80 58 80 24</a></li>
+                    <li><a href="#"><i class="fas fa-map-marker-alt"></i> Yaoundé, Cameroun</a></li>
+                    <li><a href="#"><i class="fas fa-clock"></i> Support 24/7</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2025 WellBeing. Tous droits réservés. Conçu  par MEFFO Lea</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
     <script src="{{ url_for('static', filename='js/profil.js') }}"></script>
-    
-    <script>
-  window.onload = function () {
-    const dateInput = document.getElementById('date_naissance');
-    const today = new Date().toISOString().split('T')[0];
-    dateInput.setAttribute('max', today);
-  };
-</script>
-
-</body>
+   </body>
 </html>
-

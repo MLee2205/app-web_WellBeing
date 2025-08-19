@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify,session,redirect,url_for
 from models.user import db, User
 from datetime import datetime
 
@@ -70,7 +70,15 @@ def login():
 
     user = User.query.filter_by(email=data['email']).first()
     if user and user.check_password(data['password']):
+        session['user_id'] = user.id  # <<< ici on stocke
         return jsonify({'success': True, 'message': 'Connexion réussie', 'user_id': user.id})
     else:
         return jsonify({'success': False, 'error': 'Email ou mot de passe incorrect'}), 401
+
+
+
+@bp.route('/logout', methods=['GET'])
+def logout():
+    session.pop('user_id', None)  # Supprime juste l'ID de la session
+    return redirect(url_for('home'))  # Retourne à la page d'accueil
 

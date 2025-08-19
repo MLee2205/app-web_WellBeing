@@ -95,6 +95,58 @@ def calculer_imc(poids, taille):
         "interpretation": interpret_imc(imc)
     }
 
+def calculer_age(date_naissance):
+    """Calculer l'âge de façon robuste"""
+    if not date_naissance:
+        return None
+    try:
+        # si c'est déjà un date/datetime SQLAlchemy
+        if hasattr(date_naissance, 'year'):
+            today = datetime.now().date()
+            dob = date_naissance if isinstance(date_naissance, date) else date_naissance.date()
+            age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
+            return age
+        # si c'est une chaîne ISO
+        if isinstance(date_naissance, str):
+            try:
+                dob = datetime.fromisoformat(date_naissance).date()
+                today = datetime.now().date()
+                return today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
+            except Exception:
+                return None
+    except Exception as e:
+        print(f"[WARNING] Erreur calcul âge: {e}")
+    return None
+
+def get_user_complete_data(user_id):
+    """Récupérer toutes les données utilisateur nécessaires"""
+    user_data = {
+        'poids': '',
+        'taille': '',
+        'age': 'Non renseigné',
+        'sexe': 'Non renseigné',
+        'date_naissance': None
+    }
+    
+    try:
+        user = User.query.get(user_id)
+        if user:
+            user_data['poids'] = getattr(user, 'poids', '') or ''
+            user_data['taille'] = getattr(user, 'taille', '') or ''
+            user_data['sexe'] = getattr(user, 'sexe', 'Non renseigné') or 'Non renseigné'
+            user_data['date_naissance'] = getattr(user, 'date_naissance', None)
+            
+            # Calcul de l'âge
+            age_calcule = calculer_age(user_data['date_naissance'])
+            if age_calcule:
+                user_data['age'] = age_calcule
+                
+        print(f"[INFO] Données utilisateur récupérées: {user_data}")
+        return user_data
+    except Exception as e:
+        print(f"[WARNING] Erreur récupération données utilisateur {user_id}: {e}")
+        return user_data
+
 def get_menu_fallback(categorie_imc):
     """Obtenir un menu de fallback basé sur la catégorie IMC"""
     menu_choisi = random.choice(menus_par_imc.get(categorie_imc, menus_par_imc["Poids normal"]))
@@ -120,10 +172,13 @@ def parse_ai_response(text):
 def nutrition_page():
     try:
         user_id = session.get('user_id') or request.args.get('user_id') or 1
-        user = User.query.get(user_id)
-        poids = user.poids if user and user.poids else ''
-        taille = user.taille if user and user.taille else ''
-        return render_template('nutrition.html', poids=poids, taille=taille)
+        user_data = get_user_complete_data(user_id)
+        
+        return render_template('nutrition.html', 
+                             poids=user_data['poids'], 
+                             taille=user_data['taille'],
+                             age=user_data['age'],
+                             sexe=user_data['sexe'])
     except Exception as e:
         print("[ERROR] Exception nutrition_page:", e)
         return "Erreur chargement page nutrition", 500
@@ -153,78 +208,57 @@ def nutrition_analysis():
         fasting_end = fasting.get('end', "")
         user_id = session.get('user_id') or data.get('user_id') or 1
 
-        # Récupérer l'utilisateur (peut être None)
-        user = None
-        try:
-            user = User.query.get(user_id)
-        except Exception as e:
-            print(f"[WARNING] Impossible de charger User id={user_id}: {e}")
+        # Récupérer TOUTES les données utilisateur
+        user_data = get_user_complete_data(user_id)
 
-        # Calcul IMC — accepter poids/taille envoyés comme strings numériques
+        # Calcul IMC — priorité aux valeurs envoyées, sinon celles de l'utilisateur
         def to_number(x):
             try:
                 return float(x) if x is not None else None
             except Exception:
                 return None
 
-        poids_num = to_number(poids)
-        taille_num = to_number(taille)
+        poids_num = to_number(poids) or to_number(user_data['poids'])
+        taille_num = to_number(taille) or to_number(user_data['taille'])
 
-        imc_info = None
-        if poids_num and taille_num:
-            imc_info = calculer_imc(poids_num, taille_num)
-        elif user and getattr(user, 'poids', None) and getattr(user, 'taille', None):
-            imc_info = calculer_imc(user.poids, user.taille)
-
-        if not imc_info:
+        if not poids_num or not taille_num:
             return jsonify({'error': 'Poids et taille invalides ou manquants, impossible de calculer l\'IMC'}), 400
 
+        imc_info = calculer_imc(poids_num, taille_num)
+        if not imc_info:
+            return jsonify({'error': 'Impossible de calculer l\'IMC avec les données fournies'}), 400
+
         print(f"[INFO] IMC calculé: {imc_info}")
+        print(f"[INFO] Données utilisateur complètes: {user_data}")
 
-        # Calcul âge user robuste
-        def calculer_age(date_naissance):
-            if not date_naissance:
-                return None
-            # si c'est déjà un date/datetime SQLAlchemy
-            if hasattr(date_naissance, 'year'):
-                today = datetime.now().date()
-                dob = date_naissance if isinstance(date_naissance, date) else date_naissance.date()
-                age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
-                return age
-            # si c'est une chaîne ISO
-            if isinstance(date_naissance, str):
-                try:
-                    dob = datetime.fromisoformat(date_naissance).date()
-                    today = datetime.now().date()
-                    return today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
-                except Exception:
-                    return None
-            return None
+        # Préparer prompt amélioré pour l'IA avec TOUTES les données
+        prompt = f"""Tu es un nutritionniste IA spécialisé dans l'adaptation de menus personnalisés.
 
-        user_age = None
-        if user:
-            user_age = calculer_age(getattr(user, 'date_naissance', None))
-        if user_age is None:
-            user_age = "Non renseigné"
-
-        # Préparer prompt pour l'IA (exemple)
-        prompt = f"""Tu es un nutritionniste IA.
-Profil utilisateur :
-- Sexe : {getattr(user, 'sexe', 'Non renseigné')}
-- Âge : {user_age}
+PROFIL UTILISATEUR COMPLET :
+- Sexe : {user_data['sexe']}
+- Âge : {user_data['age']} ans
 - Taille : {imc_info['taille']} cm
 - Poids : {imc_info['poids']} kg
 - IMC : {imc_info['imc']} ({imc_info['interpretation']})
 
-Préférences alimentaires : {preferences}
-Menu original choisi : {menu_original}
-Type de jeûne : {fasting_type}
-Plage horaire de jeûne : de {fasting_start} à {fasting_end}
+PRÉFÉRENCES ALIMENTAIRES : {preferences if preferences else "Aucune restriction particulière"}
 
-IMPORTANT : Réponds STRICTEMENT et UNIQUEMENT avec un JSON valide dans ce format exact :
+MENU ORIGINAL CHOISI PAR L'UTILISATEUR : {menu_original}
+
+PARAMÈTRES DE JEÛNE :
+- Type de jeûne : {fasting_type if fasting_type else "Aucun jeûne"}
+- Horaires : de {fasting_start} à {fasting_end}
+
+INSTRUCTIONS IMPORTANTES :
+1. Adapte le menu selon le profil utilisateur (âge, sexe, IMC)
+2. Respecte strictement les préférences alimentaires
+3. Si un jeûne est programmé, adapte les portions et le timing
+4. Assure-toi que les apports nutritionnels correspondent aux besoins selon l'âge et le sexe
+
+FORMAT DE RÉPONSE OBLIGATOIRE (JSON uniquement) :
 {{"menu":[{{"name":"Nom du plat", "calories":300,"protein":20,"carbs":40,"fat":10}}], "total_calories":1234}}
 
-Adapte le menu selon l'IMC et les préférences. Assure-toi que le JSON soit parfaitement formaté.
+Réponds STRICTEMENT avec ce format JSON, rien d'autre.
 """
 
         # Appel IA (avec fallback)
@@ -234,7 +268,7 @@ Adapte le menu selon l'IMC et les préférences. Assure-toi que le JSON soit par
         source_menu = "fallback"
 
         try:
-            print("[INFO] Envoi prompt à Gemini...")
+            print("[INFO] Envoi prompt personnalisé à Gemini...")
             model = genai.GenerativeModel('gemini-1.5-flash-latest')
             response = model.generate_content(prompt)
             raw_response = getattr(response, 'text', str(response)).strip()
@@ -245,6 +279,7 @@ Adapte le menu selon l'IMC et les préférences. Assure-toi que le JSON soit par
                 menu_final = parsed_response["menu"]
                 total_calories = parsed_response.get("total_calories", sum(item.get("calories", 0) for item in menu_final))
                 source_menu = "IA"
+                print("[SUCCESS] Menu généré par l'IA avec succès")
             else:
                 raise ValueError("Réponse IA invalide ou incomplète")
         except Exception as e:
@@ -253,6 +288,7 @@ Adapte le menu selon l'IMC et les préférences. Assure-toi que le JSON soit par
             raw_response = f"Erreur IA ({str(e)}), menu de fallback utilisé"
             source_menu = "fallback"
 
+        # Historique IMC simulé (à remplacer par vraies données)
         historique_imc = [
             {"date": "2025-06-01", "imc": 21.5},
             {"date": "2025-06-15", "imc": 22.0},
@@ -261,6 +297,7 @@ Adapte le menu selon l'IMC et les préférences. Assure-toi que le JSON soit par
 
         return jsonify({
             "imc_info": imc_info,
+            "user_data": user_data,  # Inclure les données utilisateur dans la réponse
             "imc_history": historique_imc,
             "nutrition": menu_final,
             "total_calories": total_calories,
@@ -274,4 +311,3 @@ Adapte le menu selon l'IMC et les préférences. Assure-toi que le JSON soit par
         print(f"[ERROR] Exception générale: {e}", flush=True)
         traceback.print_exc()
         return jsonify({'error': str(e)}), 500
-

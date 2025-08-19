@@ -7,23 +7,28 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 
 </head>
 
 
 <body>
+    <!-- Ajoutez ceci juste après l'ouverture du body -->
+<div id="particles-js"></div>
+<div class="wave"></div>
+<div class="wave"></div>
 <!-- Navigation -->
 <nav id="navbar">
     <div class="nav-container">
-        <a href="/" class="logo">
-            <i class="fas fa-leaf"></i>
+        <a  class="logo">
+            <img src="{{ url_for('static', filename='images/w10.jpeg') }}" alt="WellBeing Logo" class="logo-img">
             WellBeing
         </a>
         <ul class="nav-links">
             <li><a href="/">Accueil</a></li>
             <li><a href="/menus">Menus</a></li>
-            <li><a href="/nutrition">Nutrition</a></li>
-            <li><a href="/register">S'inscrire</a></li>
+           <!-- <li><a href="/nutrition">Nutrition</a></li> -->
+                <li><a href="/login">Inscription</a></li>
         </ul>
     </div>
     
@@ -70,7 +75,7 @@
                 <input type="number" id="taille" placeholder="Taille (cm)" min="0" required>
             </div>
             <button type="summit" id="btn-register">S'inscrire</button>
-            <button type="button" id="btn-login">Se connecter</button>
+            <!--<button type="button" id="btn-login">Se connecter</button>-->
 
 
 
@@ -78,17 +83,69 @@
     </div>
    </main>
     <!-- Footer -->
-<footer>
-    <div class="social-links">
-        <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook-f"></i></a>
-        <a href="https://wa.me/680588024" target="_blank"><i class="fab fa-whatsapp"></i></a>
-        <a href="https://linkedin.com" target="_blank"><i class="fab fa-linkedin-in"></i></a>
-        <a href="mailto:jecy.meffo@facsciences-uy1.cm"><i class="fas fa-envelope"></i></a>
-    </div>
-     <p style="color:white">&copy; 2025 WellBeing. Conçu par MEFFO Lea</p>
-    <p style="margin-top: 0.5rem; opacity: 1;color:white">Intelligence Artificielle • Nutrition Personnalisée • Bien-être</p>
-</footer>
-    
+    <footer>
+        <div class="footer-content">
+            <div class="footer-col">
+                <a class="logo">
+                    <img src="{{ url_for('static', filename='images/w10.jpeg') }}" alt="WellBeing Logo" class="logo-img">
+                    <span class="logo-text">WellBeing</span>
+                </a>
+                <p>L'avenir de la nutrition personnalisée grâce à l'intelligence artificielle. Transformez votre alimentation dès aujourd'hui.</p>
+                
+                <div class="social-links">
+                    <a href="https://facebook.com" target="_blank" title="Facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="https://wa.me/680588024" target="_blank" title="WhatsApp">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
+                    <a href="https://linkedin.com" target="_blank" title="LinkedIn">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="mailto:jecy.meffo@facsciences-uy1.cm" title="Email">
+                        <i class="fas fa-envelope"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Navigation</h4>
+                <ul>
+                    <li><a href="/"><i class="fas fa-home"></i> Accueil</a></li>
+                    <li><a href="/menus"><i class="fas fa-utensils"></i> Menus</a></li>
+                    <li><a href="/login"><i class="fas fa-sign-in-alt"></i> Connexion</a></li>
+                    
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Fonctionnalités</h4>
+                <ul>
+                    <li><a href="#"><i class="fas fa-brain"></i> IA Nutritionnelle</a></li>
+                    <li><a href="#"><i class="fas fa-chart-line"></i> Suivi Nutritionnel</a></li>
+                    <li><a href="#"><i class="fas fa-calculator"></i> Calcul IMC</a></li>
+                    <li><a href="#"><i class="fas fa-shopping-cart"></i> Liste de Courses</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Contact</h4>
+                <ul>
+                    <li><a href="mailto:jecy.meffo@facsciences-uy1.cm"><i class="fas fa-envelope"></i> jecy.meffo@facsciences-uy1.cm</a></li>
+                    <li><a href="tel:+237680588024"><i class="fas fa-phone"></i> +237 6 80 58 80 24</a></li>
+                    <li><a href="#"><i class="fas fa-map-marker-alt"></i> Yaoundé, Cameroun</a></li>
+                    <li><a href="#"><i class="fas fa-clock"></i> Support 24/7</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2025 WellBeing. Tous droits réservés. Conçu  par MEFFO Lea</p>
+        </div>
+    </footer>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
     <script src="{{ url_for('static', filename='js/register.js') }}"></script>
     
     <script>
