@@ -12,6 +12,9 @@ from .routes import recettes as recettes_routes
 
 #from routes import courses as courses_routes
 from flask import session, redirect, url_for,request,flash
+
+
+
 def create_app():
     """Factory pattern pour créer l'application Flask"""
     app = Flask(__name__)
@@ -19,7 +22,23 @@ def create_app():
     
     # Configuration de la base de données
     db.init_app(app)
-    
+    with app.app_context():
+        try:
+            # Test de connexion à Railway
+            result = db.engine.execute("SELECT version()")
+            version = result.fetchone()[0]
+            print(f"✅ Connexion Railway OK: {version}")
+            
+            db.create_all()
+            print("✅ Tables créées avec succès!")
+            
+            # Liste des tables
+            tables = db.engine.execute("SELECT tablename FROM pg_tables WHERE schemaname='public'")
+            table_list = [table[0] for table in tables]
+            print(f"📋 Tables Railway: {table_list}")
+        
+        except Exception as e:
+            print(f"❌ Erreur Railway: {e}")
     # Enregistrement des blueprints
     app.register_blueprint(user_routes.bp, url_prefix='/api')
     app.register_blueprint(menu_routes.bp, url_prefix='/api')
@@ -68,7 +87,8 @@ def create_app():
     def internal_error(error):
         return render_template('500.html'), 500
     
-
+    
+    
    
     
     return app
