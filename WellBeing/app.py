@@ -1,5 +1,5 @@
 from flask import Flask, render_template
-from config import Config
+from WellBeing.config import Config
 from models.user import db
 from routes import user as user_routes
 from routes import menus as menu_routes
