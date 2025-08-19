@@ -6,32 +6,42 @@ bp = Blueprint('user', __name__)
 
 @bp.route('/register', methods=['POST'])
 def register():
-    data = request.json
-    if not data.get('email') or not data.get('password'):
-        return jsonify({'error': 'Email et mot de passe requis'}), 400
-
-    if User.query.filter_by(email=data['email']).first():
-        return jsonify({'error': 'Utilisateur déjà existant'}), 400
-    date_naissance=datetime.strptime(data.get('date_naissance'), '%Y-%m-%d').date() if data.get('date_naissance') else None
-
-    user = User(
-        email=data['email'],
-        name=data.get('name'),
-        renom=data.get('renom'),
-        date_naissance=date_naissance,
-        sexe=data.get('sexe'),
-        poids=data.get('poids'),    
-        taille=data.get('taille') 
+    try:
+        data = request.json
         
-    )
-    user.set_password(data['password'])
-    #db.session.add(user)
-    #db.session.commit()
-    #return jsonify({'message': 'Utilisateur créé avec succès'}), 201
-    db.session.add(user)
-    db.session.commit()
-    return jsonify({'message': 'Utilisateur créé avec succès', 'user_id': user.id}), 201
-
+        if not data.get('email') or not data.get('password'):
+            return jsonify({'error': 'Email et mot de passe requis'}), 400
+        
+        # Vérification si l'utilisateur existe déjà
+        existing_user = User.query.filter_by(email=data['email']).first()
+        if existing_user:
+            return jsonify({'error': 'Cet email est déjà utilisé'}), 400
+        
+        date_naissance = datetime.strptime(data.get('date_naissance'), '%Y-%m-%d').date() if data.get('date_naissance') else None
+        
+        user = User(
+            email=data['email'],
+            name=data.get('name'),
+            renom=data.get('renom'),
+            date_naissance=date_naissance,
+            sexe=data.get('sexe'),
+            poids=data.get('poids'),
+            taille=data.get('taille')
+        )
+        user.set_password(data['password'])
+        
+        db.session.add(user)
+        db.session.commit()
+        
+        return jsonify({
+            'message': 'Utilisateur créé avec succès', 
+            'user_id': user.id
+        }), 201
+        
+    except Exception as e:
+        db.session.rollback()
+        print(f"❌ Erreur inscription: {e}")
+        return jsonify({'error': 'Erreur lors de l\'inscription'}), 500
 
 @bp.route('/profile/<int:user_id>', methods=['GET'])
 def get_profile(user_id):
