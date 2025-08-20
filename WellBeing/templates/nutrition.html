@@ -8,22 +8,11 @@
   <meta charset="UTF-8" />
   <title>Analyse nutritionnelle - WellBeing</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-    
   <link rel="stylesheet" href="{{ url_for('static', filename='css/nutrition.css') }}">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   
 </head>
 <body data-poids="" data-taille="">
-  <!-- Floating Shapes Background -->
-  <div class="floating-shapes">
-    <div class="shape"></div>
-    <div class="shape"></div>
-    <div class="shape"></div>
-</div>
-
-<!-- Particles Background -->
-<div id="particles-js"></div>
   <!-- Floating background icons -->
   <div class="floating-icon"><i class="fas fa-apple-alt"></i></div>
   <div class="floating-icon"><i class="fas fa-carrot"></i></div>
@@ -49,7 +38,7 @@
 
   <main class="main-wrapper">
     <div class="nutrition-container">
-      <h1 class="calligraphy"><i class="fas fa-apple-alt "></i> Analyse nutritionnelle et adaptation</h1>
+      <h1><i class="fas fa-apple-alt"></i> Analyse nutritionnelle et adaptation</h1>
 
       <!-- Preferences Section -->
       <div class="section">
@@ -235,7 +224,7 @@
 </footer>
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
+    
   <script src="{{ url_for('static', filename='js/nutrition.js') }}"></script>
 </body>
 </html>
