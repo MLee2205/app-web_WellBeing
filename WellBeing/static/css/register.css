@@ -191,10 +191,11 @@ nav.scrolled {
     background-clip: text;
 }
 
+
 .nav-links {
-    list-style: none;
     display: flex;
-    gap: 1.5rem;
+    gap: 2.5rem;
+    list-style: none;
 }
 
 .nav-links a {
@@ -219,14 +220,24 @@ nav.scrolled {
     transition: left 0.6s;
 }
 
-.nav-links a:hover::before,
-.nav-links a.active::before {
-    width: 100%;
+.nav-links a:hover::before {
+    left: 100%;
 }
+
+.nav-links a:hover,
+.nav-links a.active {
+    background: var(--glass-bg);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+}
+
+
 
 .nav-links a:hover {
     color: var(--primary);
 }
+
 
 .mobile-menu-btn {
     display: none;

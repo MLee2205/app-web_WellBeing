@@ -28,21 +28,28 @@
     <!-- Ajoutez ceci juste après l'ouverture du body -->
 
 <div class="wave"></div>
-<div class="wave"></div>
 <!-- Navigation -->
 <nav id="navbar">
     <div class="nav-container">
-        <a  class="logo">
+        <a class="logo">
             <img src="{{ url_for('static', filename='images/w10.jpeg') }}" alt="WellBeing Logo" class="logo-img">
-            WellBeing
+            <span class="logo-text">WellBeing</span>
         </a>
+        
         <ul class="nav-links">
             <li><a href="/">Accueil</a></li>
             <li><a href="/menus">Menus</a></li>
-           <!-- <li><a href="/nutrition">Nutrition</a></li> -->
-                <li><a href="/login">Inscription</a></li>
+            <li><a href="/login">Inscription</a></li>
         </ul>
+        
+        <!-- AJOUTEZ CE BOUTON MENU MOBILE -->
+        <div class="mobile-menu-btn">
+            <div class="menu-line"></div>
+            <div class="menu-line"></div>
+            <div class="menu-line"></div>
+        </div>
     </div>
+</nav>
     
 </nav>
 <main class="main-wrapper">
