@@ -103,8 +103,7 @@ body {
     z-index: -1;
 }
 
-
-/* Navigation */
+/* Navigation - Version corrigée identique à index.css */
 nav {
     position: fixed;
     top: 0;
@@ -115,6 +114,13 @@ nav {
     border-bottom: 1px solid var(--glass-border);
     z-index: 1000;
     transition: var(--transition);
+}
+
+nav.scrolled {
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(40px);
+    padding: 1rem 5%;
+    box-shadow: var(--shadow-glow);
 }
 
 .nav-container {
@@ -151,6 +157,12 @@ nav {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
 }
 
 .nav-links {
@@ -193,12 +205,6 @@ nav {
     box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
 }
 
-
-
-.nav-links a:hover {
-    color: var(--primary);
-}
-
 .mobile-menu-btn {
     display: none;
     flex-direction: column;
@@ -217,16 +223,90 @@ nav {
     transition: var(--transition);
 }
 
-/* Main Wrapper */
+/* Responsive Design - Navigation Mobile */
+@media (max-width: 768px) {
+    .mobile-menu-btn {
+        display: flex;
+    }
+    
+    .nav-links {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 80%;
+        max-width: 300px;
+        height: 100vh;
+        background: rgba(15, 15, 35, 0.95);
+        backdrop-filter: blur(30px);
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2rem;
+        box-shadow: -10px 0 30px rgba(0, 0, 0, 0.3);
+        transition: var(--transition);
+    }
+    
+    .nav-links.active {
+        right: 0;
+    }
+    
+    .nav-links a {
+        font-size: 1.1rem;
+        padding: 1rem 2rem;
+    }
+}
+
+/* Formulaire - Ajustement du padding-top pour compenser la navbar */
 .main-wrapper {
     flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 8rem 5% 4rem;
+    padding: 120px 2rem 4rem; /* Augmenté de 100px à 120px */
     position: relative;
     z-index: 1;
 }
+
+/* Responsive - Mobile adjustments */
+@media (max-width: 768px) {
+    .main-wrapper {
+        padding: 100px 2rem 4rem;
+    }
+    
+    .form-container {
+        padding: 2.5rem 2rem;
+        max-width: 90%;
+    }
+    
+    .form-container h1 {
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-wrapper {
+        padding: 90px 1.5rem 4rem;
+    }
+    
+    .form-container {
+        padding: 2rem 1.5rem;
+        max-width: 95%;
+    }
+    
+    .form-container h1 {
+        font-size: 1.6rem;
+    }
+    
+    .input-group {
+        padding: 0.8rem 1.2rem;
+    }
+    
+    button {
+        padding: 1rem;
+    }
+}
+
+
 
 /* Profile Container */
 .profile-container {
