@@ -91,15 +91,24 @@ function calculerEtAfficherIMC() {
     const imc = poids / ((taille/100) ** 2);
     let interpretation = "";
     
-    if (imc < 18.5) {
-      interpretation = "Insuffisance pondérale";
-    } else if (imc < 25) {
-      interpretation = "Poids normal";
-    } else if (imc < 30) {
-      interpretation = "Surpoids";
-    } else {
-      interpretation = "Obésité";
-    }
+    
+      if (imc < 16) {
+    interpretation = "Anorexie ou dénutrition";
+  } else if (imc < 16.5) {
+    interpretation = "Maigreur";
+  } else if (imc < 18.5) {
+    interpretation = "Maigreur";
+  } else if (imc < 25) {
+    interpretation = "Corpulence normale";
+  } else if (imc < 30) {
+    interpretation = "Surpoids";
+  } else if (imc < 35) {
+    interpretation = "Obésité modérée (Classe 1)";
+  } else if (imc < 40) {
+    interpretation = "Obésité élevé (Classe 2)";
+  } else {
+    interpretation = "Obésité morbide ou massive";
+  }
     
     document.getElementById('imcResult').innerHTML = `
       <strong>Votre IMC :</strong> ${imc.toFixed(2)} (${interpretation})

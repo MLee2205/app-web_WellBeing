@@ -72,15 +72,23 @@ menus_par_imc = {
 }
 
 def interpret_imc(imc):
-    """Interpréter l'IMC - Fonction indépendante de l'IA"""
-    if imc < 18.5:
-        return "Insuffisance pondérale"
+    """Interpréter l'IMC selon la classification complète de l'OMS"""
+    if imc < 16:
+        return "Anorexie ou dénutrition"
+    elif imc < 16.5:
+        return "Maigreur"
+    elif imc < 18.5:
+        return "Maigreur"  # Entre 16.5 et 18.5
     elif imc < 25:
-        return "Poids normal"
+        return "Corpulence normale"
     elif imc < 30:
         return "Surpoids"
-    else:
-        return "Obésité"
+    elif imc < 35:
+        return "Obésité modérée (Classe 1)"
+    elif imc < 40:
+        return "Obésité élevé (Classe 2)"
+    else:  # imc >= 40
+        return "Obésité morbide ou massive"
 
 def calculer_imc(poids, taille):
     """Calculer l'IMC - Fonction pure indépendante de l'IA"""
