@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- ✅ pour le responsive -->
     <title>Inscription - WellBeing</title>
-   
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+   <link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
    
 
 </head>
@@ -27,7 +27,7 @@
     
     <!-- Ajoutez ceci juste après l'ouverture du body -->
 
-<div class="wave"></div>
+<!--<div class="wave"></div> -->
 <!-- Navigation -->
 <nav id="navbar">
     <div class="nav-container">
@@ -36,20 +36,22 @@
             <span class="logo-text">WellBeing</span>
         </a>
         
-        <ul class="nav-links">
-            <li><a href="/">Accueil</a></li>
-            <li><a href="/menus">Menus</a></li>
-            <li><a href="/login">Inscription</a></li>
-        </ul>
-        
-        <!-- AJOUTEZ CE BOUTON MENU MOBILE -->
-        <div class="mobile-menu-btn">
-            <div class="menu-line"></div>
-            <div class="menu-line"></div>
-            <div class="menu-line"></div>
+        <div class="nav-right">
+            <ul class="nav-links">
+                <li><a href="/">Accueil</a></li>
+                <li><a href="/menus">Menus</a></li>
+               
+                <li><a href="/login">Inscription</a></li>
+            </ul>
+            
+            <div class="mobile-menu-btn">
+                <div class="menu-line"></div>
+                <div class="menu-line"></div>
+                <div class="menu-line"></div>
+            </div>
         </div>
     </div>
-</nav>
+
     
 </nav>
 <main class="main-wrapper">
