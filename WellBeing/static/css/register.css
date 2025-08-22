@@ -129,8 +129,7 @@ body {
         transform: translateY(-80px) rotate(270deg) scale(1.1);
     }
 }
-
-/* Navbar */
+/* Navigation - Version corrigée identique à index.css */
 nav {
     position: fixed;
     top: 0;
@@ -158,16 +157,11 @@ nav.scrolled {
     align-items: center;
 }
 
-
 .logo {
-    color: white;
-    font-weight: 800;
-    font-size: 1.8rem;
-    text-decoration: none;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    letter-spacing: 1px;
+    gap: 0.75rem;
+    text-decoration: none;
     transition: var(--transition);
 }
 
@@ -191,6 +185,11 @@ nav.scrolled {
     background-clip: text;
 }
 
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
 
 .nav-links {
     display: flex;
@@ -232,13 +231,6 @@ nav.scrolled {
     box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
 }
 
-
-
-.nav-links a:hover {
-    color: var(--primary);
-}
-
-
 .mobile-menu-btn {
     display: none;
     flex-direction: column;
@@ -256,6 +248,90 @@ nav.scrolled {
     border-radius: 3px;
     transition: var(--transition);
 }
+
+/* Responsive Design - Navigation Mobile */
+@media (max-width: 768px) {
+    .mobile-menu-btn {
+        display: flex;
+    }
+    
+    .nav-links {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 80%;
+        max-width: 300px;
+        height: 100vh;
+        background: rgba(15, 15, 35, 0.95);
+        backdrop-filter: blur(30px);
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2rem;
+        box-shadow: -10px 0 30px rgba(0, 0, 0, 0.3);
+        transition: var(--transition);
+    }
+    
+    .nav-links.active {
+        right: 0;
+    }
+    
+    .nav-links a {
+        font-size: 1.1rem;
+        padding: 1rem 2rem;
+    }
+}
+
+/* Formulaire - Ajustement du padding-top pour compenser la navbar */
+.main-wrapper {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 120px 2rem 4rem; /* Augmenté de 100px à 120px */
+    position: relative;
+    z-index: 1;
+}
+
+/* Responsive - Mobile adjustments */
+@media (max-width: 768px) {
+    .main-wrapper {
+        padding: 100px 2rem 4rem;
+    }
+    
+    .form-container {
+        padding: 2.5rem 2rem;
+        max-width: 90%;
+    }
+    
+    .form-container h1 {
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-wrapper {
+        padding: 90px 1.5rem 4rem;
+    }
+    
+    .form-container {
+        padding: 2rem 1.5rem;
+        max-width: 95%;
+    }
+    
+    .form-container h1 {
+        font-size: 1.6rem;
+    }
+    
+    .input-group {
+        padding: 0.8rem 1.2rem;
+    }
+    
+    button {
+        padding: 1rem;
+    }
+}
+
 
 .calligraphy {
     font-family: 'Playfair Display', serif;
@@ -277,16 +353,7 @@ nav.scrolled {
     50% { background-position: 100% 50%; }
 }
 
-/* Main wrapper */
-.main-wrapper {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 120px 2rem 4rem;
-    position: relative;
-    z-index: 1;
-}
+
 
 /* Formulaire */
 .form-container {

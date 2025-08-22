@@ -51,16 +51,21 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Mobile menu toggle
+    // Mobile menu toggle - Version corrigée
     const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
     const navLinks = document.querySelector('.nav-links');
     const menuLines = document.querySelectorAll('.menu-line');
     let isMenuOpen = false;
 
-    if (mobileMenuBtn) {
-        mobileMenuBtn.addEventListener('click', function() {
+    if (mobileMenuBtn && navLinks) {
+        mobileMenuBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
             isMenuOpen = !isMenuOpen;
             navLinks.classList.toggle('active');
             
+            // Animation des lignes du menu hamburger
             if (isMenuOpen) {
                 menuLines[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
                 menuLines[1].style.opacity = '0';
@@ -72,9 +77,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             }
         });
-        // Close mobile menu when clicking on a link
-        navLinks.addEventListener('click', function() {
-            if (isMenuOpen) {
+
+        // Fermer le menu en cliquant sur un lien
+        const navLinkItems = document.querySelectorAll('.nav-links a');
+        navLinkItems.forEach(link => {
+            link.addEventListener('click', function() {
+                if (isMenuOpen) {
+                    isMenuOpen = false;
+                    navLinks.classList.remove('active');
+                    menuLines.forEach(line => {
+                        line.style.transform = '';
+                        line.style.opacity = '';
+                    });
+                }
+            });
+        });
+
+        // Fermer le menu en cliquant à côté
+        document.addEventListener('click', function(e) {
+            if (isMenuOpen && !navLinks.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
                 isMenuOpen = false;
                 navLinks.classList.remove('active');
                 menuLines.forEach(line => {
@@ -84,8 +105,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-
-   });
+});
 
 
 
