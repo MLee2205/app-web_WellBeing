@@ -1,5 +1,6 @@
-from flask import Blueprint, request, jsonify, session, redirect, url_for
-from models.user import db, User
+
+from flask import Blueprint, request, jsonify,session,redirect,url_for
+from ..models.user import db, User
 from functools import wraps
 from datetime import datetime
 
