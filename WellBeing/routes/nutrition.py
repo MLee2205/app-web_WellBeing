@@ -4,7 +4,7 @@ import google.generativeai as genai
 import os
 import json
 import random
-from ..models.user import User
+from models.user import User
 from datetime import datetime,date
 import re
 
@@ -12,64 +12,102 @@ bp = Blueprint('nutrition', __name__)
 genai.configure(api_key=os.environ.get('GEMINI_API_KEY'))
 
 # Menus prédéfinis par IMC
+# Menus prédéfinis par IMC - Structure complète avec tous les repas
 menus_par_imc = {
-    "Insuffisance pondérale": [
-        [
+    "Insuffisance pondérale": {
+        "petit_dejeuner": [
+            {"name": "Pain complet au beurre", "calories": 250, "protein": 8, "carbs": 35, "fat": 10},
+            {"name": "Lait chocolaté", "calories": 200, "protein": 8, "carbs": 28, "fat": 6}
+        ],
+        "dejeuner": [
             {"name": "Poulet DG", "calories": 500, "protein": 35, "carbs": 50, "fat": 20},
-            {"name": "Riz sauté aux légumes", "calories": 450, "protein": 15, "carbs": 65, "fat": 12},
-            {"name": "Avocat et toasts", "calories": 350, "protein": 10, "carbs": 40, "fat": 18},
-            {"name": "Smoothie banane lait d'amande", "calories": 300, "protein": 8, "carbs": 50, "fat": 6}
+            {"name": "Riz sauté aux légumes", "calories": 450, "protein": 15, "carbs": 65, "fat": 12}
         ],
-        [
+        "gouter": [
+            {"name": "Avocat et toasts", "calories": 350, "protein": 10, "carbs": 40, "fat": 18}
+        ],
+        "diner": [
             {"name": "Spaghetti bolognaise", "calories": 550, "protein": 30, "carbs": 70, "fat": 18},
-            {"name": "Salade César", "calories": 400, "protein": 25, "carbs": 20, "fat": 15},
-            {"name": "Yaourt aux fruits", "calories": 150, "protein": 6, "carbs": 20, "fat": 4},
-            {"name": "Pain complet et fromage", "calories": 300, "protein": 15, "carbs": 40, "fat": 12}
+            {"name": "Salade César", "calories": 400, "protein": 25, "carbs": 20, "fat": 15}
+        ],
+        "collation": [
+            {"name": "Smoothie banane lait d'amande", "calories": 300, "protein": 8, "carbs": 50, "fat": 6},
+            {"name": "Yaourt aux fruits", "calories": 150, "protein": 6, "carbs": 20, "fat": 4}
         ]
-    ],
-    "Poids normal": [
-        [
+    },
+    "Poids normal": {
+        "petit_dejeuner": [
+            {"name": "Pain complet confiture", "calories": 200, "protein": 6, "carbs": 40, "fat": 4},
+            {"name": "Café au lait", "calories": 100, "protein": 4, "carbs": 8, "fat": 4}
+        ],
+        "dejeuner": [
             {"name": "Poisson braisé", "calories": 400, "protein": 35, "carbs": 10, "fat": 15},
-            {"name": "Salade composée", "calories": 250, "protein": 10, "carbs": 20, "fat": 10},
-            {"name": "Spaghetti sauce tomate", "calories": 450, "protein": 20, "carbs": 65, "fat": 10},
+            {"name": "Riz complet", "calories": 200, "protein": 5, "carbs": 45, "fat": 2}
+        ],
+        "gouter": [
             {"name": "Fruit frais", "calories": 80, "protein": 1, "carbs": 18, "fat": 0}
         ],
-        [
+        "diner": [
             {"name": "Poulet grillé", "calories": 350, "protein": 40, "carbs": 5, "fat": 12},
-            {"name": "Riz complet", "calories": 200, "protein": 5, "carbs": 45, "fat": 2},
-            {"name": "Brocolis vapeur", "calories": 50, "protein": 3, "carbs": 10, "fat": 0},
-            {"name": "Pomme sauté", "calories": 80, "protein": 0, "carbs": 20, "fat": 0}
+            {"name": "Brocolis vapeur", "calories": 50, "protein": 3, "carbs": 10, "fat": 0}
+        ],
+        "collation": [
+            {"name": "Pomme sautée", "calories": 80, "protein": 0, "carbs": 20, "fat": 0}
         ]
-    ],
-    "Surpoids": [
-        [
+    },
+    "Surpoids": {
+        "petit_dejeuner": [
+            {"name": "Pain complet léger", "calories": 150, "protein": 5, "carbs": 25, "fat": 3},
+            {"name": "Thé vert", "calories": 5, "protein": 0, "carbs": 1, "fat": 0}
+        ],
+        "dejeuner": [
             {"name": "Filet de poulet grillé", "calories": 300, "protein": 40, "carbs": 0, "fat": 10},
-            {"name": "Salade verte", "calories": 150, "protein": 5, "carbs": 10, "fat": 7},
-            {"name": "Riz complet (petite portion)", "calories": 150, "protein": 4, "carbs": 30, "fat": 2},
+            {"name": "Salade verte", "calories": 150, "protein": 5, "carbs": 10, "fat": 7}
+        ],
+        "gouter": [
             {"name": "Fruit frais", "calories": 80, "protein": 1, "carbs": 18, "fat": 0}
         ],
-        [
+        "diner": [
             {"name": "Poisson vapeur", "calories": 250, "protein": 35, "carbs": 0, "fat": 8},
-            {"name": "Légumes grillés", "calories": 100, "protein": 3, "carbs": 15, "fat": 4},
-            {"name": "Quinoa (petite portion)", "calories": 180, "protein": 6, "carbs": 30, "fat": 3},
+            {"name": "Légumes grillés", "calories": 100, "protein": 3, "carbs": 15, "fat": 4}
+        ],
+        "collation": [
             {"name": "Yaourt nature", "calories": 80, "protein": 6, "carbs": 10, "fat": 2}
         ]
-    ],
-    "Obésité": [
-        [
-            {"name": "Poisson vapeur", "calories": 250, "protein": 35, "carbs": 0, "fat": 8},
-            {"name": "Salade verte sans sauce grasse", "calories": 100, "protein": 3, "carbs": 10, "fat": 4},
-            {"name": "Légumes vapeur", "calories": 80, "protein": 3, "carbs": 10, "fat": 2},
-            {"name": "Fruit frais", "calories": 80, "protein": 1, "carbs": 18, "fat": 0}
+    },
+    "Obésité": {
+        "petit_dejeuner": [
+            {"name": "Pain complet (1 tranche)", "calories": 100, "protein": 4, "carbs": 18, "fat": 2},
+            {"name": "Thé sans sucre", "calories": 2, "protein": 0, "carbs": 0, "fat": 0}
         ],
-        [
-            {"name": "Blanc de dinde grillé", "calories": 200, "protein": 35, "carbs": 0, "fat": 6},
-            {"name": "Brocolis vapeur", "calories": 50, "protein": 3, "carbs": 10, "fat": 0},
-            {"name": "Carottes râpées", "calories": 80, "protein": 2, "carbs": 15, "fat": 1},
+        "dejeuner": [
+            {"name": "Poisson vapeur", "calories": 250, "protein": 35, "carbs": 0, "fat": 8},
+            {"name": "Salade verte sans sauce grasse", "calories": 100, "protein": 3, "carbs": 10, "fat": 4}
+        ],
+        "gouter": [
             {"name": "Pomme", "calories": 80, "protein": 0, "carbs": 20, "fat": 0}
+        ],
+        "diner": [
+            {"name": "Blanc de dinde grillé", "calories": 200, "protein": 35, "carbs": 0, "fat": 6},
+            {"name": "Brocolis vapeur", "calories": 50, "protein": 3, "carbs": 10, "fat": 0}
+        ],
+        "collation": [
+            {"name": "Carottes râpées", "calories": 80, "protein": 2, "carbs": 15, "fat": 1}
         ]
-    ]
+    }
 }
+
+# Mapping pour les catégories d'IMC
+IMC_CATEGORY_MAPPING = {
+    "Anorexie ou dénutrition": "Insuffisance pondérale",
+    "Maigreur": "Insuffisance pondérale", 
+    "Corpulence normale": "Poids normal",
+    "Surpoids": "Surpoids",
+    "Obésité modérée (Classe 1)": "Obésité",
+    "Obésité élevé (Classe 2)": "Obésité",
+    "Obésité morbide ou massive": "Obésité"
+}
+
 
 def interpret_imc(imc):
     """Interpréter l'IMC selon la classification complète de l'OMS"""
@@ -156,10 +194,22 @@ def get_user_complete_data(user_id):
         return user_data
 
 def get_menu_fallback(categorie_imc):
-    """Obtenir un menu de fallback basé sur la catégorie IMC"""
-    menu_choisi = random.choice(menus_par_imc.get(categorie_imc, menus_par_imc["Poids normal"]))
-    total_calories = sum(item["calories"] for item in menu_choisi)
-    return menu_choisi, total_calories
+    """Obtenir un menu de fallback structuré basé sur la catégorie IMC"""
+    
+    # Mapper la catégorie IMC détaillée vers les catégories de menus
+    categorie_menu = IMC_CATEGORY_MAPPING.get(categorie_imc, "Poids normal")
+    
+    # Récupérer le menu pour cette catégorie
+    menu_structure = menus_par_imc.get(categorie_menu, menus_par_imc["Poids normal"])
+    
+    # Calculer le total des calories
+    total_calories = 0
+    for repas_items in menu_structure.values():
+        total_calories += sum(item["calories"] for item in repas_items)
+    
+    print(f"[INFO] Menu fallback généré pour {categorie_imc} -> {categorie_menu}, Total: {total_calories} kcal")
+    
+    return menu_structure, total_calories
 
 def parse_ai_response(text):
     """Parser la réponse de l'IA pour extraire le JSON"""
@@ -264,7 +314,16 @@ INSTRUCTIONS IMPORTANTES :
 4. Assure-toi que les apports nutritionnels correspondent aux besoins selon l'âge et le sexe
 
 FORMAT DE RÉPONSE OBLIGATOIRE (JSON uniquement) :
-{{"menu":[{{"name":"Nom du plat", "calories":300,"protein":20,"carbs":40,"fat":10}}], "total_calories":1234}}
+{{
+  "petit_dejeuner": [{{"name":"Plat", "calories":X,"protein":Y,"carbs":Z,"fat":W}}],
+  "dejeuner": [{{"name":"Plat", "calories":X,"protein":Y,"carbs":Z,"fat":W}}],
+  "gouter": [{{"name":"Plat", "calories":X,"protein":Y,"carbs":Z,"fat":W}}],
+  "diner": [{{"name":"Plat", "calories":X,"protein":Y,"carbs":Z,"fat":W}}],
+  "collation": [{{"name":"Plat", "calories":X,"protein":Y,"carbs":Z,"fat":W}}],
+  "total_calories": 2000
+}}
+
+
 
 Réponds STRICTEMENT avec ce format JSON, rien d'autre.
 """
@@ -283,13 +342,20 @@ Réponds STRICTEMENT avec ce format JSON, rien d'autre.
             print(f"[DEBUG] Réponse IA brute: {raw_response}")
 
             parsed_response = parse_ai_response(raw_response)
-            if parsed_response and isinstance(parsed_response, dict) and "menu" in parsed_response:
-                menu_final = parsed_response["menu"]
-                total_calories = parsed_response.get("total_calories", sum(item.get("calories", 0) for item in menu_final))
-                source_menu = "IA"
-                print("[SUCCESS] Menu généré par l'IA avec succès")
-            else:
-                raise ValueError("Réponse IA invalide ou incomplète")
+            if parsed_response and isinstance(parsed_response, dict):
+            # Vérifier qu'il contient bien les repas
+                repas_keys = ["petit_dejeuner", "dejeuner", "gouter", "diner", "collation"]
+                if any(key in parsed_response for key in repas_keys):
+                    menu_final = {k: parsed_response.get(k, []) for k in repas_keys}
+                    total_calories = parsed_response.get(
+                        "total_calories",
+                        sum(item.get("calories", 0) for repas in menu_final.values() for item in repas)
+                    )
+                    source_menu = "IA"
+                    print("[SUCCESS] Plan de repas généré par l'IA")
+                else:
+                 raise ValueError("Réponse IA invalide ou incomplète")
+
         except Exception as e:
             print(f"[WARNING] Erreur IA: {e}, utilisation du menu de fallback")
             menu_final, total_calories = get_menu_fallback(imc_info['interpretation'])
@@ -319,3 +385,4 @@ Réponds STRICTEMENT avec ce format JSON, rien d'autre.
         print(f"[ERROR] Exception générale: {e}", flush=True)
         traceback.print_exc()
         return jsonify({'error': str(e)}), 500
+

@@ -6,8 +6,9 @@
     <title>WellBeing – Votre assistant nutritionnel intelligent</title>
     
     <!-- Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
 </head>
@@ -71,7 +72,7 @@
                 
                 <div class="hero-cta">
                    
-                    <a href="#features" class="cta-btn secondary">
+                    <a href="#steps" class="cta-btn secondary">
                         Découvrir les fonctionnalités
                     </a>
                 </div>
@@ -127,31 +128,44 @@
     </section>
 
     <!-- How It Works -->
-    <section class="how-it-works">
+    <section id="steps" class="how-it-works">
         <div class="section-header">
             <h2>Comment ça marche ?</h2>
             <p>3 étapes simples pour une alimentation parfaite</p>
         </div>
         
         <div class="steps">
-            <div class="step">
+            <div class="step" onclick="redirectToLogin()">
                 <div class="step-number">1</div>
                 <h3>Créez votre profil nutritionnel</h3>
                 <p>Indiquez vos préférences alimentaires, restrictions, allergies et objectifs de santé pour une expérience totalement personnalisée.</p>
+                <div class="step-click-hint">
+                    <span>Cliquez pour commencer</span>
+                    <i class="fas fa-arrow-right"></i>
+                </div>
             </div>
             
-            <div class="step">
+            <div class="step" onclick="redirectToLogin()">
                 <div class="step-number">2</div>
                 <h3>Analysez votre profil santé</h3>
                 <p>Calculez votre IMC, définissez vos objectifs et visualisez vos progrès grâce à nos outils d'analyse avancés.</p>
+                <div class="step-click-hint">
+                    <span>Cliquez pour commencer</span>
+                    <i class="fas fa-arrow-right"></i>
+                </div>
             </div>
             
-            <div class="step">
+            <div class="step" onclick="redirectToLogin()">
                 <div class="step-number">3</div>
                 <h3>Recevez vos menus IA</h3>
                 <p>Notre intelligence artificielle génère automatiquement des plans alimentaires personnalisés avec recettes détaillées et listes de courses.</p>
+                <div class="step-click-hint">
+                    <span>Cliquez pour commencer</span>
+                    <i class="fas fa-arrow-right"></i>
+                </div>
             </div>
         </div>
+       
     </section>
 
     <!-- Stats Section -->

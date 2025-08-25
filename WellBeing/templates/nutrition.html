@@ -30,19 +30,86 @@
   <div class="floating-icon"><i class="fas fa-leaf"></i></div>
 
   <!-- Navigation -->
-  <nav id="navbar">
-    <div class="nav-container">
-      <a  class="logo">
-        <img src="{{ url_for('static', filename='images/w10.jpeg') }}" alt="WellBeing Logo" class="logo-img">
-        WellBeing
-    </a>
+  <!-- Navigation -->
+<nav id="navbar">
+  <div class="nav-container">
+      <a class="logo">
+          <img src="{{ url_for('static', filename='images/w10.jpeg') }}" alt="WellBeing Logo" class="logo-img">
+          WellBeing
+      </a>
+      
       <ul class="nav-links">
-        <li><a href="/"><i class="fas fa-home"></i> Accueil</a></li>
-        <li><a href="/menus"><i class="fas fa-utensils"></i> Menus</a></li>
-        <li><a href="/login"><i class="fas fa-chart-line"></i> Inscription</a></li>
+          <li><a href="/"><i class="fas fa-home"></i> Accueil</a></li>
+          <li><a href="/menus"><i class="fas fa-utensils"></i> Menus</a></li>
+          <li><a href="/nutrition"><i class="fas fa-apple-alt"></i> Nutrition</a></li>
       </ul>
-    </div>
-  </nav>
+
+      <!-- SECTION UTILISATEUR (AJOUTEZ CE BLOC) -->
+     <!-- SECTION UTILISATEUR (AJOUTEZ CE BLOC) -->
+<div class="user-nav-section">
+  <!-- Boutons de connexion (affichés quand déconnecté) -->
+  <div class="auth-buttons" id="authButtons">
+      <a href="/login" class="btn-login"><i class="fas fa-sign-in-alt"></i> Connexion</a>
+      <a href="/register" class="btn-register"><i class="fas fa-user-plus"></i> Inscription</a>
+  </div>
+
+  <!-- Infos utilisateur (affichées quand connecté) -->
+  <div class="user-info" id="userInfo" style="display: none;">
+      <div class="user-profile-dropdown">
+          <button class="profile-toggle">
+              <!-- Image de profil -->
+             
+              <span id="userName">Profil</span>
+              <i class="fas fa-chevron-down"></i>
+          </button>
+          <div class="profile-dropdown-menu">
+              <div class="profile-header">
+                  <!-- Image dans le dropdown -->
+                  <div class="profile-image-dropdown">
+                      <img src="{{ url_for('static', filename='images/w1.png') }}" 
+                           alt="Photo de profil" 
+                           class="profile-image-large"
+                           id="dropdownProfileImage">
+                  </div>
+                  <div class="profile-info">
+                      <span id="dropdownUserName">Utilisateur</span>
+                      <span class="profile-email" id="dropdownUserEmail">email@exemple.com</span>
+                  </div>
+              </div>
+              <div class="profile-details">
+                  <div class="profile-detail">
+                      <i class="fas fa-weight"></i>
+                      <span id="dropdownUserWeight">-- kg</span>
+                  </div>
+                  <div class="profile-detail">
+                      <i class="fas fa-ruler-vertical"></i>
+                      <span id="dropdownUserHeight">-- cm</span>
+                  </div>
+                  <div class="profile-detail">
+                      <i class="fas fa-chart-line"></i>
+                      <span id="dropdownUserImc">IMC: --</span>
+                  </div>
+              </div>
+              <div class="profile-actions">
+                  <a href="/profil" class="profile-action-btn">
+                      <i class="fas fa-cog"></i> Modifier le profil
+                  </a>
+                  <button id="navLogoutBtn" class="profile-action-btn logout">
+                      <i class="fas fa-sign-out-alt"></i> Déconnexion
+                  </button>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+
+      <div class="mobile-menu-btn">
+          <div class="menu-line"></div>
+          <div class="menu-line"></div>
+          <div class="menu-line"></div>
+      </div>
+  </div>
+</nav>
 
   <!-- Selection counter -->
   
@@ -180,7 +247,7 @@
                 <img src="{{ url_for('static', filename='images/w10.jpeg') }}" alt="WellBeing Logo" class="logo-img">
                 <span class="logo-text">WellBeing</span>
             </a>
-            <p>L'avenir de la nutrition personnalisée grâce à l'intelligence artificielle. Transformez votre alimentation dès aujourd'hui.</p>
+            <p >L'avenir de la nutrition personnalisée grâce à l'intelligence artificielle. Transformez votre alimentation dès aujourd'hui.</p>
             
             <div class="social-links">
                 <a href="https://facebook.com" target="_blank" title="Facebook">
@@ -237,8 +304,128 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
   <script src="{{ url_for('static', filename='js/nutrition.js') }}"></script>
+  <script>
+    // Fonction pour mettre à jour la navbar avec les infos utilisateur
+   // Fonction pour mettre à jour la navbar avec les infos utilisateur
+function updateNavbarUserInfo(userData) {
+  const userInfo = document.getElementById('userInfo');
+  const authButtons = document.getElementById('authButtons');
+  const userName = document.getElementById('userName');
+  const dropdownUserName = document.getElementById('dropdownUserName');
+  const dropdownUserEmail = document.getElementById('dropdownUserEmail');
+  const dropdownUserWeight = document.getElementById('dropdownUserWeight');
+  const dropdownUserHeight = document.getElementById('dropdownUserHeight');
+  const dropdownUserImc = document.getElementById('dropdownUserImc');
+  const profileImage = document.getElementById('profileImage');
+  const dropdownProfileImage = document.getElementById('dropdownProfileImage');
+  
+  if (userData && userData.name) {
+      // Afficher les infos utilisateur et cacher les boutons auth
+      userInfo.style.display = 'block';
+      authButtons.style.display = 'none';
+      
+      // Mettre à jour le nom
+      userName.textContent = userData.name;
+      dropdownUserName.textContent = userData.name;
+      dropdownUserEmail.textContent = userData.email || 'email@exemple.com';
+      
+      // Mettre à jour les autres infos
+      dropdownUserWeight.textContent = userData.poids ? `${userData.poids} kg` : '-- kg';
+      dropdownUserHeight.textContent = userData.taille ? `${userData.taille} cm` : '-- cm';
+      
+      // Calculer et afficher l'IMC si disponible
+      if (userData.poids && userData.taille) {
+          const imc = (userData.poids / ((userData.taille/100) ** 2)).toFixed(1);
+          dropdownUserImc.textContent = `IMC: ${imc}`;
+      } else {
+          dropdownUserImc.textContent = 'IMC: N/A';
+      }
+      
+      // Mettre à jour l'image de profil si disponible
+      if (userData.profile_image) {
+          profileImage.src = userData.profile_image;
+          dropdownProfileImage.src = userData.profile_image;
+      }
+      
+      // Ajouter une classe pour le style quand connecté
+      document.body.classList.add('user-logged-in');
+  } else {
+      // Cacher les infos utilisateur et afficher les boutons auth
+      userInfo.style.display = 'none';
+      authButtons.style.display = 'flex';
+      document.body.classList.remove('user-logged-in');
+  }
+} 
+    // Fonction pour vérifier la session
+    function checkSessionAndUpdateNavbar() {
+        fetch('/api/check_session')
+        .then(response => response.json())
+        .then(data => {
+            if (data.logged_in) {
+                // Récupérer les données complètes du profil
+                fetch(`/api/profile/${data.user_id}`)
+                .then(res => res.json())
+                .then(userData => {
+                    updateNavbarUserInfo(userData);
+                })
+                .catch(err => {
+                    console.log('Erreur chargement profil:', err);
+                });
+            } else {
+                updateNavbarUserInfo(null);
+            }
+        })
+        .catch(error => {
+            console.log('Erreur vérification session:', error);
+            updateNavbarUserInfo(null);
+        });
+    }
+    
+    // Gestionnaire de déconnexion
+    document.addEventListener('DOMContentLoaded', function() {
+        // Vérifier la session au chargement
+        checkSessionAndUpdateNavbar();
+        
+        // Gérer le bouton de déconnexion
+        const navLogoutBtn = document.getElementById('navLogoutBtn');
+        if (navLogoutBtn) {
+            navLogoutBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                fetch('/api/logout')
+                .then(response => {
+                    if (response.redirected) {
+                        window.location.href = response.url;
+                    } else {
+                        return response.json();
+                    }
+                })
+                .then(data => {
+                    if (data && data.success) {
+                        window.location.href = '/';
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur déconnexion:', error);
+                    window.location.href = '/';
+                });
+            });
+        }
+        
+        // Empêcher la fermeture du dropdown quand on clique dessus
+        const dropdownMenu = document.querySelector('.profile-dropdown-menu');
+        if (dropdownMenu) {
+            dropdownMenu.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+        }
+    });
+    
+    // Vérifier aussi après les interactions utilisateur
+    setInterval(checkSessionAndUpdateNavbar, 30000); // Toutes les 30 secondes
+    </script>
 </body>
 </html>
+
 
 
 

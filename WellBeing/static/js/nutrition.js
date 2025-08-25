@@ -78,6 +78,35 @@ document.addEventListener('DOMContentLoaded', function() {
  });
 
 
+// ✅ Fonction de boîte de dialogue réutilisable
+function showModalAlert(title, message, type = "info") {
+  const existing = document.querySelector(".custom-modal");
+  if (existing) existing.remove();
+
+  const modal = document.createElement("div");
+  modal.className = "custom-modal";
+  modal.innerHTML = `
+    <div class="modal-content ${type}">
+      <div class="modal-icon">
+        <i class="fas ${
+          type === "error" ? "fa-times-circle" :
+          type === "success" ? "fa-check-circle" :
+          "fa-info-circle"
+        }"></i>
+      </div>
+      <h2>${title}</h2>
+      <p>${message}</p>
+      <button id="modal-ok">OK</button>
+    </div>
+  `;
+  document.body.appendChild(modal);
+
+  modal.querySelector("#modal-ok").addEventListener("click", () => modal.remove());
+  modal.addEventListener("click", (e) => { if (e.target === modal) modal.remove(); });
+}
+
+
+
 let chartInstance = null;
 const urlParams = new URLSearchParams(window.location.search);
 let userId = urlParams.get('user_id') || 1;
@@ -190,7 +219,7 @@ document.getElementById('calculateBtn').addEventListener('click', () => {
   const menus = Array.from(document.querySelectorAll('input[name="menu"]:checked')).map(el => el.value);
 
   if (menus.length < 1) {
-    alert("Merci de sélectionner au moins un plat.");
+    showModalAlert("Sélection requise ❗", "Merci de sélectionner au moins un plat.", "error");
     return;
   }
 
@@ -198,7 +227,7 @@ document.getElementById('calculateBtn').addEventListener('click', () => {
   const taille = parseFloat(document.getElementById('inputTaille').value);
 
   if (!poids || !taille || poids < 20 || taille < 100 || taille > 300) {
-    alert("Merci de saisir un poids (min 20kg) et une taille (100-300cm) valides.");
+    showModalAlert("Données invalides ⚠️", "Merci de saisir un poids (≥20kg) et une taille (100-300cm) valides.", "error");
     return;
   }
 
@@ -207,10 +236,9 @@ document.getElementById('calculateBtn').addEventListener('click', () => {
   const fastingEnd = document.getElementById('endFasting').value;
 
   if (fastingType && (!fastingStart || !fastingEnd)) {
-    alert("Merci d'indiquer l'heure de début et de fin du jeûne sélectionné.");
+    showModalAlert("Informations manquantes ❗", "Merci d'indiquer l'heure de début et de fin du jeûne sélectionné.", "error");
     return;
   }
-
   const fasting = fastingType ? {
     type: fastingType,
     start: fastingStart,
@@ -233,7 +261,7 @@ document.getElementById('calculateBtn').addEventListener('click', () => {
     <div style="text-align: center; padding: 20px;">
       <i class="fas fa-spinner fa-spin" style="font-size: 24px; color: #2196F3;"></i>
       <p style="margin-top: 10px;">Génération personnalisée du menu en cours...</p>
-      <small style="color: #666;">L'IA analyse votre profil pour vous proposer le menu idéal</small>
+      <small style="color: black;">L'IA analyse votre profil pour vous proposer le menu idéal</small>
     </div>
   `;
 
@@ -266,7 +294,7 @@ document.getElementById('calculateBtn').addEventListener('click', () => {
 
       let html = "";
 
-      if (data.nutrition && data.nutrition.length > 0) {
+      if (data.nutrition && Object.keys(data.nutrition).length > 0) {
         const sourceIcon = data.source_menu === "IA" ? "🤖" : "📋";
         const sourceText = data.source_menu === "IA" ? "généré par l'IA personnalisée" : "menu de fallback";
         
@@ -274,51 +302,82 @@ document.getElementById('calculateBtn').addEventListener('click', () => {
         let personalizationInfo = "";
         if (data.user_data) {
           personalizationInfo = `
-            <div style="background: #e8f5e8; padding: 10px; border-radius: 5px; margin-bottom: 15px; font-size: 14px;">
-              <strong>🎯 Menu personnalisé pour :</strong>
+            <div style="background: #e8f5e8;color:black; padding: 10px; border-radius: 5px; margin-bottom: 15px; font-size: 14px;">
+              <strong style="color: black;">🎯 Menu personnalisé pour :</strong>
               ${data.user_data.sexe !== 'Non renseigné' ? `${data.user_data.sexe}` : ''}
               ${data.user_data.age !== 'Non renseigné' ? `, ${data.user_data.age} ans` : ''}
               ${data.imc_info ? `, IMC ${data.imc_info.imc} (${data.imc_info.interpretation})` : ''}
             </div>
           `;
         }
-
+      
         html += personalizationInfo;
         html += `<h2>Menu adapté ${sourceIcon} <small>(${sourceText})</small></h2>`;
-        html += "<table><tr><th>Plat</th><th>Calories</th><th>Protéines</th><th>Glucides</th><th>Lipides</th></tr>";
-
-        data.nutrition.forEach(item => {
-          html += `<tr>
-            <td>${item.name || 'N/A'}</td>
-            <td>${item.calories || 0}</td>
-            <td>${item.protein || 0}g</td>
-            <td>${item.carbs || 0}g</td>
-            <td>${item.fat || 0}g</td>
-          </tr>`;
+        
+        // Afficher chaque repas séparément
+        const repasKeys = ["petit_dejeuner", "dejeuner", "gouter", "diner", "collation"];
+        
+        repasKeys.forEach(repasKey => {
+          if (data.nutrition[repasKey] && data.nutrition[repasKey].length > 0) {
+            // Traduire le nom du repas
+            const repasNames = {
+              "petit_dejeuner": "Petit-déjeuner",
+              "dejeuner": "Déjeuner",
+              "gouter": "Goûter",
+              "diner": "Dîner",
+              "collation": "Collation"
+            };
+            
+            html += `<h3 style="margin-top: 20px; color: #6366f1;">${repasNames[repasKey] || repasKey}</h3>`;
+            html += "<table><tr><th>Plat</th><th>Calories</th><th>Protéines</th><th>Glucides</th><th>Lipides</th></tr>";
+            
+            data.nutrition[repasKey].forEach(item => {
+              html += `<tr>
+                <td>${item.name || 'N/A'}</td>
+                <td>${item.calories || 0}</td>
+                <td>${item.protein || 0}g</td>
+                <td>${item.carbs || 0}g</td>
+                <td>${item.fat || 0}g</td>
+              </tr>`;
+            });
+            
+            html += "</table>";
+          }
         });
-
-        html += "</table>";
-
+      
         if (data.total_calories) {
-          html += `<p><strong>Total calories:</strong> ${data.total_calories} kcal</p>`;
+          html += `<p style="margin-top: 20px;"><strong>Total calories:</strong> ${data.total_calories} kcal</p>`;
         }
-      } else {
+      }
+
+       else {
         html += "<p>❌ Aucun menu adapté disponible.</p>";
       }
 
       if (data.raw_response && data.source_menu !== "IA") {
         html += `<h3>Détails techniques :</h3>
-          <div style="background:#f9f9f9; padding:10px; border-radius:5px; max-height:200px; overflow:auto; font-size:12px;">
+          <div style="background:#f9f9f9;color:black; padding:10px; border-radius:5px; max-height:200px; overflow:auto; font-size:12px;">
             <strong>Source:</strong> ${data.source_menu || 'inconnu'}<br>
             <strong>Réponse:</strong><br>
             <pre>${data.raw_response}</pre>
           </div>`;
       }
 
-      let platsParam = data.nutrition && data.nutrition.length > 0
-        ? data.nutrition.map(item => encodeURIComponent(item.name || '')).join(',')
-        : menus.map(p => encodeURIComponent(p)).join(',');
-
+      let platsParam = "";
+if (data.nutrition && Object.keys(data.nutrition).length > 0) {
+  // Récupérer tous les noms de plats de tous les repas
+  const allPlats = [];
+  Object.values(data.nutrition).forEach(repas => {
+    if (Array.isArray(repas)) {
+      repas.forEach(plat => {
+        if (plat.name) allPlats.push(plat.name);
+      });
+    }
+  });
+  platsParam = allPlats.map(p => encodeURIComponent(p)).join(',');
+} else {
+  platsParam = menus.map(p => encodeURIComponent(p)).join(',');
+}
       if (platsParam) {
         html += `<p style="margin-top:15px;">
           <a href="/recettes?plats=${platsParam}" class="btn" 
@@ -472,4 +531,7 @@ document.addEventListener('DOMContentLoaded', () => {
     metricsDiv.parentNode.insertBefore(infoDiv, metricsDiv.nextSibling);
   }
 });
+
+
+
 

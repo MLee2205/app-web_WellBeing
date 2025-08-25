@@ -103,32 +103,6 @@ body {
 }
 
 /* Navigation */
-nav {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    padding: 1.5rem 5%;
-    background: var(--glass-bg);
-    backdrop-filter: blur(30px);
-    border-bottom: 1px solid var(--glass-border);
-    z-index: 1000;
-    transition: var(--transition);
-}
-
-nav.scrolled {
-    background: rgba(255, 255, 255, 0.12);
-    backdrop-filter: blur(40px);
-    padding: 1rem 5%;
-    box-shadow: var(--shadow-glow);
-}
-
-.nav-container {
-    max-width: 1400px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
 
 .logo {
     display: flex;
@@ -158,44 +132,58 @@ nav.scrolled {
     background-clip: text;
 }
 
+nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    padding: 1rem 2rem;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--glass-border);
+    z-index: 100;
+    transition: all 0.3s ease;
+}
+
+nav.scrolled {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(30px);
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
 .nav-links {
     display: flex;
-    gap: 2.5rem;
+    gap: 2rem;
     list-style: none;
 }
 
 .nav-links a {
-    color: rgba(255, 255, 255, 0.9);
-    text-decoration: none;
-    font-weight: 500;
-    padding: 0.75rem 1.5rem;
-    border-radius: 12px;
-    position: relative;
-    transition: var(--transition);
-    overflow: hidden;
-}
-
-.nav-links a::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-    transition: left 0.6s;
-}
-
-.nav-links a:hover::before {
-    left: 100%;
-}
-
-.nav-links a:hover,
-.nav-links a.active {
-    background: var(--glass-bg);
     color: white;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+}
+
+.nav-links a:hover {
+    background: rgba(255, 255, 255, 0.1);
     transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
 }
 
 .mobile-menu-btn {
@@ -215,6 +203,9 @@ nav.scrolled {
     border-radius: 3px;
     transition: var(--transition);
 }
+
+
+
 
 /* Main Content */
 .main-wrapper {
@@ -433,6 +424,91 @@ button[type="submit"]:hover::before,
     transform: translateY(-5px) scale(1.1);
     box-shadow: 0 15px 30px rgba(99, 102, 241, 0.4);
 }
+
+
+/* ====== MODAL ALERT ====== */
+.custom-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 15, 35, 0.7);
+    backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 3000;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.modal-content {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 2rem;
+    width: 90%;
+    max-width: 420px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+    text-align: center;
+    animation: popUp 0.4s ease-out;
+}
+
+.modal-content .modal-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.modal-content.success .modal-icon {
+    color: var(--secondary);
+    text-shadow: 0 0 20px rgba(34, 197, 94, 0.6);
+}
+
+.modal-content.error .modal-icon {
+    color: #ef4444;
+    text-shadow: 0 0 20px rgba(239, 68, 68, 0.6);
+}
+
+.modal-content h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.8rem;
+    color: white;
+}
+
+.modal-content p {
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+}
+
+.modal-content button {
+    padding: 0.8rem 2rem;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.modal-content button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes popUp {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
 
 /* Footer */
 footer {

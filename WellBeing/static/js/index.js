@@ -213,6 +213,31 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+// Fonction de redirection vers la page de login
+function redirectToLogin() {
+    window.location.href = '/login';
+}
+
+// Ajouter la gestion du clavier pour l'accessibilité
+document.querySelectorAll('.step').forEach(step => {
+    // Gestion de la touche Entrée pour l'accessibilité
+    step.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            redirectToLogin();
+        }
+    });
+    
+    // Ajouter un tabindex pour permettre la navigation au clavier
+    step.setAttribute('tabindex', '0');
+    
+    // Ajouter un rôle pour l'accessibilité
+    step.setAttribute('role', 'button');
+    
+    // Ajouter une description pour les lecteurs d'écran
+    step.setAttribute('aria-label', 'Cliquez pour accéder à la page de connexion');
+});
+
+
 // Performance monitoring
 if ('performance' in window) {
     window.addEventListener('load', () => {

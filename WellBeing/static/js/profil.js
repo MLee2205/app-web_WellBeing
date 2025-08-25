@@ -1,6 +1,5 @@
-
- // Initialize particles.js
- document.addEventListener('DOMContentLoaded', function() {
+// Initialize particles.js
+document.addEventListener('DOMContentLoaded', function() {
     if (typeof particlesJS !== 'undefined') {
         particlesJS('particles-js', {
             particles: {
@@ -105,48 +104,168 @@
         });
     }
 
+    // ✅ CORRECTION PRINCIPALE : Récupérer le bon user_id
+    loadUserProfile();
 });
 
+// ✅ Fonction pour charger le profil avec le bon user_id
+function loadUserProfile() {
+    // D'abord vérifier la session pour obtenir le bon user_id
+    fetch('/api/check_session')
+    .then(response => response.json())
+    .then(sessionData => {
+        let userId = null;
+        
+        if (sessionData.logged_in && sessionData.user_id) {
+            // Utilisateur connecté - utiliser son ID de session
+            userId = sessionData.user_id;
+            console.log(`[INFO] Utilisateur connecté, ID session: ${userId}`);
+        } else {
+            // Pas connecté - essayer l'URL ou valeur par défaut
+            const urlParams = new URLSearchParams(window.location.search);
+            userId = urlParams.get('user_id') || 1;
+            console.log(`[WARNING] Pas de session, utilisation ID: ${userId}`);
+        }
+        
+        // Charger le profil avec le bon ID
+        return loadProfileData(userId);
+    })
+    .catch(error => {
+        console.error('Erreur vérification session:', error);
+        // En cas d'erreur, essayer avec l'URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get('user_id') || 1;
+        loadProfileData(userId);
+    });
+}
 
-const urlParams = new URLSearchParams(window.location.search);
-let userId = urlParams.get('user_id') || 1;
+// ✅ Fonction séparée pour charger les données du profil
+function loadProfileData(userId) {
+    console.log(`[INFO] Chargement du profil pour l'utilisateur ${userId}`);
+    
+    fetch(`/api/profile/${userId}`)
+    .then(res => {
+        if (!res.ok) {
+            if (res.status === 401) {
+                throw new Error('Non autorisé - veuillez vous connecter');
+            } else if (res.status === 403) {
+                throw new Error('Accès refusé à ce profil');
+            } else {
+                throw new Error(`Erreur ${res.status}: ${res.statusText}`);
+            }
+        }
+        return res.json();
+    })
+    .then(data => {
+        console.log('[SUCCESS] Données profil chargées:', data);
+        
+        // Remplir les champs avec les données
+        document.getElementById('email').value = data.email || '';
+        document.getElementById('name').value = data.name || '';
+        document.getElementById('renom').value = data.renom || '';
+        document.getElementById('date_naissance').value = data.date_naissance || '';
+        document.getElementById('sexe').value = data.sexe || '';
+        document.getElementById('poids').value = data.poids || '';
+        document.getElementById('taille').value = data.taille || '';
+        
+        // Stocker l'userId pour les autres fonctions
+        window.currentUserId = userId;
+        
+        // Ajouter les event listeners maintenant que les données sont chargées
+        setupFormHandlers(userId);
+    })
+    .catch(err => {
+        console.error('[ERROR] Chargement profil:', err);
+        alert('Erreur de chargement: ' + err.message);
+        
+        // Rediriger vers la connexion si non autorisé
+        if (err.message.includes('Non autorisé') || err.message.includes('Accès refusé')) {
+            window.location.href = '/login';
+        }
+    });
+}
 
-// Charger le profil
-fetch(`/api/profile/${userId}`)
-.then(res => res.json())
-.then(data => {
-    document.getElementById('email').value = data.email || '';
-    document.getElementById('name').value = data.name || '';
-    document.getElementById('renom').value = data.renom || '';
-    document.getElementById('date_naissance').value = data.date_naissance || '';
-    document.getElementById('sexe').value = data.sexe || '';
-    document.getElementById('poids').value = data.poids || '';
-    document.getElementById('taille').value = data.taille || '';
-})
-.catch(err => alert('Erreur chargement: ' + err));
+// ✅ Configuration des gestionnaires d'événements
+function setupFormHandlers(userId) {
+    // Gestionnaire de soumission du formulaire
+    const profileForm = document.getElementById('profileForm');
+    if (profileForm) {
+        // Supprimer les anciens listeners pour éviter les doublons
+        profileForm.replaceWith(profileForm.cloneNode(true));
+        const newForm = document.getElementById('profileForm');
+        
+        newForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            saveProfile(userId);
+        });
+    }
+    
+    // Bouton Nutrition
+    const goToNutritionBtn = document.getElementById('goToNutritionBtn');
+    if (goToNutritionBtn) {
+        goToNutritionBtn.replaceWith(goToNutritionBtn.cloneNode(true));
+        const newNutritionBtn = document.getElementById('goToNutritionBtn');
+        
+        newNutritionBtn.addEventListener('click', () => {
+            window.location.href = `/nutrition?user_id=${userId}`;
+        });
+    }
+    
+    // Bouton Déconnexion
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.replaceWith(logoutBtn.cloneNode(true));
+        const newLogoutBtn = document.getElementById('logoutBtn');
+        
+        newLogoutBtn.addEventListener('click', () => {
+            window.location.href = '/api/logout';
+        });
+    }
+}
 
-// Sauvegarder
-document.getElementById('profileForm').addEventListener('submit', e => {
-    e.preventDefault();
+// ✅ Fonction pour sauvegarder le profil
+function saveProfile(userId) {
     const data = {
         email: document.getElementById('email').value,
         name: document.getElementById('name').value,
         renom: document.getElementById('renom').value,
         date_naissance: document.getElementById('date_naissance').value,
         sexe: document.getElementById('sexe').value,
-        poids: parseFloat(document.getElementById('poids').value),
-        taille: parseFloat(document.getElementById('taille').value)
+        poids: parseFloat(document.getElementById('poids').value) || null,
+        taille: parseFloat(document.getElementById('taille').value) || null
     };
+    
+    console.log('[INFO] Sauvegarde profil utilisateur:', userId, data);
+    
     fetch(`/api/profile/${userId}`, {
         method: 'PUT',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(data)
     })
-    .then(res => res.json())
-    .then(result => alert(result.message || 'Profil mis à jour !'))
-    .catch(err => alert('Erreur : ' + err));
-});
-
+    .then(res => {
+        if (!res.ok) {
+            if (res.status === 401) {
+                throw new Error('Non autorisé - veuillez vous reconnecter');
+            } else if (res.status === 403) {
+                throw new Error('Accès refusé pour modifier ce profil');
+            }
+            throw new Error(`Erreur ${res.status}`);
+        }
+        return res.json();
+    })
+    .then(result => {
+        console.log('[SUCCESS] Profil sauvegardé:', result);
+        alert(result.message || 'Profil mis à jour avec succès !');
+    })
+    .catch(err => {
+        console.error('[ERROR] Sauvegarde:', err);
+        alert('Erreur sauvegarde: ' + err.message);
+        
+        if (err.message.includes('Non autorisé')) {
+            window.location.href = '/login';
+        }
+    });
+}
 // Aller vers nutrition
 document.getElementById('goToNutritionBtn').addEventListener('click', () => {
     window.location.href = '/nutrition';
@@ -156,4 +275,6 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
     window.location.href = '/api/logout';
 
 });
+
+
 
