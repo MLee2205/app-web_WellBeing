@@ -1,194 +1,5 @@
-// Variables globales
-let generatedPdfs = JSON.parse(localStorage.getItem('wellbeing_pdfs')) || [];
-let recettesData = [];
-
-// Fonction pour sauvegarder un PDF dans l'historique
-function savePdfToHistory(pdfData, pdfBlob) {
-    const timestamp = new Date().toISOString();
-    const pdfId = `pdf_${Date.now()}`;
-    
-    const pdfItem = {
-        id: pdfId,
-        name: `Recettes_${new Date().toLocaleDateString('fr-FR')}`,
-        timestamp: timestamp,
-        date: new Date().toLocaleDateString('fr-FR', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        }),
-        plats: recettesData.map(r => r.name),
-        blobUrl: URL.createObjectURL(pdfBlob),
-        data: pdfData // Stocker les données pour régénération
-    };
-
-    generatedPdfs.unshift(pdfItem); // Ajouter au début
-    generatedPdfs = generatedPdfs.slice(0, 20); // Garder seulement les 20 derniers
-    
-    localStorage.setItem('wellbeing_pdfs', JSON.stringify(generatedPdfs));
-    updatePdfHistoryDisplay();
-    
-    return pdfItem;
-}
-
-// Fonction pour afficher l'historique
-function updatePdfHistoryDisplay() {
-    const historyContainer = document.getElementById('pdfHistory');
-    
-    if (generatedPdfs.length === 0) {
-        historyContainer.innerHTML = '<p class="no-pdfs">Aucun PDF généré pour le moment</p>';
-        return;
-    }
-
-    historyContainer.innerHTML = generatedPdfs.map(pdf => `
-        <div class="pdf-item" data-pdf-id="${pdf.id}">
-            <div class="pdf-item-header">
-                <span class="pdf-item-name">${pdf.name}</span>
-                <span class="pdf-item-date">${pdf.date}</span>
-            </div>
-            <div class="pdf-item-content">
-                <strong>Plats inclus:</strong><br>
-                ${pdf.plats.slice(0, 3).map(plat => `• ${plat}`).join('<br>')}
-                ${pdf.plats.length > 3 ? `<br>• ... et ${pdf.plats.length - 3} de plus` : ''}
-            </div>
-            <div class="pdf-item-actions">
-                <button class="pdf-action-btn pdf-download-btn" onclick="downloadPdf('${pdf.id}')">
-                    <i class="fas fa-download"></i> Télécharger
-                </button>
-                <button class="pdf-action-btn pdf-delete-btn" onclick="deletePdf('${pdf.id}')">
-                    <i class="fas fa-trash"></i> Supprimer
-                </button>
-            </div>
-        </div>
-    `).join('');
-}
-
-// Fonction pour télécharger un PDF existant
-function downloadPdf(pdfId) {
-    const pdf = generatedPdfs.find(p => p.id === pdfId);
-    if (!pdf) return;
-
-    const link = document.createElement('a');
-    link.href = pdf.blobUrl;
-    link.download = `${pdf.name}.pdf`;
-    link.click();
-}
-
-// Fonction pour supprimer un PDF
-function deletePdf(pdfId) {
-    const pdfIndex = generatedPdfs.findIndex(p => p.id === pdfId);
-    if (pdfIndex === -1) return;
-
-    // Libérer l'URL de l'objet blob
-    URL.revokeObjectURL(generatedPdfs[pdfIndex].blobUrl);
-    
-    generatedPdfs.splice(pdfIndex, 1);
-    localStorage.setItem('wellbeing_pdfs', JSON.stringify(generatedPdfs));
-    updatePdfHistoryDisplay();
-}
-
-// Fonction pour régénérer un PDF
-function regeneratePdf(pdfId) {
-    const pdf = generatedPdfs.find(p => p.id === pdfId);
-    if (!pdf || !pdf.data) return;
-
-    recettesData = pdf.data.recettes;
-    generateAndSavePdf(pdf.data);
-}
-
-// Nouvelle fonction pour générer et sauvegarder le PDF
-function generateAndSavePdf(pdfData) {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF({ unit: 'mm', format: 'a4' });
-
-    let y = 20;
-
-    // Titre principal
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(22);
-    doc.setTextColor(33, 150, 243);
-    doc.text("WellBeing", 105, y, { align: "center" });
-    y += 12;
-
-    // Sous-titre
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(16);
-    doc.setTextColor(0, 0, 0);
-    doc.text("Recettes adaptées", 105, y, { align: "center" });
-    y += 10;
-
-    // Date de génération
-    doc.setFontSize(11);
-    doc.setTextColor(100, 100, 100);
-    doc.text(`Généré le: ${new Date().toLocaleDateString('fr-FR')}`, 105, y, { align: "center" });
-    y += 15;
-
-    pdfData.recettes.forEach(r => {
-        if (y > 260) { doc.addPage(); y = 20; }
-
-        // Nom du plat
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(14);
-        doc.setTextColor(46, 125, 50);
-        doc.text(r.name, 20, y);
-        y += 8;
-
-        // Recette
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(12);
-        doc.setTextColor(0, 0, 0);
-
-        const lines = doc.splitTextToSize(r.recette || "Pas de recette disponible.", 170);
-
-        lines.forEach(line => {
-            if (y > 280) { doc.addPage(); y = 20; }
-            doc.text(line, 20, y);
-            y += 7;
-        });
-
-        y += 5;
-    });
-
-    // Signature
-    if (y > 280) { doc.addPage(); y = 20; }
-    doc.setFont("helvetica", "italic");
-    doc.setFontSize(11);
-    doc.setTextColor(100, 100, 100);
-    doc.text("Réalisé par Meffo Lea - WellBeing", 105, y, { align: "center" });
-
-    // Générer le blob et sauvegarder
-    const pdfBlob = doc.output('blob');
-    savePdfToHistory(pdfData, pdfBlob);
-
-    // Télécharger automatiquement
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(pdfBlob);
-    link.download = `recettes_wellbeing_${new Date().toISOString().split('T')[0]}.pdf`;
-    link.click();
-
-    // Nettoyer après téléchargement
-    setTimeout(() => URL.revokeObjectURL(link.href), 100);
-}
-
-// Fonction pour nettoyer les URLs obsolètes
-function cleanupOldBlobUrls() {
-    const oneWeekAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
-    
-    generatedPdfs = generatedPdfs.filter(pdf => {
-        const pdfDate = new Date(pdf.timestamp).getTime();
-        if (pdfDate < oneWeekAgo) {
-            URL.revokeObjectURL(pdf.blobUrl);
-            return false;
-        }
-        return true;
-    });
-    
-    localStorage.setItem('wellbeing_pdfs', JSON.stringify(generatedPdfs));
-}
-
-// Initialize particles.js
-document.addEventListener('DOMContentLoaded', function() {
+  // Initialize particles.js
+  document.addEventListener('DOMContentLoaded', function() {
     if (typeof particlesJS !== 'undefined') {
         particlesJS('particles-js', {
             particles: {
@@ -266,6 +77,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const params = new URLSearchParams(window.location.search);
     const plats = params.get('plats') ? params.get('plats').split(',') : [];
     const div = document.getElementById('recettes');
+    let recettesData = []; // pour PDF
 
     if (plats.length === 0) {
         div.innerHTML = `
@@ -307,6 +119,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             recettesData = data.recettes;
+            
             data.recettes.forEach(r => {
                 const recetteHTML = `
                     <div class="recette">
@@ -344,24 +157,91 @@ document.addEventListener('DOMContentLoaded', function() {
             `;
         });
     }
+// Fonction pour afficher une belle modal (identique à connexion.js)
+function showModalAlert(title, message, type = "success") {
+    const existing = document.querySelector(".custom-modal");
+    if (existing) existing.remove();
 
-    // Modifiez l'écouteur d'événement pour le bouton d'export
+    const modal = document.createElement("div");
+    modal.className = "custom-modal";
+    modal.innerHTML = `
+        <div class="modal-content ${type}">
+            <div class="modal-icon">
+                <i class="fas ${type === "error" ? "fa-times-circle" : "fa-check-circle"}"></i>
+            </div>
+            <h2>${title}</h2>
+            <p>${message}</p>
+            <button id="modal-ok">OK</button>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    modal.querySelector("#modal-ok").addEventListener("click", () => modal.remove());
+    modal.addEventListener("click", (e) => { if (e.target === modal) modal.remove(); });
+}
+
+    // Export PDF
     document.getElementById('exportBtn').addEventListener('click', () => {
         if (!recettesData || recettesData.length === 0) {
-            alert("Aucune recette à exporter.");
+            showModalAlert("Aucune recette à exporter.");
             return;
         }
 
-        generateAndSavePdf({
-            plats: plats,
-            recettes: recettesData,
-            timestamp: new Date().toISOString()
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+
+        let y = 20;
+
+        // Titre principal
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(22);
+        doc.setTextColor(33, 150, 243);
+        doc.text("WellBeing", 105, y, { align: "center" });
+        y += 12;
+
+        // Sous-titre
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(16);
+        doc.setTextColor(0, 0, 0);
+        doc.text("Recettes adaptées", 105, y, { align: "center" });
+        y += 10;
+
+        recettesData.forEach(r => {
+            if (y > 260) { doc.addPage(); y = 20; }
+
+            // Nom du plat
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(14);
+            doc.setTextColor(46, 125, 50);
+            doc.text(r.name, 20, y);
+            y += 8;
+
+            // Recette (texte formaté)
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(12);
+            doc.setTextColor(0, 0, 0);
+
+            const lines = doc.splitTextToSize(r.recette || "Pas de recette disponible.", 170);
+
+            lines.forEach(line => {
+                if (y > 280) { doc.addPage(); y = 20; }
+                doc.text(line, 20, y);
+                y += 7;
+            });
+
+            y += 5;
         });
+
+        // Signature
+        if (y > 280) { doc.addPage(); y = 20; }
+        doc.setFont("helvetica", "italic");
+        doc.setFontSize(11);
+        doc.setTextColor(100, 100, 100);
+        doc.text("Réalisé par Meffo Lea - WellBeing", 105, y, { align: "center" });
+
+        doc.save("recettes-wellbeing.pdf");
     });
 
-    // Initialiser l'affichage de l'historique
-    updatePdfHistoryDisplay();
     
-    // Nettoyer les anciens PDFs au chargement
-    cleanupOldBlobUrls();
 });
