@@ -12,95 +12,97 @@
   <div id="particles-js"></div>
 
   <!-- Navigation (identique à nutrition.html) -->
-  <nav id="navbar">
-    <div class="nav-container">
-        <a class="logo">
-            <img src="{{ url_for('static', filename='images/w10.jpeg') }}" alt="WellBeing Logo" class="logo-img">
-            WellBeing
-        </a>
-        
-        <ul class="nav-links">
-            <li><a href="/"><i class="fas fa-home"></i> Accueil</a></li>
-            <li><a href="/menus"><i class="fas fa-utensils"></i> Menus</a></li>
-            <li><a href="/nutrition"><i class="fas fa-apple-alt"></i> Nutrition</a></li>
-            <li><a href="/paiement"><i class="fas fa-crown"></i> Abonnement</a></li>
-        </ul>
-       
-        <!-- SECTION UTILISATEUR (AJOUTEZ CE BLOC) -->
-       <!-- SECTION UTILISATEUR (AJOUTEZ CE BLOC) -->
-  <div class="user-nav-section">
-    <!-- Boutons de connexion (affichés quand déconnecté) -->
-    <div class="auth-buttons" id="authButtons">
-        <a href="/login" class="btn-login"><i class="fas fa-sign-in-alt"></i> Connexion</a>
-        <a href="/register" class="btn-register"><i class="fas fa-user-plus"></i> Inscription</a>
-    </div>
-  
-    <!-- Infos utilisateur (affichées quand connecté) -->
-    <div class="user-info" id="userInfo" style="display: none;">
-        <div class="user-profile-dropdown">
-            <button class="profile-toggle">
-                <!-- Image de profil -->
-             <!--   <div class="profile-image-container">
-                    <img src="{{ url_for('static', filename='images/default-profile.png') }}" 
-                         alt="Photo de profil" 
-                         class="profile-image"
-                         id="profileImage">
-                    <div class="profile-image-overlay">
-                        <i class="fas fa-camera"></i>
-                    </div>
-                </div> -->
-                <span id="userName">Profil</span>
-                <i class="fas fa-chevron-down"></i>
-            </button>
-            <div class="profile-dropdown-menu">
-                <div class="profile-header">
-                    <!-- Image dans le dropdown -->
-                    <div class="profile-image-dropdown">
-                        <img src="{{ url_for('static', filename='images/w1.png') }}" 
+    <nav id="navbar">
+        <div class="nav-container">
+            <a class="logo">
+                <img src="{{ url_for('static', filename='images/w10.jpeg') }}" alt="WellBeing Logo" class="logo-img">
+                WellBeing
+            </a>
+            
+            <ul class="nav-links">
+                <li><a href="/"><i class="fas fa-home"></i> Accueil</a></li>
+                <li><a href="/menus"><i class="fas fa-utensils"></i> Menus</a></li>
+                <li><a href="/nutrition"><i class="fas fa-apple-alt"></i> Nutrition</a></li>
+               
+            </ul>
+           
+            <!-- SECTION UTILISATEUR (AJOUTEZ CE BLOC) -->
+           <!-- SECTION UTILISATEUR (AJOUTEZ CE BLOC) -->
+      <div class="user-nav-section">
+        <!-- Boutons de connexion (affichés quand déconnecté) -->
+        <div class="auth-buttons" id="authButtons">
+            <a href="/login" class="btn-login"><i class="fas fa-sign-in-alt"></i> Connexion</a>
+            <a href="/register" class="btn-register"><i class="fas fa-user-plus"></i> Inscription</a>
+        </div>
+      
+        <!-- Infos utilisateur (affichées quand connecté) -->
+        <div class="user-info" id="userInfo" style="display: none;">
+            <div class="user-profile-dropdown">
+                <button class="profile-toggle">
+                    <!-- Image de profil -->
+                 <!--   <div class="profile-image-container">
+                        <img src="{{ url_for('static', filename='images/default-profile.png') }}" 
                              alt="Photo de profil" 
-                             class="profile-image-large"
-                             id="dropdownProfileImage">
+                             class="profile-image"
+                             id="profileImage">
+                        <div class="profile-image-overlay">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                    </div> -->
+                    <span id="userName">Profil</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="profile-dropdown-menu">
+                    <div class="profile-header">
+                        <!-- Image dans le dropdown -->
+                        <div class="profile-image-dropdown">
+                            <img src="{{ url_for('static', filename='images/w1.png') }}" 
+                                 alt="Photo de profil" 
+                                 class="profile-image-large"
+                                 id="dropdownProfileImage">
+                        </div>
+                        <div class="profile-info">
+                            <span id="dropdownUserName">Utilisateur</span>
+                            <span class="profile-email" id="dropdownUserEmail">email@exemple.com</span>
+                        </div>
                     </div>
-                    <div class="profile-info">
-                        <span id="dropdownUserName">Utilisateur</span>
-                        <span class="profile-email" id="dropdownUserEmail">email@exemple.com</span>
+                    <div class="profile-details">
+                        <div class="profile-detail">
+                            <i class="fas fa-weight"></i>
+                            <span id="dropdownUserWeight">-- kg</span>
+                        </div>
+                        <div class="profile-detail">
+                            <i class="fas fa-ruler-vertical"></i>
+                            <span id="dropdownUserHeight">-- cm</span>
+                        </div>
+                        <div class="profile-detail">
+                            <i class="fas fa-chart-line"></i>
+                            <span id="dropdownUserImc">IMC: --</span>
+                        </div>
                     </div>
-                </div>
-                <div class="profile-details">
-                    <div class="profile-detail">
-                        <i class="fas fa-weight"></i>
-                        <span id="dropdownUserWeight">-- kg</span>
+                    <div class="profile-actions">
+                        <a href="/profil" class="profile-action-btn">
+                            <i class="fas fa-cog"></i> Modifier le profil
+                        </a>
+                        <button id="navLogoutBtn" class="profile-action-btn logout">
+                            <i class="fas fa-sign-out-alt"></i> Déconnexion
+                        </button>
                     </div>
-                    <div class="profile-detail">
-                        <i class="fas fa-ruler-vertical"></i>
-                        <span id="dropdownUserHeight">-- cm</span>
-                    </div>
-                    <div class="profile-detail">
-                        <i class="fas fa-chart-line"></i>
-                        <span id="dropdownUserImc">IMC: --</span>
-                    </div>
-                </div>
-                <div class="profile-actions">
-                    <a href="/profil" class="profile-action-btn">
-                        <i class="fas fa-cog"></i> Modifier le profil
-                    </a>
-                    <button id="navLogoutBtn" class="profile-action-btn logout">
-                        <i class="fas fa-sign-out-alt"></i> Déconnexion
-                    </button>
                 </div>
             </div>
         </div>
-    </div>
-  </div>
-  
-        <div class="mobile-menu-btn">
-            <div class="menu-line"></div>
-            <div class="menu-line"></div>
-            <div class="menu-line"></div>
+      </div>
+      
+            <div class="mobile-menu-btn">
+                <div class="menu-line"></div>
+                <div class="menu-line"></div>
+                <div class="menu-line"></div>
+            </div>
         </div>
-    </div>
-  </nav>
+      </nav>
+      
 
+ 
 
   <main class="main-wrapper">
     <div class="nutrition-container">
