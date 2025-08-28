@@ -4,6 +4,7 @@ import os
 import json
 import re
 from datetime import datetime
+from pathlib import Path
 
 bp = Blueprint('recettes', __name__)
 

@@ -8,6 +8,18 @@ from ..models.user import User
 from datetime import datetime,date
 import re
 
+try:
+    import joblib
+    import pandas as pd
+    from sklearn.preprocessing import StandardScaler
+    from sklearn.ensemble import RandomForestClassifier
+    ML_AVAILABLE = True
+except ImportError as e:
+    print(f"[WARNING] ML dependencies not available: {e}")
+    ML_AVAILABLE = False
+    joblib = None
+    pd = None
+    
 bp = Blueprint('nutrition', __name__)
 
 # Menus prédéfinis avec informations nutritionnelles
