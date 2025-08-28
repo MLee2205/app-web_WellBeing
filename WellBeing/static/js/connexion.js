@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(result => {
             if (result.success) {
-                showModalAlert("Connexion réussie ✅", "Bienvenue sur WellBeing ! Redirection en cours...", "success");
+                showModalAlert("Connexion réussie ", "Bienvenue sur WellBeing ! Redirection en cours...", "success");
                 setTimeout(() => {
                     window.location.href = '/nutrition';  // <-- Changer vers nutrition
                 }, 1500);
@@ -137,4 +137,3 @@ function checkSession() {
         console.log('Session non vérifiée:', error);
     });
 }
-

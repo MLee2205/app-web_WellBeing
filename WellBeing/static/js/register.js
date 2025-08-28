@@ -139,4 +139,3 @@ document.addEventListener('DOMContentLoaded', function() {
         .catch(error => showModalAlert("Erreur ⚠️", "Une erreur est survenue : " + error, "error"));
     });
 });
-

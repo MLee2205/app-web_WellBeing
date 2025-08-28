@@ -1,3 +1,9 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 :root {
   --primary: #6366f1;
   --primary-light: #818cf8;
@@ -11,14 +17,301 @@
   --glass-border: rgba(255, 255, 255, 0.15);
   --shadow-glow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Variables pour le thème - valeurs par défaut (sombre) */
+  --bg-primary: #0f0f23;
+  --bg-secondary: #1a1a2e;
+  --bg-tertiary: #16213e;
+  --bg-quaternary: #0f3460;
+  --bg-quinary: #533483;
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.9);
+  --text-muted: rgba(255, 255, 255, 0.7);
+  --nav-bg: rgba(255, 255, 255, 0.1);
+  --nav-border: rgba(255, 255, 255, 0.15);
+  --card-bg: rgba(255, 255, 255, 0.08);
+  --card-border: rgba(255, 255, 255, 0.15);
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  --footer-bg: rgba(0, 0, 0, 0.3);
+  --footer-border: rgba(255, 255, 255, 0.1);
+  /* Nouvelles variables pour les effets de survol */
+  --nav-link-hover: rgba(0, 0, 0, 0.05);
+  --feature-card-shadow: 0 30px 60px var(--shadow-color), 0 0 50px rgba(99, 102, 241, 0.2);
+  --logo-text-gradient: linear-gradient(135deg, #ffffff 0%, #a855f7 25%, #06b6d4 50%, #22c55e 75%, #f59e0b 100%);
+  --section-header-gradient: linear-gradient(135deg, white, var(--primary-light));
 }
 
-* {
+/* Thème clair */
+/* Thème clair avec textes noirs */
+[data-theme="light"] {
+  --bg-primary: white;
+  --bg-secondary: white;
+  --bg-tertiary: white;
+  --bg-quaternary: white;
+  --bg-quinary: white;
+  
+  /* Textes en noir */
+  --text-primary: #000000;
+  --text-secondary: rgba(0, 0, 0, 0.9);
+  --text-muted: rgba(0, 0, 0, 0.7);
+  
+  --nav-bg: rgba(255, 255, 255, 0.95);
+  --nav-border: rgba(226, 232, 240, 0.8);
+  --card-bg: rgba(255, 255, 255, 0.9);
+  --card-border: rgba(226, 232, 240, 0.8);
+  --shadow-color: rgba(0, 0, 0, 0.08);
+  --footer-bg: rgba(255, 255, 255, 0.95);
+  --footer-border: rgba(226, 232, 240, 0.8);
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(226, 232, 240, 0.6);
+  
+  /* Surcharge des variables pour les effets de survol */
+  --nav-link-hover: rgba(99, 102, 241, 0.1);
+  --feature-card-shadow: 0 30px 60px var(--shadow-color), 0 0 30px rgba(99, 102, 241, 0.15);
+  --logo-text-gradient: linear-gradient(135deg, #000000, var(--primary-light));
+  --section-header-gradient: linear-gradient(135deg, #000000, var(--primary-light));
+}
+
+/* Styles supplémentaires pour assurer la lisibilité */
+[data-theme="light"] body {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+[data-theme="light"] h1,
+[data-theme="light"] h2,
+[data-theme="light"] h3,
+[data-theme="light"] h4,
+[data-theme="light"] h5,
+[data-theme="light"] h6 {
+  color: var(--text-primary);
+}
+
+[data-theme="light"] p {
+  color: var(--text-secondary);
+}
+
+[data-theme="light"] .text-muted {
+  color: var(--text-muted) !important;
+}
+/* Supprime la ligne globale [data-theme="light"] * { ... } */
+
+/* Mets uniquement le texte des boutons/checkbox cochés en noir */
+[data-theme="light"] input[type="radio"]:checked + label,
+[data-theme="light"] input[type="checkbox"]:checked + label,
+[data-theme="light"] button:focus,
+[data-theme="light"] button:active {
+  color: #000000 !important;
+}
+
+
+/* Utilisation des variables pour les sélecteurs */
+.nav-links a:hover {
+  background: var(--nav-link-hover);
+}
+
+.feature-card:hover {
+  box-shadow: var(--feature-card-shadow);
+}
+
+.logo-text {
+  background: var(--logo-text-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.section-header h2 {
+  background: var(--section-header-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Mise à jour des sélecteurs utilisant les variables de thème */
+body {
+  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 25%, var(--bg-tertiary) 50%, var(--bg-quaternary) 75%, var(--bg-quinary) 100%);
+  color: var(--text-primary);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+nav {
+  background: var(--nav-bg);
+  border-bottom: 1px solid var(--nav-border);
+}
+
+nav.scrolled {
+  background: var(--nav-bg);
+}
+
+.nav-links a {
+  color: var(--text-primary);
+}
+
+.nav-links a:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.hero-subtitle {
+  color: var(--text-secondary);
+}
+
+.scroll-indicator {
+  color: var(--text-muted);
+}
+
+.mouse {
+  border: 2px solid var(--text-muted);
+}
+
+.wheel {
+  background: var(--text-muted);
+}
+
+.features {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.section-header p {
+  color: var(--text-secondary);
+}
+
+.feature-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+}
+
+.feature-card:hover {
+  background: var(--card-bg);
+  border-color: var(--card-border);
+  box-shadow: 0 30px 60px var(--shadow-color), 0 0 50px rgba(99, 102, 241, 0.2);
+}
+
+.feature-card h3 {
+  color: var(--text-primary);
+}
+
+.feature-card p {
+  color: var(--text-secondary);
+}
+
+.how-it-works {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.step h3 {
+  color: var(--text-primary);
+}
+
+.step p {
+  color: var(--text-secondary);
+}
+
+.stats-section {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(34, 197, 94, 0.1));
+}
+
+.stat-item {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+}
+
+.stat-label {
+  color: var(--text-primary);
+}
+
+.stats-cta {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+}
+
+.community-text {
+  color: var(--text-secondary);
+}
+
+footer {
+  background: var(--footer-bg);
+  border-top: 1px solid var(--footer-border);
+}
+
+.footer-col h4 {
+  color: var(--text-primary);
+}
+
+.footer-col p {
+  color: var(--text-secondary);
+}
+
+.footer-col ul li a {
+  color: var(--text-secondary);
+}
+
+.footer-col ul li a:hover {
+  color: var(--text-primary);
+}
+
+.footer-bottom {
+  border-top: 1px solid var(--footer-border);
+  color: var(--text-muted);
+}
+
+/* Animation de transition pour le changement de thème */
+body, nav, .feature-card, .stat-item, .stats-cta {
+  transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease;
+}
+
+/* Style pour le bouton de changement de thème */
+.nav-right {
+  display: flex;
+  align-items: center;  /* centre verticalement */
+  gap: 1rem;            /* espace entre les éléments */
+}
+
+/* Optionnel : styliser le bouton pour qu'il s'intègre bien */
+.theme-btn {
+  background-color: var(--primary);
+  color: var(--text-primary);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.theme-btn:hover {
+  background-color: var(--primary-light);
+}
+
+/* Transition pour le changement de thème */
+html, body, nav, .feature-card, .stat-item, .stats-cta, 
+.footer-content, .footer-bottom, .step, .theme-btn {
+  transition: background-color 0.5s ease, 
+              color 0.5s ease, 
+              border-color 0.5s ease,
+              box-shadow 0.5s ease;
+}
+
+/* Le reste de votre CSS existant reste inchangé */
+.theme-btn:hover {
+  transform: scale(1.1);
+}
+
+
+body {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
+  background: url("../images/w1.png") no-repeat center center fixed;
+  background-size: cover;
+  
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
-
+/*
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #533483 100%);
@@ -27,7 +320,7 @@ body {
   color: white;
   position: relative;
 }
-
+*/
 /* Preloader */
 .preloader {
   position: fixed;
@@ -595,6 +888,107 @@ nav.scrolled {
   opacity: 0.7;
   filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.3));
 }
+
+
+/* Champs */
+.input-group {
+    display: flex;
+    align-items: center;
+    background: rgba(255,255,255,0.9);
+    margin: 12px 0;
+    border-radius: 12px;
+    padding: 12px 15px;
+    border: 1px solid rgba(255,255,255,0.3);
+    transition: all 0.3s ease;
+}
+
+.input-group:hover {
+    background: rgba(255,255,255,0.95);
+    transform: translateY(-1px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.input-group:focus-within {
+    background: rgba(255,255,255,1);
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 3px rgba(76,175,80,0.2);
+}
+
+.input-group i {
+    color: #4CAF50;
+    margin-right: 12px;
+    font-size: 1.2em;
+    min-width: 20px;
+    transition: color 0.3s ease;
+}
+
+.input-group:focus-within i {
+    color: #2E7D32;
+}
+
+.input-group input, 
+.input-group select {
+    border: none;
+    outline: none;
+    background: transparent;
+    width: 100%;
+    font-size: 1em;
+    color: #333;
+    font-weight: 500;
+}
+
+.input-group input::placeholder {
+    color: #666;
+    font-weight: 400;
+}
+
+/* Bouton */
+button {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    margin-top: 20px;
+    font-size: 1.1em;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(76,175,80,0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+button:hover {
+    background: linear-gradient(135deg, #45a049 0%, #3d8b40 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(76,175,80,0.4);
+}
+
+button:hover::before {
+    left: 100%;
+}
+
+button:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 15px rgba(76,175,80,0.3);
+}
+
+
+
 
 /* Animation d'entrée */
 @keyframes metricAppear {
@@ -1366,7 +1760,7 @@ footer {
   padding: 6px 15px;
   cursor: pointer;
   transition: all 0.3s ease;
-  color: rgb(187, 199, 18);
+  color: rgb(228, 229, 233);
   font-size: 14px;
 }
 
@@ -1465,4 +1859,48 @@ footer {
 
 .user-logged-in .user-info {
   display: block !important;
+}
+
+/* Styles pour les labels des checkbox et radio buttons */
+.checkbox-item span,
+.radio-item span {
+    color: #000000 !important;
+}
+
+
+
+/* Styles pour les labels des métriques */
+.metric-group label {
+    color: #000000 !important;
+}
+
+/* Styles pour les résultats */
+.imc, #results {
+    color: #000000 !important;
+}
+
+/* Styles pour les tableaux */
+th, td {
+    color: #000000 !important;
+}
+
+/* Styles pour les boutons de navigation utilisateur */
+.profile-toggle span {
+    color: #000000 !important;
+}
+
+.profile-dropdown-menu,
+.profile-header span,
+.profile-email,
+.profile-detail,
+.profile-action-btn {
+    color: #000000 !important;
+}
+
+/* Assurer la visibilité des icônes */
+.checkbox-item i,
+.radio-item i,
+.section h2 i,
+.metric-group label i {
+    color: #e6e5e5e8 !important;
 }

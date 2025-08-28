@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -35,8 +35,9 @@
                 <li><a href="/"><i class="fas fa-home"></i> Accueil</a></li>
                 <li><a href="/menus"><i class="fas fa-utensils"></i> Menus</a></li>
                 <li><a href="/nutrition"><i class="fas fa-apple-alt"></i> Nutrition</a></li>
+               
             </ul>
-      
+           
             <!-- SECTION UTILISATEUR (AJOUTEZ CE BLOC) -->
            <!-- SECTION UTILISATEUR (AJOUTEZ CE BLOC) -->
       <div class="user-nav-section">
@@ -211,6 +212,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="{{ url_for('static', filename='js/recettes.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
     <script>
         // Fonction pour mettre à jour la navbar avec les infos utilisateur
         function updateNavbarUserInfo(userData) {

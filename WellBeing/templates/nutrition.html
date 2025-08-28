@@ -3,7 +3,7 @@
 
 
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <title>Analyse nutritionnelle - WellBeing</title>
@@ -42,8 +42,9 @@
           <li><a href="/"><i class="fas fa-home"></i> Accueil</a></li>
           <li><a href="/menus"><i class="fas fa-utensils"></i> Menus</a></li>
           <li><a href="/nutrition"><i class="fas fa-apple-alt"></i> Nutrition</a></li>
+          <li><a href="/paiement"><i class="fas fa-crown"></i> Abonnement</a></li>
       </ul>
-
+     
       <!-- SECTION UTILISATEUR (AJOUTEZ CE BLOC) -->
      <!-- SECTION UTILISATEUR (AJOUTEZ CE BLOC) -->
 <div class="user-nav-section">
@@ -171,7 +172,8 @@
         </div>
       </div>
 
-      <!-- Menu Selection -->
+     <!-- Menu Selection -->
+     <!-- 
       <div class="section">
         <h2><i class="fas fa-utensils"></i> Sélectionnez vos 4 plats préférés</h2>
         <form id="menuForm" class="menus">
@@ -221,7 +223,7 @@
           </label>
         </form>
       </div>
-
+-->
       <!-- User Metrics -->
 <div class="user-metrics">
   <label for="inputPoids">Poids (kg) :</label>
@@ -304,6 +306,8 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
   <script src="{{ url_for('static', filename='js/nutrition.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+   
   <script>
     // Fonction pour mettre à jour la navbar avec les infos utilisateur
    // Fonction pour mettre à jour la navbar avec les infos utilisateur
@@ -418,14 +422,17 @@ function updateNavbarUserInfo(userData) {
                 e.stopPropagation();
             });
         }
+
+        
     });
     
     // Vérifier aussi après les interactions utilisateur
     setInterval(checkSessionAndUpdateNavbar, 30000); // Toutes les 30 secondes
+
+    
     </script>
 </body>
 </html>
-
 
 
 

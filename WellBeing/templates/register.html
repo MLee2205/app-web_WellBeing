@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-theme="dark" >
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- ✅ pour le responsive -->
@@ -9,7 +9,7 @@
     
    <link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
    
-
+  
 </head>
 
 
@@ -43,7 +43,7 @@
                
                 <li><a href="/login">Inscription</a></li>
             </ul>
-            
+           
             <div class="mobile-menu-btn">
                 <div class="menu-line"></div>
                 <div class="menu-line"></div>
@@ -168,7 +168,8 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
     <script src="{{ url_for('static', filename='js/register.js') }}"></script>
-    
+    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+   
     <script>
   window.onload = function () {
     const dateInput = document.getElementById('date_naissance');
@@ -179,5 +180,4 @@
 
 </body>
 </html>
-
 

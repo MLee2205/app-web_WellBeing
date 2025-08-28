@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -37,7 +37,7 @@
                     <li><a href="/menus">Menus</a></li>
                     <li><a href="/login" class="active">Connexion</a></li>
                 </ul>
-                
+              
                 <div class="mobile-menu-btn">
                     <div class="menu-line"></div>
                     <div class="menu-line"></div>
@@ -141,5 +141,7 @@
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
     <script src="{{ url_for('static', filename='js/connexion.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+   
 </body>
 </html>

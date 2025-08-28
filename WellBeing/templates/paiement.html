@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <title>Abonnement - WellBeing</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/paiement.css') }}">
+</head>
+<body>
+  <!-- Particles Background -->
+  <div id="particles-js"></div>
+
+  <!-- Navigation (identique à nutrition.html) -->
+  <nav id="navbar">
+    <div class="nav-container">
+        <a class="logo">
+            <img src="{{ url_for('static', filename='images/w10.jpeg') }}" alt="WellBeing Logo" class="logo-img">
+            WellBeing
+        </a>
+        
+        <ul class="nav-links">
+            <li><a href="/"><i class="fas fa-home"></i> Accueil</a></li>
+            <li><a href="/menus"><i class="fas fa-utensils"></i> Menus</a></li>
+            <li><a href="/nutrition"><i class="fas fa-apple-alt"></i> Nutrition</a></li>
+            <li><a href="/paiement"><i class="fas fa-crown"></i> Abonnement</a></li>
+        </ul>
+       
+        <!-- SECTION UTILISATEUR (AJOUTEZ CE BLOC) -->
+       <!-- SECTION UTILISATEUR (AJOUTEZ CE BLOC) -->
+  <div class="user-nav-section">
+    <!-- Boutons de connexion (affichés quand déconnecté) -->
+    <div class="auth-buttons" id="authButtons">
+        <a href="/login" class="btn-login"><i class="fas fa-sign-in-alt"></i> Connexion</a>
+        <a href="/register" class="btn-register"><i class="fas fa-user-plus"></i> Inscription</a>
+    </div>
+  
+    <!-- Infos utilisateur (affichées quand connecté) -->
+    <div class="user-info" id="userInfo" style="display: none;">
+        <div class="user-profile-dropdown">
+            <button class="profile-toggle">
+                <!-- Image de profil -->
+             <!--   <div class="profile-image-container">
+                    <img src="{{ url_for('static', filename='images/default-profile.png') }}" 
+                         alt="Photo de profil" 
+                         class="profile-image"
+                         id="profileImage">
+                    <div class="profile-image-overlay">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                </div> -->
+                <span id="userName">Profil</span>
+                <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="profile-dropdown-menu">
+                <div class="profile-header">
+                    <!-- Image dans le dropdown -->
+                    <div class="profile-image-dropdown">
+                        <img src="{{ url_for('static', filename='images/w1.png') }}" 
+                             alt="Photo de profil" 
+                             class="profile-image-large"
+                             id="dropdownProfileImage">
+                    </div>
+                    <div class="profile-info">
+                        <span id="dropdownUserName">Utilisateur</span>
+                        <span class="profile-email" id="dropdownUserEmail">email@exemple.com</span>
+                    </div>
+                </div>
+                <div class="profile-details">
+                    <div class="profile-detail">
+                        <i class="fas fa-weight"></i>
+                        <span id="dropdownUserWeight">-- kg</span>
+                    </div>
+                    <div class="profile-detail">
+                        <i class="fas fa-ruler-vertical"></i>
+                        <span id="dropdownUserHeight">-- cm</span>
+                    </div>
+                    <div class="profile-detail">
+                        <i class="fas fa-chart-line"></i>
+                        <span id="dropdownUserImc">IMC: --</span>
+                    </div>
+                </div>
+                <div class="profile-actions">
+                    <a href="/profil" class="profile-action-btn">
+                        <i class="fas fa-cog"></i> Modifier le profil
+                    </a>
+                    <button id="navLogoutBtn" class="profile-action-btn logout">
+                        <i class="fas fa-sign-out-alt"></i> Déconnexion
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+  
+        <div class="mobile-menu-btn">
+            <div class="menu-line"></div>
+            <div class="menu-line"></div>
+            <div class="menu-line"></div>
+        </div>
+    </div>
+  </nav>
+
+
+  <main class="main-wrapper">
+    <div class="nutrition-container">
+      <h1 class="calligraphy"><i class="fas fa-crown"></i> Choisissez votre abonnement</h1>
+      
+      <div class="subscription-plans">
+        <div class="subscription-card">
+          <h3>1 Mois</h3>
+          <div class="price">1000 FCFA</div>
+          <ul class="features">
+            <li><i class="fas fa-check"></i> Accès complet aux recettes</li>
+            <li><i class="fas fa-check"></i> Analyses nutritionnelles</li>
+            <li><i class="fas fa-check"></i> Support technique</li>
+          </ul>
+          <button class="subscription-btn" data-plan="1_mois">S'abonner</button>
+        </div>
+        
+        <div class="subscription-card popular">
+          <div class="popular-badge">Populaire</div>
+          <h3>3 Mois</h3>
+          <div class="price">7000 FCFA <span class="save">(Économisez 20%)</span></div>
+          <ul class="features">
+            <li><i class="fas fa-check"></i> Tous les avantages de 1 mois</li>
+            <li><i class="fas fa-check"></i> Accès anticipé aux nouvelles fonctionnalités</li>
+            <li><i class="fas fa-check"></i> Rapport nutritionnel mensuel</li>
+          </ul>
+          <button class="subscription-btn" data-plan="3_mois">S'abonner</button>
+        </div>
+        
+        <div class="subscription-card">
+          <h3>1 An</h3>
+          <div class="price">12000 FCFA <span class="save">(Économisez 33%)</span></div>
+          <ul class="features">
+            <li><i class="fas fa-check"></i> <span style="color: black; font-size: 1.2em;">Tous les avantages de 3 mois</span></li>
+            <li><i class="fas fa-check"></i> <span style="color: black; font-size: 1.2em;">Consultation nutritionnelle gratuite</span></li>
+            <li><i class="fas fa-check"></i> <span style="color: black; font-size: 1.2em;">Programme personnalisé</span></li>
+          </ul>
+          <button class="subscription-btn" data-plan="1_an">S'abonner</button>
+        </div>
+      </div>
+      
+      <div class="payment-methods">
+        <h3>Méthodes de paiement acceptées</h3>
+        <div class="payment-icons">
+          <i class="fab fa-cc-visa"></i>
+          <i class="fab fa-cc-mastercard"></i>
+          <i class="fab fa-cc-paypal"></i>
+          <i class="fas fa-mobile-alt"></i> <!-- Mobile Money -->
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer (identique à nutrition.html) -->
+  <footer>
+    <div class="footer-content">
+        <div class="footer-col">
+            <a class="logo">
+                <img src="{{ url_for('static', filename='images/w10.jpeg') }}" alt="WellBeing Logo" class="logo-img">
+                <span class="logo-text">WellBeing</span>
+            </a>
+            <p>L'avenir de la nutrition personnalisée grâce à l'intelligence artificielle. Transformez votre alimentation dès aujourd'hui.</p>
+            
+            <div class="social-links">
+                <a href="https://facebook.com" target="_blank" title="Facebook">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="https://wa.me/680588024" target="_blank" title="WhatsApp">
+                    <i class="fab fa-whatsapp"></i>
+                </a>
+                <a href="https://linkedin.com" target="_blank" title="LinkedIn">
+                    <i class="fab fa-linkedin-in"></i>
+                </a>
+                <a href="mailto:jecy.meffo@facsciences-uy1.cm" title="Email">
+                    <i class="fas fa-envelope"></i>
+                </a>
+            </div>
+        </div>
+        
+        <div class="footer-col">
+            <h4>Navigation</h4>
+            <ul>
+                <li><a href="/"><i class="fas fa-home"></i> Accueil</a></li>
+                <li><a href="/menus"><i class="fas fa-utensils"></i> Menus</a></li>
+                <li><a href="/login"><i class="fas fa-sign-in-alt"></i> Connexion</a></li>
+                
+            </ul>
+        </div>
+        
+        <div class="footer-col">
+            <h4>Fonctionnalités</h4>
+            <ul>
+                <li><a href="#"><i class="fas fa-brain"></i> IA Nutritionnelle</a></li>
+                <li><a href="#"><i class="fas fa-chart-line"></i> Suivi Nutritionnel</a></li>
+                <li><a href="#"><i class="fas fa-calculator"></i> Calcul IMC</a></li>
+                <li><a href="#"><i class="fas fa-shopping-cart"></i> Liste de Courses</a></li>
+            </ul>
+        </div>
+        
+        <div class="footer-col">
+            <h4>Contact</h4>
+            <ul>
+                <li><a href="mailto:jecy.meffo@facsciences-uy1.cm"><i class="fas fa-envelope"></i> jecy.meffo@facsciences-uy1.cm</a></li>
+                <li><a href="tel:+237680588024"><i class="fas fa-phone"></i> +237 6 80 58 80 24</a></li>
+                <li><a href="#"><i class="fas fa-map-marker-alt"></i> Yaoundé, Cameroun</a></li>
+                <li><a href="#"><i class="fas fa-clock"></i> Support 24/7</a></li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="footer-bottom">
+        <p>&copy; 2025 WellBeing. Tous droits réservés. Conçu  par MEFFO Lea</p>
+    </div>
+</footer>
+
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
+  <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/paiement.js') }}"></script>
+  <script>
+    // Code corrigé avec un seul écouteur DOMContentLoaded
+    document.addEventListener('DOMContentLoaded', function() {
+        // Gestionnaire pour les boutons d'abonnement
+        document.querySelectorAll('.subscription-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const plan = this.getAttribute('data-plan');
+                
+                // Simuler le processus de paiement
+                showModalAlert("Paiement en cours", "Veuillez patienter pendant le traitement de votre abonnement " + plan.replace('_', ' '), "info");
+                
+                // Après un délai, rediriger vers les recettes SANS sauvegarder l'abonnement
+                setTimeout(() => {
+                    // Récupérer les plats sélectionnés depuis l'URL ou le localStorage
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const plats = urlParams.get('plats') || localStorage.getItem('selected_plats') || '';
+                    
+                    // Redirection vers la page recettes
+                    window.location.href = `/recettes?plats=${plats}`;
+                }, 2000);
+            });
+        });
+        
+        // Fonction pour afficher les modals
+        function showModalAlert(title, message, type = "info") {
+            const modal = document.createElement("div");
+            modal.className = "custom-modal";
+            modal.innerHTML = `
+                <div class="modal-content ${type}">
+                    <div class="modal-icon">
+                        <i class="fas ${
+                            type === "error" ? "fa-times-circle" :
+                            type === "success" ? "fa-check-circle" :
+                            "fa-info-circle"
+                        }"></i>
+                    </div>
+                    <h2>${title}</h2>
+                    <p>${message}</p>
+                    <button id="modal-ok">OK</button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            modal.querySelector("#modal-ok").addEventListener("click", () => modal.remove());
+            modal.addEventListener("click", (e) => { if (e.target === modal) modal.remove(); });
+        }
+        
+        // Fonction pour mettre à jour la navbar avec les infos utilisateur
+        function updateNavbarUserInfo(userData) {
+            const userInfo = document.getElementById('userInfo');
+            const authButtons = document.getElementById('authButtons');
+            const userName = document.getElementById('userName');
+            const dropdownUserName = document.getElementById('dropdownUserName');
+            const dropdownUserEmail = document.getElementById('dropdownUserEmail');
+            const dropdownUserWeight = document.getElementById('dropdownUserWeight');
+            const dropdownUserHeight = document.getElementById('dropdownUserHeight');
+            const dropdownUserImc = document.getElementById('dropdownUserImc');
+            const profileImage = document.getElementById('profileImage');
+            const dropdownProfileImage = document.getElementById('dropdownProfileImage');
+            
+            if (userData && userData.name) {
+                // Afficher les infos utilisateur et cacher les boutons auth
+                userInfo.style.display = 'block';
+                authButtons.style.display = 'none';
+                
+                // Mettre à jour le nom
+                userName.textContent = userData.name;
+                dropdownUserName.textContent = userData.name;
+                dropdownUserEmail.textContent = userData.email || 'email@exemple.com';
+                
+                // Mettre à jour les autres infos
+                dropdownUserWeight.textContent = userData.poids ? `${userData.poids} kg` : '-- kg';
+                dropdownUserHeight.textContent = userData.taille ? `${userData.taille} cm` : '-- cm';
+                
+                // Calculer et afficher l'IMC si disponible
+                if (userData.poids && userData.taille) {
+                    const imc = (userData.poids / ((userData.taille/100) ** 2)).toFixed(1);
+                    dropdownUserImc.textContent = `IMC: ${imc}`;
+                } else {
+                    dropdownUserImc.textContent = 'IMC: N/A';
+                }
+                
+                // Mettre à jour l'image de profil si disponible
+                if (userData.profile_image) {
+                    profileImage.src = userData.profile_image;
+                    dropdownProfileImage.src = userData.profile_image;
+                }
+                
+                // Ajouter une classe pour le style quand connecté
+                document.body.classList.add('user-logged-in');
+            } else {
+                // Cacher les infos utilisateur et afficher les boutons auth
+                userInfo.style.display = 'none';
+                authButtons.style.display = 'flex';
+                document.body.classList.remove('user-logged-in');
+            }
+        }
+        
+        // Fonction pour vérifier la session
+        function checkSessionAndUpdateNavbar() {
+            fetch('/api/check_session')
+            .then(response => response.json())
+            .then(data => {
+                if (data.logged_in) {
+                    // Récupérer les données complètes du profil
+                    fetch(`/api/profile/${data.user_id}`)
+                    .then(res => res.json())
+                    .then(userData => {
+                        updateNavbarUserInfo(userData);
+                    })
+                    .catch(err => {
+                        console.log('Erreur chargement profil:', err);
+                    });
+                } else {
+                    updateNavbarUserInfo(null);
+                }
+            })
+            .catch(error => {
+                console.log('Erreur vérification session:', error);
+                updateNavbarUserInfo(null);
+            });
+        }
+        
+        // Vérifier la session au chargement
+        checkSessionAndUpdateNavbar();
+        
+        // Gérer le bouton de déconnexion
+        const navLogoutBtn = document.getElementById('navLogoutBtn');
+        if (navLogoutBtn) {
+            navLogoutBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                fetch('/api/logout')
+                .then(response => {
+                    if (response.redirected) {
+                        window.location.href = response.url;
+                    } else {
+                        return response.json();
+                    }
+                })
+                .then(data => {
+                    if (data && data.success) {
+                        window.location.href = '/';
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur déconnexion:', error);
+                    window.location.href = '/';
+                });
+            });
+        }
+        
+        // Empêcher la fermeture du dropdown quand on clique dessus
+        const dropdownMenu = document.querySelector('.profile-dropdown-menu');
+        if (dropdownMenu) {
+            dropdownMenu.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+        }
+        
+        // Vérifier périodiquement la session
+        setInterval(checkSessionAndUpdateNavbar, 30000); // Toutes les 30 secondes
+    });
+</script>
+</body>
+</html>

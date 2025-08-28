@@ -5,6 +5,7 @@ from .routes import user as user_routes  # Import relatif
 from .routes import menus as menu_routes
 from .routes import nutrition as nutrition_routes
 from .routes import recettes as recettes_routes
+from .routes import paiement as paiement_routes
 #from routes import logout as logout_routes  # ajoute ce import
 
 # dans create_app()
@@ -44,6 +45,7 @@ def create_app():
     app.register_blueprint(menu_routes.bp, url_prefix='/api')
     app.register_blueprint(nutrition_routes.bp, url_prefix='/api')
     app.register_blueprint(recettes_routes.bp, url_prefix='/api')
+    app.register_blueprint(paiement_routes.bp, url_prefix='/api')
     #app.register_blueprint(user_routes.bp,url_prefix='/api')  
     #app.register_blueprint(courses_routes.bp)
     
@@ -86,6 +88,12 @@ def create_app():
     @app.errorhandler(500)
     def internal_error(error):
         return render_template('500.html'), 500
+        
+    @app.route('/paiement')
+    def paiement():
+        plats = request.args.get('plats', '')
+        return render_template('paiement.html', plats=plats)
+   
     
     
     

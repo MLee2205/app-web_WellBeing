@@ -9,106 +9,22 @@ from datetime import datetime,date
 import re
 
 bp = Blueprint('nutrition', __name__)
-genai.configure(api_key=os.environ.get('GEMINI_API_KEY'))
 
-# Menus prédéfinis par IMC
-# Menus prédéfinis par IMC - Structure complète avec tous les repas
-menus_par_imc = {
-    "Insuffisance pondérale": {
-        "petit_dejeuner": [
-            {"name": "Pain complet au beurre", "calories": 250, "protein": 8, "carbs": 35, "fat": 10},
-            {"name": "Lait chocolaté", "calories": 200, "protein": 8, "carbs": 28, "fat": 6}
-        ],
-        "dejeuner": [
-            {"name": "Poulet DG", "calories": 500, "protein": 35, "carbs": 50, "fat": 20},
-            {"name": "Riz sauté aux légumes", "calories": 450, "protein": 15, "carbs": 65, "fat": 12}
-        ],
-        "gouter": [
-            {"name": "Avocat et toasts", "calories": 350, "protein": 10, "carbs": 40, "fat": 18}
-        ],
-        "diner": [
-            {"name": "Spaghetti bolognaise", "calories": 550, "protein": 30, "carbs": 70, "fat": 18},
-            {"name": "Salade César", "calories": 400, "protein": 25, "carbs": 20, "fat": 15}
-        ],
-        "collation": [
-            {"name": "Smoothie banane lait d'amande", "calories": 300, "protein": 8, "carbs": 50, "fat": 6},
-            {"name": "Yaourt aux fruits", "calories": 150, "protein": 6, "carbs": 20, "fat": 4}
-        ]
-    },
-    "Poids normal": {
-        "petit_dejeuner": [
-            {"name": "Pain complet confiture", "calories": 200, "protein": 6, "carbs": 40, "fat": 4},
-            {"name": "Café au lait", "calories": 100, "protein": 4, "carbs": 8, "fat": 4}
-        ],
-        "dejeuner": [
-            {"name": "Poisson braisé", "calories": 400, "protein": 35, "carbs": 10, "fat": 15},
-            {"name": "Riz complet", "calories": 200, "protein": 5, "carbs": 45, "fat": 2}
-        ],
-        "gouter": [
-            {"name": "Fruit frais", "calories": 80, "protein": 1, "carbs": 18, "fat": 0}
-        ],
-        "diner": [
-            {"name": "Poulet grillé", "calories": 350, "protein": 40, "carbs": 5, "fat": 12},
-            {"name": "Brocolis vapeur", "calories": 50, "protein": 3, "carbs": 10, "fat": 0}
-        ],
-        "collation": [
-            {"name": "Pomme sautée", "calories": 80, "protein": 0, "carbs": 20, "fat": 0}
-        ]
-    },
-    "Surpoids": {
-        "petit_dejeuner": [
-            {"name": "Pain complet léger", "calories": 150, "protein": 5, "carbs": 25, "fat": 3},
-            {"name": "Thé vert", "calories": 5, "protein": 0, "carbs": 1, "fat": 0}
-        ],
-        "dejeuner": [
-            {"name": "Filet de poulet grillé", "calories": 300, "protein": 40, "carbs": 0, "fat": 10},
-            {"name": "Salade verte", "calories": 150, "protein": 5, "carbs": 10, "fat": 7}
-        ],
-        "gouter": [
-            {"name": "Fruit frais", "calories": 80, "protein": 1, "carbs": 18, "fat": 0}
-        ],
-        "diner": [
-            {"name": "Poisson vapeur", "calories": 250, "protein": 35, "carbs": 0, "fat": 8},
-            {"name": "Légumes grillés", "calories": 100, "protein": 3, "carbs": 15, "fat": 4}
-        ],
-        "collation": [
-            {"name": "Yaourt nature", "calories": 80, "protein": 6, "carbs": 10, "fat": 2}
-        ]
-    },
-    "Obésité": {
-        "petit_dejeuner": [
-            {"name": "Pain complet (1 tranche)", "calories": 100, "protein": 4, "carbs": 18, "fat": 2},
-            {"name": "Thé sans sucre", "calories": 2, "protein": 0, "carbs": 0, "fat": 0}
-        ],
-        "dejeuner": [
-            {"name": "Poisson vapeur", "calories": 250, "protein": 35, "carbs": 0, "fat": 8},
-            {"name": "Salade verte sans sauce grasse", "calories": 100, "protein": 3, "carbs": 10, "fat": 4}
-        ],
-        "gouter": [
-            {"name": "Pomme", "calories": 80, "protein": 0, "carbs": 20, "fat": 0}
-        ],
-        "diner": [
-            {"name": "Blanc de dinde grillé", "calories": 200, "protein": 35, "carbs": 0, "fat": 6},
-            {"name": "Brocolis vapeur", "calories": 50, "protein": 3, "carbs": 10, "fat": 0}
-        ],
-        "collation": [
-            {"name": "Carottes râpées", "calories": 80, "protein": 2, "carbs": 15, "fat": 1}
-        ]
-    }
+# Menus prédéfinis avec informations nutritionnelles
+menu_details = {
+    'Poulet DG': {'calories': 500, 'protein': 40, 'carbs': 30, 'fat': 25},
+    'Ndolé': {'calories': 650, 'protein': 30, 'carbs': 70, 'fat': 20},
+    'Kondre': {'calories': 450, 'protein': 18, 'carbs': 55, 'fat': 15},
+    'Taro': {'calories': 750, 'protein': 27, 'carbs': 88, 'fat': 23},
+    'Poisson braisé': {'calories': 400, 'protein': 35, 'carbs': 10, 'fat': 15},
+    'Spaghetti': {'calories': 550, 'protein': 30, 'carbs': 70, 'fat': 18},
+    'Brochette de bœuf': {'calories': 550, 'protein': 32, 'carbs': 65, 'fat': 17},
+    'Macabo rappé': {'calories': 350, 'protein': 15, 'carbs': 45, 'fat': 12},
+    'Soupe de gombo': {'calories': 400, 'protein': 18, 'carbs': 50, 'fat': 12},
+    'Eru et waterfufu': {'calories': 700, 'protein': 28, 'carbs': 85, 'fat': 22}
 }
 
-# Mapping pour les catégories d'IMC
-IMC_CATEGORY_MAPPING = {
-    "Anorexie ou dénutrition": "Insuffisance pondérale",
-    "Maigreur": "Insuffisance pondérale", 
-    "Corpulence normale": "Poids normal",
-    "Surpoids": "Surpoids",
-    "Obésité modérée (Classe 1)": "Obésité",
-    "Obésité élevé (Classe 2)": "Obésité",
-    "Obésité morbide ou massive": "Obésité"
-}
-
-
+# --- Fonctions utilitaires ---
 def interpret_imc(imc):
     """Interpréter l'IMC selon la classification complète de l'OMS"""
     if imc < 16:
@@ -116,7 +32,7 @@ def interpret_imc(imc):
     elif imc < 16.5:
         return "Maigreur"
     elif imc < 18.5:
-        return "Maigreur"  # Entre 16.5 et 18.5
+        return "Maigreur"
     elif imc < 25:
         return "Corpulence normale"
     elif imc < 30:
@@ -125,18 +41,16 @@ def interpret_imc(imc):
         return "Obésité modérée (Classe 1)"
     elif imc < 40:
         return "Obésité élevé (Classe 2)"
-    else:  # imc >= 40
+    else:
         return "Obésité morbide ou massive"
 
 def calculer_imc(poids, taille):
-    """Calculer l'IMC - Fonction pure indépendante de l'IA"""
     if not poids or not taille or taille <= 0 or poids <= 0:
         return None
-    
     imc = poids / ((taille/100) ** 2)
     return {
         "poids": poids,
-        "taille": taille, 
+        "taille": taille,
         "imc": round(imc, 2),
         "interpretation": interpret_imc(imc)
     }
@@ -193,39 +107,26 @@ def get_user_complete_data(user_id):
         print(f"[WARNING] Erreur récupération données utilisateur {user_id}: {e}")
         return user_data
 
-def get_menu_fallback(categorie_imc):
-    """Obtenir un menu de fallback structuré basé sur la catégorie IMC"""
-    
-    # Mapper la catégorie IMC détaillée vers les catégories de menus
-    categorie_menu = IMC_CATEGORY_MAPPING.get(categorie_imc, "Poids normal")
-    
-    # Récupérer le menu pour cette catégorie
-    menu_structure = menus_par_imc.get(categorie_menu, menus_par_imc["Poids normal"])
-    
-    # Calculer le total des calories
-    total_calories = 0
-    for repas_items in menu_structure.values():
-        total_calories += sum(item["calories"] for item in repas_items)
-    
-    print(f"[INFO] Menu fallback généré pour {categorie_imc} -> {categorie_menu}, Total: {total_calories} kcal")
-    
-    return menu_structure, total_calories
-
-def parse_ai_response(text):
-    """Parser la réponse de l'IA pour extraire le JSON"""
+# --- Chargement des modèles et des fichiers de prétraitement ---
+def load_assets():
     try:
-        # Essayer de parser directement
-        return json.loads(text)
-    except json.JSONDecodeError:
-        try:
-            # Chercher un JSON dans le texte
-            match = re.search(r'\{.*\}', text, re.DOTALL)
-            if match:
-                return json.loads(match.group())
-        except json.JSONDecodeError:
-            pass
-    return None
+        model = joblib.load('ML_menu/best_mlp_model.pkl')
+        scaler = joblib.load('ML_menu/scaler.pkl')
+        le_y = joblib.load('ML_menu/label_encoder_y.pkl')
+        df_base = pd.read_csv("ML_menu/fich_pretraitement_final.csv")
+        print("[INFO] Modèles ML chargés avec succès")
+        return model, scaler, le_y, df_base
+    except FileNotFoundError as e:
+        print(f"[ERROR] Erreur de chargement de fichier ML: {e}")
+        return None, None, None, None
+    except Exception as e:
+        print(f"[ERROR] Erreur inattendue lors du chargement ML: {e}")
+        return None, None, None, None
 
+# Charger les assets au démarrage
+model, scaler, le_y, df_base = load_assets()
+
+# --- Route GET pour la page nutrition ---
 @bp.route('/nutrition', methods=['GET'])
 def nutrition_page():
     try:
@@ -233,43 +134,48 @@ def nutrition_page():
         user_data = get_user_complete_data(user_id)
         
         return render_template('nutrition.html', 
-                             poids=user_data['poids'], 
-                             taille=user_data['taille'],
-                             age=user_data['age'],
-                             sexe=user_data['sexe'])
+                               poids=user_data['poids'], 
+                               taille=user_data['taille'],
+                               age=user_data['age'],
+                               sexe=user_data['sexe'])
     except Exception as e:
         print("[ERROR] Exception nutrition_page:", e)
         return "Erreur chargement page nutrition", 500
 
+# --- Endpoint de prédiction avec le modèle ML ---
 @bp.route('/nutrition', methods=['POST'])
-def nutrition_analysis():
+def predict_nutrition():
+    if model is None or scaler is None or le_y is None or df_base is None:
+        print("[ERROR] Modèles ML non disponibles")
+        return jsonify({"error": "Modèles ou fichiers de données manquants."}), 500
+
     try:
         # Vérifier que la requête est bien JSON
         if not request.is_json:
             print("[ERROR] Requête non JSON. Headers:", dict(request.headers))
-            print("[ERROR] Body brut:", request.get_data(as_text=True))
             return jsonify({"error": "Requête attendue en JSON (Content-Type: application/json)"}), 400
 
         data = request.get_json(silent=True)
         if data is None:
-            print("[ERROR] request.get_json() a renvoyé None. Body brut:", request.get_data(as_text=True))
+            print("[ERROR] request.get_json() a renvoyé None")
             return jsonify({"error": "JSON manquant ou mal formé"}), 400
 
-        # Extraire en sécurité
-        preferences = data.get('preferences') or []
-        menu_original = data.get('menu_original') or []
+        print("[DEBUG] Données reçues:", data)
+        
+        # Récupération des données utilisateur
         poids = data.get('poids')
         taille = data.get('taille')
-        fasting = data.get('fasting') or {}
-        fasting_type = fasting.get('type', "")
-        fasting_start = fasting.get('start', "")
-        fasting_end = fasting.get('end', "")
+        fasting_data = data.get('fasting') or {}
+        fasting_type = fasting_data.get('type', '') if fasting_data else ''
+        fasting_start = fasting_data.get('start', '') if fasting_data else ''
+        fasting_end = fasting_data.get('end', '') if fasting_data else ''
+        preferences = data.get('preferences', [])
         user_id = session.get('user_id') or data.get('user_id') or 1
 
-        # Récupérer TOUTES les données utilisateur
+        # Récupérer les données utilisateur complètes
         user_data = get_user_complete_data(user_id)
 
-        # Calcul IMC — priorité aux valeurs envoyées, sinon celles de l'utilisateur
+        # Calcul de l'IMC — priorité aux valeurs envoyées
         def to_number(x):
             try:
                 return float(x) if x is not None else None
@@ -287,102 +193,195 @@ def nutrition_analysis():
             return jsonify({'error': 'Impossible de calculer l\'IMC avec les données fournies'}), 400
 
         print(f"[INFO] IMC calculé: {imc_info}")
-        print(f"[INFO] Données utilisateur complètes: {user_data}")
 
-        # Préparer prompt amélioré pour l'IA avec TOUTES les données
-        prompt = f"""Tu es un nutritionniste IA spécialisé dans l'adaptation de menus personnalisés.
+        # Récupérer l'âge et le sexe depuis les données utilisateur ou fallback
+        age = user_data.get('age')
+        sexe = user_data.get('sexe', 'Non renseigné')
+        
+        # Convertir âge en nombre si c'est une chaîne
+        if isinstance(age, str) and age != 'Non renseigné':
+            try:
+                age = int(age)
+            except ValueError:
+                age = 30  # Fallback
+        elif age == 'Non renseigné' or age is None:
+            age = 30  # Fallback
+        
+        # Convertir sexe pour le modèle
+        if sexe == 'Non renseigné':
+            sexe = 'homme'  # Fallback
+        
+        print(f"[INFO] Données pour ML - Age: {age}, Sexe: {sexe}")
 
-PROFIL UTILISATEUR COMPLET :
-- Sexe : {user_data['sexe']}
-- Âge : {user_data['age']} ans
-- Taille : {imc_info['taille']} cm
-- Poids : {imc_info['poids']} kg
-- IMC : {imc_info['imc']} ({imc_info['interpretation']})
+        # Préparation des données pour le modèle
+        # Créer une ligne avec des valeurs par défaut
+        dummy_row = pd.DataFrame(columns=df_base.columns)
+        dummy_row.loc[0, :] = 0
+        
+        # Remplir les données de base
+        dummy_row.loc[0, 'sexe'] = 1 if sexe.lower() == 'femme' else 0
+        dummy_row.loc[0, 'taille'] = taille_num
+        dummy_row.loc[0, 'poids'] = poids_num
+        dummy_row.loc[0, 'age'] = age
+        dummy_row.loc[0, 'imc'] = imc_info['imc']
+        
+        # Encodage de l'interprétation IMC
+        interpretation_imc = imc_info['interpretation'].replace(" ", "_").replace("(", "").replace(")", "")
+        imc_col = f'interpretation_imc_{interpretation_imc}'
+        if imc_col in dummy_row.columns:
+            dummy_row.loc[0, imc_col] = 1
 
-PRÉFÉRENCES ALIMENTAIRES : {preferences if preferences else "Aucune restriction particulière"}
+        # Encodage du type de jeûne
+        if fasting_type:
+            fasting_col = f'type_jeun_{fasting_type}'
+            if fasting_col in dummy_row.columns:
+                dummy_row.loc[0, fasting_col] = 1
 
-MENU ORIGINAL CHOISI PAR L'UTILISATEUR : {menu_original}
+        # Encodage de l'horaire de jeûne
+        def get_fasting_hours(start, end):
+            if not start or not end:
+                return "Aucun"
+            try:
+                start_hour = int(start.split(':')[0])
+                end_hour = int(end.split(':')[0])
+                
+                if start_hour == 20 and end_hour == 8: return '20h_8h'
+                if start_hour == 19 and end_hour == 7: return '19h_7h'
+                if start_hour == 18 and end_hour == 8: return '18h_8h'
+                
+                return "Aucun"
+            except:
+                return "Aucun"
 
-PARAMÈTRES DE JEÛNE :
-- Type de jeûne : {fasting_type if fasting_type else "Aucun jeûne"}
-- Horaires : de {fasting_start} à {fasting_end}
+        horaire_jeun = get_fasting_hours(fasting_start, fasting_end)
+        horaire_col = f'horaire_jeun_{horaire_jeun}'
+        if horaire_col in dummy_row.columns:
+            dummy_row.loc[0, horaire_col] = 1
 
-INSTRUCTIONS IMPORTANTES :
-1. Adapte le menu selon le profil utilisateur (âge, sexe, IMC)
-2. Respecte strictement les préférences alimentaires
-3. Si un jeûne est programmé, adapte les portions et le timing
-4. Assure-toi que les apports nutritionnels correspondent aux besoins selon l'âge et le sexe
+        # Encodage des préférences
+        for pref in preferences:
+            pref_col = f'preferences_alimentaires_{pref.replace(" ", "_")}'
+            if pref_col in dummy_row.columns:
+                dummy_row.loc[0, pref_col] = 1
+        
+        # --- DÉBUT DU CORRECTIF ---
+        # Le modèle et le scaler ont été entraînés sur un DataFrame qui ne contient pas les colonnes brutes
+        # comme 'sexe', 'taille', 'poids', etc., mais seulement les colonnes encodées.
+        # Il faut donc les retirer avant de faire la prédiction.
+        features_to_drop = ['sexe', 'taille', 'poids', 'age', 'imc']
+        X_predict = dummy_row.drop(columns=features_to_drop, errors='ignore')
 
-FORMAT DE RÉPONSE OBLIGATOIRE (JSON uniquement) :
-{{
-  "petit_dejeuner": [{{"name":"Plat", "calories":X,"protein":Y,"carbs":Z,"fat":W}}],
-  "dejeuner": [{{"name":"Plat", "calories":X,"protein":Y,"carbs":Z,"fat":W}}],
-  "gouter": [{{"name":"Plat", "calories":X,"protein":Y,"carbs":Z,"fat":W}}],
-  "diner": [{{"name":"Plat", "calories":X,"protein":Y,"carbs":Z,"fat":W}}],
-  "collation": [{{"name":"Plat", "calories":X,"protein":Y,"carbs":Z,"fat":W}}],
-  "total_calories": 2000
-}}
+        # Il faut aussi enlever la colonne cible 'menu_encoded' si elle existe
+        X_predict = X_predict.drop(columns=['menu_encoded'], errors='ignore')
+        # --- FIN DU CORRECTIF ---
+
+        # Scaling et prédiction
+        X_predict_scaled = scaler.transform(X_predict)
+        predicted_menu_encoded = model.predict(X_predict_scaled)
+        predicted_menu_name = le_y.inverse_transform(predicted_menu_encoded)[0]
+
+        print(f"[INFO] Menu prédit par ML: {predicted_menu_name}")
+
+        # Récupération des informations nutritionnelles
+        menu_info = menu_details.get(predicted_menu_name, {'calories': 500, 'protein': 20, 'carbs': 50, 'fat': 15})
+
+        # Structure de menu complète (compatible avec l'ancien format)
+        menu_structure = {
+           "repas": [{
+                   "name": predicted_menu_name,
+                   "calories": menu_info['calories'],
+                   "protein": menu_info['protein'],
+                   "carbs": menu_info['carbs'],
+                   "fat": menu_info['fat']
+    }]
+}
 
 
+        # Calculer total calories
+        total_calories = sum(item["calories"] for repas in menu_structure.values() for item in repas)
 
-Réponds STRICTEMENT avec ce format JSON, rien d'autre.
-"""
-
-        # Appel IA (avec fallback)
-        menu_final = None
-        total_calories = 0
-        raw_response = ""
-        source_menu = "fallback"
-
-        try:
-            print("[INFO] Envoi prompt personnalisé à Gemini...")
-            model = genai.GenerativeModel('gemini-1.5-flash-latest')
-            response = model.generate_content(prompt)
-            raw_response = getattr(response, 'text', str(response)).strip()
-            print(f"[DEBUG] Réponse IA brute: {raw_response}")
-
-            parsed_response = parse_ai_response(raw_response)
-            if parsed_response and isinstance(parsed_response, dict):
-            # Vérifier qu'il contient bien les repas
-                repas_keys = ["petit_dejeuner", "dejeuner", "gouter", "diner", "collation"]
-                if any(key in parsed_response for key in repas_keys):
-                    menu_final = {k: parsed_response.get(k, []) for k in repas_keys}
-                    total_calories = parsed_response.get(
-                        "total_calories",
-                        sum(item.get("calories", 0) for repas in menu_final.values() for item in repas)
-                    )
-                    source_menu = "IA"
-                    print("[SUCCESS] Plan de repas généré par l'IA")
-                else:
-                 raise ValueError("Réponse IA invalide ou incomplète")
-
-        except Exception as e:
-            print(f"[WARNING] Erreur IA: {e}, utilisation du menu de fallback")
-            menu_final, total_calories = get_menu_fallback(imc_info['interpretation'])
-            raw_response = f"Erreur IA ({str(e)}), menu de fallback utilisé"
-            source_menu = "fallback"
-
-        # Historique IMC simulé (à remplacer par vraies données)
+        # Historique IMC simulé
         historique_imc = [
             {"date": "2025-06-01", "imc": 21.5},
             {"date": "2025-06-15", "imc": 22.0},
             {"date": "2025-07-01", "imc": 21.8}
         ]
 
-        return jsonify({
+        # Structure de réponse compatible avec le JavaScript
+        response_data = {
             "imc_info": imc_info,
-            "user_data": user_data,  # Inclure les données utilisateur dans la réponse
+            "user_data": {
+                "sexe": sexe,
+                "age": age,
+                "poids": poids_num,
+                "taille": taille_num
+            },
             "imc_history": historique_imc,
-            "nutrition": menu_final,
+            "nutrition": menu_structure,
             "total_calories": total_calories,
-            "raw_response": raw_response,
-            "categorie": imc_info['interpretation'],
-            "source_menu": source_menu
-        })
-
+            "source_menu": "IA",
+            "raw_response": f"Menu prédit par modèle ML: {predicted_menu_name}",
+            "categorie": imc_info['interpretation']
+        }
+        
+        print("[SUCCESS] Réponse ML générée avec succès")
+        return jsonify(response_data)
+        
     except Exception as e:
         import traceback
-        print(f"[ERROR] Exception générale: {e}", flush=True)
+        print(f"[ERROR] Exception dans predict_nutrition: {str(e)}")
         traceback.print_exc()
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': f'Erreur interne: {str(e)}'}), 500
+
+def load_assets():
+    try:
+        # Afficher le répertoire courant
+        current_dir = os.getcwd()
+        print(f"[INFO] Répertoire courant: {current_dir}")
+        
+        # Lister les fichiers dans le répertoire
+        files = os.listdir()
+        print(f"[INFO] Fichiers présents: {files}")
+        
+        # Chemins absolus pour debug
+        model_path = os.path.abspath('best_random_forest_model.pkl')
+        scaler_path = os.path.abspath('scaler_rf.pkl')
+        le_y_path = os.path.abspath('label_encoder_y.pkl')
+        csv_path = os.path.abspath('fich_pretraitement_final.csv')
+        
+        print(f"[INFO] Chemins recherchés:")
+        print(f"  - Modèle: {model_path}")
+        print(f"  - Scaler: {scaler_path}")
+        print(f"  - LabelEncoder: {le_y_path}")
+        print(f"  - CSV: {csv_path}")
+        
+        # Vérifier l'existence des fichiers
+        for path in [model_path, scaler_path, le_y_path, csv_path]:
+            if os.path.exists(path):
+                print(f"[OK] Fichier trouvé: {path}")
+            else:
+                print(f"[ERROR] Fichier introuvable: {path}")
+        
+        model = joblib.load('best_mlp_model.pkl')
+        scaler = joblib.load('scaler.pkl')
+        le_y = joblib.load('label_encoder_y.pkl')
+        df_base = pd.read_csv("fich_pretraitement_final.csv")
+        
+        print("[SUCCESS] Modèles ML chargés avec succès")
+        return model, scaler, le_y, df_base
+        
+    except FileNotFoundError as e:
+        print(f"[ERROR] Erreur de chargement de fichier ML: {e}")
+        return None, None, None, None
+    except Exception as e:
+        print(f"[ERROR] Erreur inattendue lors du chargement ML: {e}")
+        import traceback
+        traceback.print_exc()
+        return None, None, None, None
+
+@bp.route('/paiement')
+def paiement_page():
+    plats = request.args.get('plats', '')
+    return render_template('paiement.html', plats=plats)
+
 

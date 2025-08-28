@@ -4,6 +4,7 @@ from ..models.user import db, User
 from functools import wraps
 from datetime import datetime
 
+
 bp = Blueprint('user', __name__)
 
 @bp.route('/check_session', methods=['GET'])

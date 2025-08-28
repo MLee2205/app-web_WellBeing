@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
       });
   }
 
- });
+});
 
 
 // ✅ Fonction de boîte de dialogue réutilisable
@@ -218,10 +218,7 @@ document.getElementById('calculateBtn').addEventListener('click', () => {
   const prefs = Array.from(document.querySelectorAll('input[name="preferences"]:checked')).map(el => el.value);
   const menus = Array.from(document.querySelectorAll('input[name="menu"]:checked')).map(el => el.value);
 
-  if (menus.length < 1) {
-    showModalAlert("Sélection requise ❗", "Merci de sélectionner au moins un plat.", "error");
-    return;
-  }
+  
 
   const poids = parseFloat(document.getElementById('inputPoids').value);
   const taille = parseFloat(document.getElementById('inputTaille').value);
@@ -315,35 +312,25 @@ document.getElementById('calculateBtn').addEventListener('click', () => {
         html += `<h2>Menu adapté ${sourceIcon} <small>(${sourceText})</small></h2>`;
         
         // Afficher chaque repas séparément
-        const repasKeys = ["petit_dejeuner", "dejeuner", "gouter", "diner", "collation"];
-        
-        repasKeys.forEach(repasKey => {
-          if (data.nutrition[repasKey] && data.nutrition[repasKey].length > 0) {
-            // Traduire le nom du repas
-            const repasNames = {
-              "petit_dejeuner": "Petit-déjeuner",
-              "dejeuner": "Déjeuner",
-              "gouter": "Goûter",
-              "diner": "Dîner",
-              "collation": "Collation"
-            };
-            
-            html += `<h3 style="margin-top: 20px; color: #6366f1;">${repasNames[repasKey] || repasKey}</h3>`;
-            html += "<table><tr><th>Plat</th><th>Calories</th><th>Protéines</th><th>Glucides</th><th>Lipides</th></tr>";
-            
-            data.nutrition[repasKey].forEach(item => {
-              html += `<tr>
-                <td>${item.name || 'N/A'}</td>
-                <td>${item.calories || 0}</td>
-                <td>${item.protein || 0}g</td>
-                <td>${item.carbs || 0}g</td>
-                <td>${item.fat || 0}g</td>
-              </tr>`;
-            });
-            
-            html += "</table>";
-          }
-        });
+        // Afficher uniquement le déjeuner
+const repasKey = "repas";
+if (data.nutrition[repasKey] && data.nutrition[repasKey].length > 0) {
+  html += `<h3 style="margin-top: 20px; color: #6366f1;">Déjeuner</h3>`;
+  html += "<table><tr><th>Plat</th><th>Calories</th><th>Protéines</th><th>Glucides</th><th>Lipides</th></tr>";
+  
+  data.nutrition[repasKey].forEach(item => {
+    html += `<tr>
+      <td>${item.name || 'N/A'}</td>
+      <td>${item.calories || 0}</td>
+      <td>${item.protein || 0}g</td>
+      <td>${item.carbs || 0}g</td>
+      <td>${item.fat || 0}g</td>
+    </tr>`;
+  });
+  
+  html += "</table>";
+}
+
       
         if (data.total_calories) {
           html += `<p style="margin-top: 20px;"><strong>Total calories:</strong> ${data.total_calories} kcal</p>`;
@@ -378,14 +365,17 @@ if (data.nutrition && Object.keys(data.nutrition).length > 0) {
 } else {
   platsParam = menus.map(p => encodeURIComponent(p)).join(',');
 }
-      if (platsParam) {
-        html += `<p style="margin-top:15px;">
-          <a href="/recettes?plats=${platsParam}" class="btn" 
-             style="background:#2196F3; color:white; padding:8px 15px; border-radius:5px; text-decoration:none;">
-            Continuer vers les recettes 🍽️
-          </a>
-        </p>`;
-      }
+if (platsParam) {
+  // Stocker les plats sélectionnés dans le localStorage
+  localStorage.setItem('selected_plats', platsParam);
+  
+  html += `<p style="margin-top:15px;">
+    <button onclick="checkSubscriptionAndRedirect('${platsParam}')" class="btn" 
+       style="background:#2196F3; color:white; padding:8px 15px; border-radius:5px; text-decoration:none; border:none; cursor:pointer;">
+      Continuer vers les recettes 🍽️
+    </button>
+  </p>`;
+}
 
       document.getElementById('results').innerHTML = html;
     })
@@ -531,7 +521,48 @@ document.addEventListener('DOMContentLoaded', () => {
     metricsDiv.parentNode.insertBefore(infoDiv, metricsDiv.nextSibling);
   }
 });
+// Fonction pour vérifier l'abonnement et rediriger
 
-
-
-
+function checkSubscriptionAndRedirect(platsParam) {
+  // Récupérer l'ID utilisateur depuis l'URL ou la session
+  const urlParams = new URLSearchParams(window.location.search);
+  const userId = urlParams.get('user_id') || sessionStorage.getItem('current_user_id') || 'guest';
+  
+  const subscriptionKey = `subscription_${userId}`;
+  const subscriptionDateKey = `subscription_date_${userId}`;
+  
+  const subscription = localStorage.getItem(subscriptionKey);
+  const subscriptionDate = localStorage.getItem(subscriptionDateKey);
+  
+  if (subscription && subscriptionDate) {
+      // Vérifier si l'abonnement est encore valide
+      const subDate = new Date(subscriptionDate);
+      const now = new Date();
+      let isValid = false;
+      
+      switch(subscription) {
+          case '1_mois':
+              isValid = (now - subDate) < (30 * 24 * 60 * 60 * 1000);
+              break;
+          case '3_mois':
+              isValid = (now - subDate) < (90 * 24 * 60 * 60 * 1000);
+              break;
+          case '1_an':
+              isValid = (now - subDate) < (365 * 24 * 60 * 60 * 1000);
+              break;
+      }
+      
+      if (isValid) {
+          // Abonnement valide, rediriger vers les recettes
+          window.location.href = `/recettes?plats=${platsParam}&user_id=${userId}`;
+      } else {
+          // Abonnement expiré, aller à la page de paiement
+          localStorage.removeItem(subscriptionKey);
+          localStorage.removeItem(subscriptionDateKey);
+          window.location.href = `/paiement?plats=${platsParam}&user_id=${userId}`;
+      }
+  } else {
+      // Pas d'abonnement, aller à la page de paiement
+      window.location.href = `/paiement?plats=${platsParam}&user_id=${userId}`;
+  }
+}
