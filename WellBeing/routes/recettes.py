@@ -6,6 +6,7 @@ import re
 from datetime import datetime
 from pathlib import Path
 
+
 bp = Blueprint('recettes', __name__)
 
 # Charger les recettes en mémoire au démarrage

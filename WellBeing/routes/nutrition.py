@@ -345,51 +345,6 @@ def predict_nutrition():
         traceback.print_exc()
         return jsonify({'error': f'Erreur interne: {str(e)}'}), 500
 
-def load_assets():
-    try:
-        # Afficher le répertoire courant
-        current_dir = os.getcwd()
-        print(f"[INFO] Répertoire courant: {current_dir}")
-        
-        # Lister les fichiers dans le répertoire
-        files = os.listdir()
-        print(f"[INFO] Fichiers présents: {files}")
-        
-        # Chemins absolus pour debug
-        model_path = os.path.abspath('best_random_forest_model.pkl')
-        scaler_path = os.path.abspath('scaler_rf.pkl')
-        le_y_path = os.path.abspath('label_encoder_y.pkl')
-        csv_path = os.path.abspath('fich_pretraitement_final.csv')
-        
-        print(f"[INFO] Chemins recherchés:")
-        print(f"  - Modèle: {model_path}")
-        print(f"  - Scaler: {scaler_path}")
-        print(f"  - LabelEncoder: {le_y_path}")
-        print(f"  - CSV: {csv_path}")
-        
-        # Vérifier l'existence des fichiers
-        for path in [model_path, scaler_path, le_y_path, csv_path]:
-            if os.path.exists(path):
-                print(f"[OK] Fichier trouvé: {path}")
-            else:
-                print(f"[ERROR] Fichier introuvable: {path}")
-        
-        model = joblib.load('best_mlp_model.pkl')
-        scaler = joblib.load('scaler.pkl')
-        le_y = joblib.load('label_encoder_y.pkl')
-        df_base = pd.read_csv("fich_pretraitement_final.csv")
-        
-        print("[SUCCESS] Modèles ML chargés avec succès")
-        return model, scaler, le_y, df_base
-        
-    except FileNotFoundError as e:
-        print(f"[ERROR] Erreur de chargement de fichier ML: {e}")
-        return None, None, None, None
-    except Exception as e:
-        print(f"[ERROR] Erreur inattendue lors du chargement ML: {e}")
-        import traceback
-        traceback.print_exc()
-        return None, None, None, None
 
 @bp.route('/paiement')
 def paiement_page():
