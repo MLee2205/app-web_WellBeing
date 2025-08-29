@@ -1272,6 +1272,7 @@ footer {
 
   .user-metrics {
     flex-direction: column;
+    color:black;
   }
 }
 
@@ -1903,4 +1904,98 @@ th, td {
 .section h2 i,
 .metric-group label i {
     color: #e6e5e5e8 !important;
+}
+
+/* Barre d'échelle IMC */
+.imc-scale-container {
+  margin: 25px 0;
+  padding: 20px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  border: 1px solid var(--glass-border);
+}
+
+.imc-scale {
+  position: relative;
+  height: 80px;
+  margin-bottom: 15px;
+}
+
+.scale-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.scale-bar {
+  display: flex;
+  height: 20px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.scale-segment {
+  flex-grow: 1;
+  height: 100%;
+}
+
+.scale-segment.underweight { background: linear-gradient(to right, #3498db, #2ecc71); }
+.scale-segment.normal { background: #2ecc71; }
+.scale-segment.overweight { background: #f1c40f; }
+.scale-segment.obese1 { background: #e67e22; }
+.scale-segment.obese2 { background: #e74c3c; }
+.scale-segment.obese3 { background: #c0392b; }
+
+.scale-indicator {
+  position: absolute;
+  top: 45px;
+  transform: translateX(-50%);
+  transition: left 1s ease-in-out;
+  z-index: 10;
+}
+
+.indicator-arrow {
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 15px solid var(--primary);
+  margin: 0 auto;
+}
+
+.indicator-value {
+  background: var(--primary);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 15px;
+  font-size: 12px;
+  font-weight: bold;
+  white-space: nowrap;
+  margin-top: 5px;
+  box-shadow: var(--shadow-sm);
+}
+
+.scale-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 15px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+}
+
+.legend-color {
+  width: 15px;
+  height: 15px;
+  border-radius: 3px;
 }

@@ -111,7 +111,6 @@ let chartInstance = null;
 const urlParams = new URLSearchParams(window.location.search);
 let userId = urlParams.get('user_id') || 1;
 
-// Fonction pour calculer et afficher l'IMC immédiatement
 function calculerEtAfficherIMC() {
   const poids = parseFloat(document.getElementById('inputPoids').value);
   const taille = parseFloat(document.getElementById('inputTaille').value);
@@ -120,37 +119,86 @@ function calculerEtAfficherIMC() {
     const imc = poids / ((taille/100) ** 2);
     let interpretation = "";
     
-    
-      if (imc < 16) {
-    interpretation = "Anorexie ou dénutrition";
-  } else if (imc < 16.5) {
-    interpretation = "Maigreur";
-  } else if (imc < 18.5) {
-    interpretation = "Maigreur";
-  } else if (imc < 25) {
-    interpretation = "Corpulence normale";
-  } else if (imc < 30) {
-    interpretation = "Surpoids";
-  } else if (imc < 35) {
-    interpretation = "Obésité modérée (Classe 1)";
-  } else if (imc < 40) {
-    interpretation = "Obésité élevé (Classe 2)";
-  } else {
-    interpretation = "Obésité morbide ou massive";
-  }
+    if (imc < 16) {
+      interpretation = "Anorexie ou dénutrition";
+    } else if (imc < 16.5) {
+      interpretation = "Maigreur";
+    } else if (imc < 18.5) {
+      interpretation = "Maigreur";
+    } else if (imc < 25) {
+      interpretation = "Corpulence normale";
+    } else if (imc < 30) {
+      interpretation = "Surpoids";
+    } else if (imc < 35) {
+      interpretation = "Obésité modérée (Classe 1)";
+    } else if (imc < 40) {
+      interpretation = "Obésité élevé (Classe 2)";
+    } else {
+      interpretation = "Obésité morbide ou massive";
+    }
     
     document.getElementById('imcResult').innerHTML = `
       <strong>Votre IMC :</strong> ${imc.toFixed(2)} (${interpretation})
       <br><strong>Poids :</strong> ${poids} kg |
       <strong>Taille :</strong> ${(taille/100).toFixed(2)} m
     `;
+    
+    // Mettre à jour la position de l'indicateur sur la barre d'IMC
+    updateImcIndicator(imc);
   } else if (poids || taille) {
-    // Si au moins un champ est rempli mais les valeurs sont incomplètes/invalides
     document.getElementById('imcResult').innerHTML = `
       <span style="color: #f39c12;">⚠️ Veuillez saisir un poids valide (≥20kg) et une taille valide (100-300cm)</span>
     `;
+    // Cacher l'indicateur si les données sont invalides
+    document.getElementById('imcIndicator').style.display = 'none';
   } else {
     document.getElementById('imcResult').textContent = "IMC non calculé pour l'instant...";
+    // Cacher l'indicateur si aucune donnée
+    document.getElementById('imcIndicator').style.display = 'none';
+  }
+}
+
+// Fonction pour mettre à jour la position de l'indicateur d'IMC
+function updateImcIndicator(imc) {
+  const indicator = document.getElementById('imcIndicator');
+  indicator.style.display = 'block';
+  
+  // Définir les plages d'IMC (16 à 40)
+  const minImc = 16;
+  const maxImc = 40;
+  
+  // Limiter l'IMC à la plage affichée
+  const clampedImc = Math.max(minImc, Math.min(maxImc, imc));
+  
+  // Calculer la position en pourcentage (0% à 100%)
+  const position = ((clampedImc - minImc) / (maxImc - minImc)) * 100;
+  
+  // Positionner l'indicateur
+  indicator.style.left = `${position}%`;
+  
+  // Mettre à jour la valeur affichée
+  const valueElement = indicator.querySelector('.indicator-value');
+  valueElement.textContent = `IMC: ${imc.toFixed(1)}`;
+  
+  // Changer la couleur de l'indicateur en fonction de la catégorie d'IMC
+  if (imc < 18.5) {
+    valueElement.style.background = '#3498db';
+    indicator.querySelector('.indicator-arrow').style.borderTopColor = '#3498db';
+  } else if (imc < 25) {
+    valueElement.style.background = '#2ecc71';
+    indicator.querySelector('.indicator-arrow').style.borderTopColor = '#2ecc71';
+  } else if (imc < 30) {
+    valueElement.style.background = '#f1c40f';
+    indicator.querySelector('.indicator-arrow').style.borderTopColor = '#f1c40f';
+  } else if (imc < 35) {
+    valueElement.style.background = '#e67e22';
+    indicator.querySelector('.indicator-arrow').style.borderTopColor = '#e67e22';
+  } else if (imc < 40) {
+    valueElement.style.background = '#e74c3c';
+    indicator.querySelector('.indicator-arrow').style.borderTopColor = '#e74c3c';
+  } else {
+    valueElement.style.background = '#c0392b';
+    indicator.querySelector('.indicator-arrow').style.borderTopColor = '#c0392b';
   }
 }
 
@@ -566,3 +614,4 @@ function checkSubscriptionAndRedirect(platsParam) {
       window.location.href = `/paiement?plats=${platsParam}&user_id=${userId}`;
   }
 }
+

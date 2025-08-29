@@ -19,11 +19,11 @@
     --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     
     /* Variables pour le thème - valeurs par défaut (sombre) */
-    --bg-primary: #0f0f23;
-    --bg-secondary: #1a1a2e;
-    --bg-tertiary: #16213e;
-    --bg-quaternary: #0f3460;
-    --bg-quinary: #533483;
+    --bg-primary: #36c5e9;
+    --bg-secondary: #e67ea6;
+    --bg-tertiary: #3e1629;
+    --bg-quaternary: #2a697c;
+    --bg-quinary: #a876f3;
     --text-primary: #ffffff;
     --text-secondary: rgba(255, 255, 255, 0.9);
     --text-muted: rgba(255, 255, 255, 0.7);
@@ -310,7 +310,7 @@ html, body, nav, .feature-card, .stat-item, .stats-cta,
 }
 
 /* Fond animé avec w7.png */
-body {
+/*body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     min-height: 100vh;
     color: #333;
@@ -320,7 +320,7 @@ body {
     flex-direction: column;
 }
 
-
+*/
 
 
 
@@ -1018,3 +1018,4 @@ footer {
 ::-webkit-scrollbar-thumb:hover {
     background: linear-gradient(135deg, var(--purple), var(--primary));
 }
+

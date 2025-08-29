@@ -42,7 +42,7 @@
           <li><a href="/"><i class="fas fa-home"></i> Accueil</a></li>
           <li><a href="/menus"><i class="fas fa-utensils"></i> Menus</a></li>
           <li><a href="/nutrition"><i class="fas fa-apple-alt"></i> Nutrition</a></li>
-          
+         
       </ul>
      
       <!-- SECTION UTILISATEUR (AJOUTEZ CE BLOC) -->
@@ -237,7 +237,58 @@
     <button id="calculateBtn"><i class="fas fa-cogs"></i> Calculer et adapter le menu</button>
 
     <div id="imcResult" class="imc">IMC non calculé pour l’instant...</div>
-   
+    
+    <!-- Barre d'IMC avec indicateur -->
+    <div class="imc-scale-container">
+      <div class="imc-scale">
+        <div class="scale-labels">
+          <span>16</span>
+          <span>18.5</span>
+          <span>25</span>
+          <span>30</span>
+          <span>35</span>
+          <span>40</span>
+        </div>
+        <div class="scale-bar">
+          <div class="scale-segment underweight"></div>
+          <div class="scale-segment normal"></div>
+          <div class="scale-segment overweight"></div>
+          <div class="scale-segment obese1"></div>
+          <div class="scale-segment obese2"></div>
+          <div class="scale-segment obese3"></div>
+        </div>
+        <div class="scale-indicator" id="imcIndicator">
+          <div class="indicator-arrow"></div>
+          <div class="indicator-value">Votre IMC</div>
+        </div>
+      </div>
+      <div class="scale-legend">
+        <div class="legend-item">
+          <div class="legend-color underweight"></div>
+          <span>Maigreur</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color normal"></div>
+          <span>Normal</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color overweight"></div>
+          <span>Surpoids</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color obese1"></div>
+          <span>Obésité modérée</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color obese2"></div>
+          <span>Obésité sévère</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color obese3"></div>
+          <span>Obésité morbide</span>
+        </div>
+      </div>
+    </div>
     <div id="results">Aucun résultat pour l'instant...</div>
   </div>
    </main>
@@ -433,6 +484,7 @@ function updateNavbarUserInfo(userData) {
     </script>
 </body>
 </html>
+
 
 
 

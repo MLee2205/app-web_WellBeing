@@ -18,13 +18,13 @@
     --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     
     /* Variables pour le thème - valeurs par défaut (sombre) */
-    --bg-primary: #0f0f23;
-    --bg-secondary: #1a1a2e;
+    --bg-primary: #7adbec;
+    --bg-secondary: #e59df3;
     --bg-tertiary: #16213e;
     --bg-quaternary: #0f3460;
     --bg-quinary: #533483;
-    --text-primary: #ffffff;
-    --text-secondary: rgba(255, 255, 255, 0.9);
+    --text-primary: #993a3a;
+    --text-secondary: rgba(241, 194, 194, 0.9);
     --text-muted: rgba(255, 255, 255, 0.7);
     --nav-bg: rgba(255, 255, 255, 0.1);
     --nav-border: rgba(255, 255, 255, 0.15);
@@ -40,37 +40,6 @@
     --section-header-gradient: linear-gradient(135deg, white, var(--primary-light));
 }
 
-/* Thème clair */
-/* Thème clair avec textes noirs */
-[data-theme="light"] {
-    --bg-primary: white;
-    --bg-secondary: white;
-    --bg-tertiary: white;
-    --bg-quaternary: white;
-    --bg-quinary: white;
-    
-    /* Textes en noir */
-    --text-primary: #000000;
-    --text-secondary: rgba(0, 0, 0, 0.9);
-    --text-muted: rgba(0, 0, 0, 0.7);
-    
-    --nav-bg: rgba(255, 255, 255, 0.95);
-    --nav-border: rgba(226, 232, 240, 0.8);
-    --card-bg: rgba(255, 255, 255, 0.9);
-    --card-border: rgba(226, 232, 240, 0.8);
-    --shadow-color: rgba(0, 0, 0, 0.08);
-    --footer-bg: rgba(255, 255, 255, 0.95);
-    --footer-border: rgba(226, 232, 240, 0.8);
-    --glass-bg: rgba(255, 255, 255, 0.7);
-    --glass-border: rgba(226, 232, 240, 0.6);
-    
-    /* Surcharge des variables pour les effets de survol */
-    --nav-link-hover: rgba(99, 102, 241, 0.1);
-    --feature-card-shadow: 0 30px 60px var(--shadow-color), 0 0 30px rgba(99, 102, 241, 0.15);
-    --logo-text-gradient: linear-gradient(135deg, #000000, var(--primary-light));
-    --section-header-gradient: linear-gradient(135deg, #000000, var(--primary-light));
-}
-
 
 body {
   margin: 0;
@@ -78,7 +47,7 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: url("../images/w4.png") no-repeat center center fixed;
+  background: url("../images/w14.png") no-repeat center center fixed;
   background-size: cover;
   color: #333;
 }
@@ -1110,7 +1079,7 @@ footer {
   padding: 6px 15px;
   cursor: pointer;
   transition: all 0.3s ease;
-  color: rgb(187, 199, 18);
+  color: rgb(3, 3, 3);
   font-size: 14px;
 }
 
@@ -1358,3 +1327,4 @@ footer {
   from { transform: scale(0.8); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
 }
+

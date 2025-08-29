@@ -909,7 +909,7 @@ nav {
   padding: 6px 15px;
   cursor: pointer;
   transition: all 0.3s ease;
-  color: rgb(187, 199, 18);
+  color: rgb(3, 3, 3);
   font-size: 14px;
 }
 
@@ -1959,6 +1959,7 @@ nav {
 .btn-secondary:hover {
     background: rgba(255, 255, 255, 0.1);
 }
+
 
 
 
