@@ -1,3 +1,7 @@
+## Commande de test en local
+python3 app.py
+
+
 #  WellBeing – API Documentation
 
 > Application Flask pour nutrition personnalisée, calcul IMC et génération de menus et recettes grâce à l'IA.
