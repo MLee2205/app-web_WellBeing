@@ -1,7 +1,3 @@
-
-
-
-
 <!DOCTYPE html>
 <html lang="fr" data-theme="dark">
 <head>
@@ -114,184 +110,156 @@
 
   <!-- Selection counter -->
   
-
   <main class="main-wrapper">
     <div class="nutrition-container">
-      <h1 class="calligraphy"><i class="fas fa-apple-alt "></i> Analyse nutritionnelle et adaptation</h1>
+      <h1 class="calligraphy"><i class="fas fa-apple-alt "></i> Analyse nutritionnelle grâce à l' IA </h1>
 
-      <!-- Preferences Section -->
-      <div class="section">
-        <h2><i class="fas fa-heart"></i> Préférences alimentaires</h2>
-        <form id="preferencesForm" class="preferences">
-          <label class="checkbox-item">
-            <input type="checkbox" name="preferences" value="végétarien" />
-            <span><i class="fas fa-seedling"></i> Végétarien</span>
-          </label>
-          <label class="checkbox-item">
-            <input type="checkbox" name="preferences" value="sans gluten" />
-            <span><i class="fas fa-wheat"></i> Sans gluten</span>
-          </label>
-          <label class="checkbox-item">
-            <input type="checkbox" name="preferences" value="sans arachides" />
-            <span><i class="fas fa-exclamation-triangle"></i> Sans arachides</span>
-          </label>
-          <label class="checkbox-item">
-            <input type="checkbox" name="preferences" value="sans porc" />
-            <span><i class="fas fa-ban"></i> Sans porc</span>
-          </label>
-        </form>
+      <!-- STEP 1 -->
+      <div class="step active">
+        <!-- Preferences Section -->
+        <div class="section">
+          <h2><i class="fas fa-heart"></i> Préférences alimentaires</h2>
+          <form id="preferencesForm" class="preferences">
+            <label class="checkbox-item">
+              <input type="checkbox" name="preferences" value="végétarien" />
+              <span><i class="fas fa-seedling"></i> Végétarien</span>
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox" name="preferences" value="sans gluten" />
+              <span><i class="fas fa-wheat"></i> Sans gluten</span>
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox" name="preferences" value="sans arachides" />
+              <span><i class="fas fa-exclamation-triangle"></i> Sans arachides</span>
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox" name="preferences" value="sans porc" />
+              <span><i class="fas fa-ban"></i> Sans porc</span>
+            </label>
+          </form>
+        </div>
+        <button class="next-btn">Suivant</button>
       </div>
 
-      <!-- Fasting Section -->
-      <div class="section">
-        <h2><i class="fas fa-clock"></i> Programme de jeûne</h2>
-        <form id="fastingForm" class="fasting-options">
-          <label class="radio-item">
-            <input type="radio" name="fasting_type" value="quotidien" />
-            <span><i class="fas fa-calendar-day"></i> Quotidien (40 jours)</span>
-          </label>
-          <label class="radio-item">
-            <input type="radio" name="fasting_type" value="1x_semaine" />
-            <span><i class="fas fa-calendar-week"></i> 1x par semaine</span>
-          </label>
-          <label class="radio-item">
-            <input type="radio" name="fasting_type" value="2x_semaine" />
-            <span><i class="fas fa-calendar-alt"></i> 2x par semaine</span>
-          </label>
-        </form>
+      <!-- STEP 2 -->
+      <div class="step"> 
+        <!-- Fasting Section -->
+        <div class="section">
+          <h2><i class="fas fa-clock"></i> Programme de jeûne</h2>
+          <form id="fastingForm" class="fasting-options">
+            <label class="radio-item">
+              <input type="radio" name="fasting_type" value="quotidien" />
+              <span><i class="fas fa-calendar-day"></i> Quotidien (40 jours)</span>
+            </label>
+            <label class="radio-item">
+              <input type="radio" name="fasting_type" value="1x_semaine" />
+              <span><i class="fas fa-calendar-week"></i> 1x par semaine</span>
+            </label>
+            <label class="radio-item">
+              <input type="radio" name="fasting_type" value="2x_semaine" />
+              <span><i class="fas fa-calendar-alt"></i> 2x par semaine</span>
+            </label>
+          </form>
 
-        <div id="user-metrics" class="user-metrics">
-          <div class="metric-group">
-            <label for="startFasting"><i class="fas fa-play"></i> Début du jeûne</label>
-            <input type="time" id="startFasting" name="startFasting">
+          <div id="user-metrics" class="user-metrics">
+            <div class="metric-group">
+              <label for="startFasting"><i class="fas fa-play"></i> Début du jeûne</label>
+              <input type="time" id="startFasting" name="startFasting">
+            </div>
+            <div class="metric-group">
+              <label for="endFasting"><i class="fas fa-stop"></i> Fin du jeûne</label>
+              <input type="time" id="endFasting" name="endFasting">
+            </div>
           </div>
-          <div class="metric-group">
-            <label for="endFasting"><i class="fas fa-stop"></i> Fin du jeûne</label>
-            <input type="time" id="endFasting" name="endFasting">
+        </div>
+        <button class="prev-btn">Précédent</button>
+        <button class="next-btn">Suivant</button>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="step">
+        <!-- User Metrics -->
+        <div class="user-metrics">
+          <label for="inputPoids">Poids (kg) :</label>
+          <input type="number" id="inputPoids" name="poids" min="20" step="0.1" value="{{ poids or '' }}" required>
+
+          <label for="inputTaille">Taille (cm) :</label>
+          <input type="number" id="inputTaille" name="taille" min="100" max="300" step="0.1" value="{{ taille or '' }}" required>
+        </div>
+
+        <div id="imcResult" class="imc">IMC non calculé pour l'instant...</div>
+      
+        <!-- Barre d'IMC avec indicateur -->
+        <div class="imc-scale-container">
+          <div class="imc-scale">
+            <div class="scale-labels">
+              <span>16</span>
+              <span>18.5</span>
+              <span>25</span>
+              <span>30</span>
+              <span>35</span>
+              <span>40</span>
+            </div>
+            <div class="scale-bar">
+              <div class="scale-segment underweight"></div>
+              <div class="scale-segment normal"></div>
+              <div class="scale-segment overweight"></div>
+              <div class="scale-segment obese1"></div>
+              <div class="scale-segment obese2"></div>
+              <div class="scale-segment obese3"></div>
+            </div>
+            <div class="scale-indicator" id="imcIndicator">
+              <div class="indicator-arrow"></div>
+              <div class="indicator-value">Votre IMC</div>
+            </div>
+          </div>
+          <div class="scale-legend">
+            <div class="legend-item">
+              <div class="legend-color underweight"></div>
+              <span>Maigreur</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color normal"></div>
+              <span>Normal</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color overweight"></div>
+              <span>Surpoids</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color obese1"></div>
+              <span>Obésité modérée</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color obese2"></div>
+              <span>Obésité sévère</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color obese3"></div>
+              <span>Obésité morbide</span>
+            </div>
           </div>
         </div>
+        <button class="prev-btn">Précédent</button>
+        <button class="next-btn">Suivant</button>
       </div>
 
-     <!-- Menu Selection -->
-     <!-- 
-      <div class="section">
-        <h2><i class="fas fa-utensils"></i> Sélectionnez vos 4 plats préférés</h2>
-        <form id="menuForm" class="menus">
-          <label class="checkbox-item">
-            <input type="checkbox" name="menu" value="Poulet DG">
-            <span><i class="fas fa-drumstick-bite"></i> Poulet DG</span>
-          </label>
-          <label class="checkbox-item">
-            <input type="checkbox" name="menu" value="Ndolé">
-            <span><i class="fas fa-leaf"></i> Ndolé</span>
-          </label>
-          <label class="checkbox-item">
-            <input type="checkbox" name="menu" value="Kondre">
-            <span><i class="fas fa-pepper-hot"></i> Kondre</span>
-          </label>
-          <label class="checkbox-item">
-            <input type="checkbox" name="menu" value="Taro">
-            <span><i class="fas fa-seedling"></i> Taro</span>
-          </label>
-          <label class="checkbox-item">
-            <input type="checkbox" name="menu" value="Pizza">
-            <span><i class="fas fa-pizza-slice"></i> Pizza</span>
-          </label>
-          <label class="checkbox-item">
-            <input type="checkbox" name="menu" value="Sandwich au thon">
-            <span><i class="fas fa-fish"></i> Sandwich au thon</span>
-          </label>
-          <label class="checkbox-item">
-            <input type="checkbox" name="menu" value="Salade">
-            <span><i class="fas fa-salad"></i> Salade</span>
-          </label>
-          <label class="checkbox-item">
-            <input type="checkbox" name="menu" value="Spaghetti">
-            <span><i class="fas fa-wheat"></i> Spaghetti</span>
-          </label>
-          <label class="checkbox-item">
-            <input type="checkbox" name="menu" value="Macabo rappé">
-            <span><i class="fas fa-carrot"></i> Macabo rappé</span>
-          </label>
-          <label class="checkbox-item">
-            <input type="checkbox" name="menu" value="Brochettes de bœuf">
-            <span><i class="fas fa-fire"></i> Brochettes de bœuf</span>
-          </label>
-          <label class="checkbox-item">
-            <input type="checkbox" name="menu" value="Poisson braisé">
-            <span><i class="fas fa-fish"></i> Poisson braisé</span>
-          </label>
-        </form>
-      </div>
--->
-      <!-- User Metrics -->
-<div class="user-metrics">
-  <label for="inputPoids">Poids (kg) :</label>
-  <input type="number" id="inputPoids" name="poids" min="20" step="0.1" value="{{ poids or '' }}" required>
-
-  <label for="inputTaille">Taille (cm) :</label>
-  <input type="number" id="inputTaille" name="taille" min="100" max="300" step="0.1" value="{{ taille or '' }}" required>
-</div>
-
-
-    <button id="calculateBtn"><i class="fas fa-cogs"></i> Calculer et adapter le menu</button>
-
-    <div id="imcResult" class="imc">IMC non calculé pour l’instant...</div>
-    
-    <!-- Barre d'IMC avec indicateur -->
-    <div class="imc-scale-container">
-      <div class="imc-scale">
-        <div class="scale-labels">
-          <span>16</span>
-          <span>18.5</span>
-          <span>25</span>
-          <span>30</span>
-          <span>35</span>
-          <span>40</span>
+      <!-- STEP 4 - Étape corrigée -->
+      <div class="step">
+        <div class="section">
+          <h2><i class="fas fa-cogs"></i> Adaptation du menu</h2>
+          <p>Cliquez sur le bouton ci-dessous pour adapter votre menu en fonction de vos préférences et métriques.</p>
+          
+          <button id="calculateBtn" class="calculate-btn"><i class="fas fa-cogs"></i> Adapter le menu</button>
+          
+          <div id="results" class="results-container">
+            <p>Aucun résultat pour l'instant...</p>
+          </div>
         </div>
-        <div class="scale-bar">
-          <div class="scale-segment underweight"></div>
-          <div class="scale-segment normal"></div>
-          <div class="scale-segment overweight"></div>
-          <div class="scale-segment obese1"></div>
-          <div class="scale-segment obese2"></div>
-          <div class="scale-segment obese3"></div>
-        </div>
-        <div class="scale-indicator" id="imcIndicator">
-          <div class="indicator-arrow"></div>
-          <div class="indicator-value">Votre IMC</div>
-        </div>
-      </div>
-      <div class="scale-legend">
-        <div class="legend-item">
-          <div class="legend-color underweight"></div>
-          <span>Maigreur</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-color normal"></div>
-          <span>Normal</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-color overweight"></div>
-          <span>Surpoids</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-color obese1"></div>
-          <span>Obésité modérée</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-color obese2"></div>
-          <span>Obésité sévère</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-color obese3"></div>
-          <span>Obésité morbide</span>
-        </div>
+        <button class="prev-btn">Précédent</button>
       </div>
     </div>
-    <div id="results">Aucun résultat pour l'instant...</div>
-  </div>
-   </main>
+  </main>    
    <!-- Footer -->
    <footer>
     <div class="footer-content">
@@ -480,6 +448,29 @@ function updateNavbarUserInfo(userData) {
     // Vérifier aussi après les interactions utilisateur
     setInterval(checkSessionAndUpdateNavbar, 30000); // Toutes les 30 secondes
 
+    let currentStep = 0;
+const steps = document.querySelectorAll(".step");
+
+function showStep(index) {
+  steps.forEach((s, i) => s.classList.toggle("active", i === index));
+}
+
+document.addEventListener("click", (e) => {
+  if (e.target.classList.contains("next-btn")) {
+    if (currentStep < steps.length - 1) {
+      currentStep++;
+      showStep(currentStep);
+    }
+  }
+  if (e.target.classList.contains("prev-btn")) {
+    if (currentStep > 0) {
+      currentStep--;
+      showStep(currentStep);
+    }
+  }
+});
+
+showStep(currentStep);
     
     </script>
 </body>

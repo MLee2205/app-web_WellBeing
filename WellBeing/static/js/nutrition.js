@@ -331,10 +331,10 @@ document.getElementById('calculateBtn').addEventListener('click', () => {
         const tailleAffiche = info.taille ? (info.taille / 100).toFixed(2) : "N/A";
 
         document.getElementById('imcResult').innerHTML = `
-          <strong>Votre IMC :</strong> ${imc} ${interpretation ? `(${interpretation})` : ""}
-          <br><strong>Poids :</strong> ${poidsAffiche} kg |
-          <strong>Taille :</strong> ${tailleAffiche} m
-        `;
+          <strong>Votre IMC :</strong> ${imc} ${interpretation ? `(${interpretation})` : ""}
+          <br><strong>Poids :</strong>  ⚖️ ${poidsAffiche} kg |
+          <strong>Taille :</strong> 📏 ${tailleAffiche} m
+        `;
       }
 
       let html = "";

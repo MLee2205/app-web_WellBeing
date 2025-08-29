@@ -664,6 +664,7 @@ nav.scrolled {
     color: white;
     border: 2px solid var(--glass-border);
     backdrop-filter: blur(20px);
+    margin-top: 50px;
 }
 
 .cta-btn.secondary:hover {

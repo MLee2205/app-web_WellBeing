@@ -1999,3 +1999,7 @@ th, td {
   height: 15px;
   border-radius: 3px;
 }
+
+/*step*/
+.step { display: none; }
+.step.active { display: block; }
