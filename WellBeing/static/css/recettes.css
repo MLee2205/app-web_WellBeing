@@ -1328,3 +1328,66 @@ footer {
   to { transform: scale(1); opacity: 1; }
 }
 
+
+/* Amélioration de la lisibilité du texte */
+.content p {
+  font-size: 1.3rem;
+  color: rgba(255, 255, 255, 0.95) !important;
+  max-width: 700px;
+  margin: 0 auto 2rem;
+  line-height: 1.7;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  font-weight: 400;
+}
+
+.recette-content {
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 15px;
+  padding: 2rem;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.95) !important;
+  font-size: 1.1rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.recette-title {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  color: white !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  font-weight: 700;
+}
+
+/* Amélioration du contraste général */
+#recettes {
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(30px);
+}
+
+/* Pour tous les textes principaux */
+.main-wrapper {
+  color: rgba(255, 255, 255, 0.95) !important;
+}
+
+/* Amélioration des textes dans le footer */
+.footer-col p,
+.footer-col ul li a {
+  color: rgba(255, 255, 255, 0.9) !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.footer-col ul li a:hover {
+  color: white !important;
+}
+
+/* Correction de la couleur du texte pour les sections */
+.pdf-history-section,
+.pdf-item {
+  color: rgba(255, 255, 255, 0.95) !important;
+}
+
+.pdf-item-name,
+.pdf-item-date,
+.pdf-item-content {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
