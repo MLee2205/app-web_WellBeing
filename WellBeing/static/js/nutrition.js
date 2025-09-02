@@ -357,7 +357,7 @@ document.getElementById('calculateBtn').addEventListener('click', () => {
         }
       
         html += personalizationInfo;
-        html += `<h2>Menu adapté ${sourceIcon} <small>(${sourceText})</small></h2>`;
+        html += `<h2 class="menu-title">Menu adapté ${sourceIcon} <small>(${sourceText})</small></h2>`;
         
         // Afficher chaque repas séparément
         // Afficher uniquement le déjeuner
@@ -614,4 +614,3 @@ function checkSubscriptionAndRedirect(platsParam) {
       window.location.href = `/paiement?plats=${platsParam}&user_id=${userId}`;
   }
 }
-
