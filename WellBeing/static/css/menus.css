@@ -294,6 +294,11 @@ html, body, nav, .feature-card, .stat-item, .stats-cta,
 }
 
   
+/* Le reste de votre CSS existant reste inchangé */
+.theme-btn:hover {
+    transform: scale(1.1);
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -306,22 +311,60 @@ html, body, nav, .feature-card, .stat-item, .stats-cta,
     --accent-color: #f59e0b;
     --text-dark: #1f2937;
     --text-light: #6b7280;
+    --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --card-bg: rgba(255, 255, 255, 0.1);
     --glass-border: rgba(255, 255, 255, 0.2);
 }
 
-/* Fond animé avec w7.png */
-/*body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    min-height: 100vh;
-    color: #333;
-    background: url("../images/w12.png") repeat center center / cover;
-    animation: bgMove 30s infinite alternate linear;
-    display: flex;
-    flex-direction: column;
+body {
+font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+background: url("../images/w15.png") no-repeat center center fixed;
+background-size: cover;
+min-height: 100vh;
+overflow-x: hidden;
+color: white;
 }
 
-*/
+.gallery-item {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+}
 
+.gallery-item img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    transition: transform 0.4s ease;
+}
+
+.gallery-item:hover img {
+    transform: scale(1.05); /* zoom léger */
+}
+
+/* Overlay avec le nom */
+.meal-name {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0,0,0,0.6);
+    color: #fff;
+    text-align: center;
+    font-size: 1.2rem;
+    padding: 10px;
+    opacity: 0;
+    transform: translateY(100%);
+    transition: all 0.3s ease;
+    border-radius: 0 0 10px 10px;
+}
+
+/* Apparition au survol */
+.gallery-item:hover .meal-name {
+    opacity: 1;
+    transform: translateY(0);
+}
 
 
 
@@ -1018,4 +1061,3 @@ footer {
 ::-webkit-scrollbar-thumb:hover {
     background: linear-gradient(135deg, var(--purple), var(--primary));
 }
-
