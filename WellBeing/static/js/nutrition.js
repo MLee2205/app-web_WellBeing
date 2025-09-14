@@ -147,7 +147,7 @@ function calculerEtAfficherIMC() {
     updateImcIndicator(imc);
   } else if (poids || taille) {
     document.getElementById('imcResult').innerHTML = `
-      <span style="color: #f39c12;">⚠️ Veuillez saisir un poids valide (≥20kg) et une taille valide (100-300cm)</span>
+      <span style="color: red;">⚠️ Veuillez saisir un poids valide (≥20kg) et une taille valide (100-300cm)</span>
     `;
     // Cacher l'indicateur si les données sont invalides
     document.getElementById('imcIndicator').style.display = 'none';
@@ -614,3 +614,4 @@ function checkSubscriptionAndRedirect(platsParam) {
       window.location.href = `/paiement?plats=${platsParam}&user_id=${userId}`;
   }
 }
+

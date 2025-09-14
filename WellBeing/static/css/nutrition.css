@@ -1990,14 +1990,15 @@ th, td {
 .profile-toggle span {
     color: #000000 !important;
 }
-
+/*tout noir*/
+/*
 .profile-dropdown-menu,
 .profile-header span,
 .profile-email,
 .profile-detail,
 .profile-action-btn {
     color: #000000 !important;
-}
+}!/
 
 /* Assurer la visibilité des icônes */
 .checkbox-item i,
@@ -2967,4 +2968,5 @@ th, td {
         white-space: normal;
     }
 }
+
 
