@@ -207,8 +207,8 @@ function showModalAlert(title, message, type = "success") {
             logo.src = "/static/images/w10.jpeg";
     
             logo.onload = function () {
-                const logoWidth = 25;
-                const logoHeight = 25;
+                const logoWidth = 15;
+                const logoHeight = 15;
                 const pageWidth = doc.internal.pageSize.getWidth();
                 const logoX = pageWidth / 2 - 40;
                 const logoY = 10;
@@ -220,7 +220,6 @@ function showModalAlert(title, message, type = "success") {
                 doc.setTextColor(33, 150, 243);
                 doc.text("WellBeing", logoX + logoWidth + 2, logoY + logoHeight - 2);
 
-    
                 y = logoY + logoHeight + 10;
     
                 doc.setFont("helvetica", "bold");
