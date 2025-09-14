@@ -7,22 +7,54 @@ from datetime import datetime, timedelta
 bp = Blueprint('recettes', __name__)
 
 # Charger les recettes en mémoire au démarrage
-RECETTES_FILE = os.path.join(os.path.dirname(__file__), "/home/mlee/Musique/projet/WellBeing/recette.csv")
+BASE_DIR = Path(__file__).resolve().parent.parent
+RECETTES_FILE = BASE_DIR / "recette.csv"
+
 recettes_data = {}
 
-with open(RECETTES_FILE, "r", encoding="utf-8") as f:
-    reader = csv.DictReader(f)
-    for row in reader:
-        menu = row["menu"].strip()
-        preparation = row["preparation"].strip()
-        recettes_data[menu.lower()] = {
-            "name": menu,
-            "recette": preparation,
-            "temps_preparation": "À préciser",
-            "temps_cuisson": "À préciser",
-            "difficulte": "Non spécifié",
+try:
+    if RECETTES_FILE.exists():
+        with open(RECETTES_FILE, "r", encoding="utf-8") as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                menu = row["menu"].strip()
+                preparation = row["preparation"].strip()
+                recettes_data[menu.lower()] = {
+                    "name": menu,
+                    "recette": preparation,
+                    "temps_preparation": "À préciser",
+                    "temps_cuisson": "À préciser",
+                    "difficulte": "Non spécifié",
+                    "conseils": ""
+                }
+        print(f"[INFO] {len(recettes_data)} recettes chargées depuis {RECETTES_FILE}")
+    else:
+        print(f"[WARNING] Fichier recette.csv introuvable à: {RECETTES_FILE}")
+        # Données de fallback pour éviter les erreurs
+        recettes_data = {
+            "poulet dg": {
+                "name": "Poulet DG",
+                "recette": "Recette de Poulet DG non disponible pour le moment",
+                "temps_preparation": "N/A",
+                "temps_cuisson": "N/A",
+                "difficulte": "N/A",
+                "conseils": ""
+            }
+        }
+        
+except Exception as e:
+    print(f"[ERROR] Erreur chargement recettes CSV: {e}")
+    # Fallback minimal pour éviter la panne de l'application
+    recettes_data = {
+        "ndolé et plantains": {
+            "name": "Ndolé et plantains",
+            "recette": "Recette temporairement indisponible",
+            "temps_preparation": "N/A",
+            "temps_cuisson": "N/A",
+            "difficulte": "N/A",
             "conseils": ""
         }
+    }
 
 @bp.route('/recettes', methods=['POST'])
 def generate_recettes():
