@@ -364,17 +364,19 @@ document.getElementById('calculateBtn').addEventListener('click', () => {
 const repasKey = "repas";
 if (data.nutrition[repasKey] && data.nutrition[repasKey].length > 0) {
   html += `<h3 style="margin-top: 20px; color: #6366f1;">Déjeuner</h3>`;
-  html += "<table><tr><th>Plat</th><th>Calories</th><th>Protéines</th><th>Glucides</th><th>Lipides</th></tr>";
-  
-  data.nutrition[repasKey].forEach(item => {
-    html += `<tr>
-      <td>${item.name || 'N/A'}</td>
-      <td>${item.calories || 0}</td>
-      <td>${item.protein || 0}g</td>
-      <td>${item.carbs || 0}g</td>
-      <td>${item.fat || 0}g</td>
-    </tr>`;
-  });
+  html += "<table><tr><th>Jour</th><th>Plat</th><th>Calories</th><th>Protéines</th><th>Glucides</th><th>Lipides</th></tr>";
+
+data.nutrition[repasKey].forEach(item => {
+  html += `<tr>
+    <td>${item.jour || ''}</td>
+    <td>${item.name || 'N/A'}</td>
+    <td>${item.calories || 0}</td>
+    <td>${item.protein || 0}g</td>
+    <td>${item.carbs || 0}g</td>
+    <td>${item.fat || 0}g</td>
+  </tr>`;
+});
+
   
   html += "</table>";
 }

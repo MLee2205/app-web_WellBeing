@@ -123,7 +123,7 @@
             data.recettes.forEach(r => {
                 const recetteHTML = `
                     <div class="recette">
-                        <h3 class="recette-title">${r.name}</h3>
+                        <h3 class="recette-title">${r.jour} ${r.date} – ${r.name}</h3>
                         <div class="recette-content">
                             ${r.recette.replace(/\n/g, "<br>")}
                         </div>
@@ -131,6 +131,7 @@
                 `;
                 div.innerHTML += recetteHTML;
             });
+            
 
             // Animer l'apparition des recettes
             const recipes = div.querySelectorAll('.recette');
@@ -187,61 +188,78 @@ function showModalAlert(title, message, type = "success") {
             showModalAlert("Aucune recette à exporter.");
             return;
         }
-
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF({ unit: 'mm', format: 'a4' });
-
-        let y = 20;
-
-        // Titre principal
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(22);
-        doc.setTextColor(33, 150, 243);
-        doc.text("WellBeing", 105, y, { align: "center" });
-        y += 12;
-
-        // Sous-titre
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(16);
-        doc.setTextColor(0, 0, 0);
-        doc.text("Recettes adaptées", 105, y, { align: "center" });
-        y += 10;
-
-        recettesData.forEach(r => {
-            if (y > 260) { doc.addPage(); y = 20; }
-
-            // Nom du plat
-            doc.setFont("helvetica", "bold");
-            doc.setFontSize(14);
-            doc.setTextColor(46, 125, 50);
-            doc.text(r.name, 20, y);
-            y += 8;
-
-            // Recette (texte formaté)
-            doc.setFont("helvetica", "normal");
-            doc.setFontSize(12);
-            doc.setTextColor(0, 0, 0);
-
-            const lines = doc.splitTextToSize(r.recette || "Pas de recette disponible.", 170);
-
-            lines.forEach(line => {
+    
+        // Afficher la bulle de remerciement
+        showModalAlert(
+            "Merci à vous !",
+            "Revenez dans une semaine pour vos nouveaux repas. Entre temps, bonne dégustation 😋.",
+            "success"
+        );
+    
+        // Attendre que l'utilisateur clique sur OK avant de générer le PDF
+        const modalOkBtn = document.querySelector(".custom-modal #modal-ok");
+        modalOkBtn.addEventListener('click', () => {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+    
+            let y = 20;
+            const logo = new Image();
+            logo.src = "/static/images/w10.jpeg";
+    
+            logo.onload = function () {
+                const logoWidth = 25;
+                const logoHeight = 25;
+                const pageWidth = doc.internal.pageSize.getWidth();
+                const logoX = pageWidth / 2 - 40;
+                const logoY = 10;
+    
+                doc.addImage(logo, "PNG", logoX, logoY, logoWidth, logoHeight);
+    
+                doc.setFont("helvetica", "bold");
+                doc.setFontSize(22);
+                doc.setTextColor(33, 150, 243);
+                doc.text("WellBeing", logoX + logoWidth + 10, logoY + 12);
+    
+                y = logoY + logoHeight + 10;
+    
+                doc.setFont("helvetica", "bold");
+                doc.setFontSize(16);
+                doc.setTextColor(0, 0, 0);
+                doc.text(" Recueil de Recettes", 105, y, { align: "center" });
+                y += 10;
+    
+                recettesData.forEach(r => {
+                    if (y > 260) { doc.addPage(); y = 20; }
+    
+                    doc.setFont("helvetica", "bold");
+                    doc.setFontSize(14);
+                    doc.setTextColor(46, 125, 50);
+                    doc.text(`${r.jour} ${r.date} – ${r.name}`, 20, y);
+                    y += 8;
+    
+                    doc.setFont("helvetica", "normal");
+                    doc.setFontSize(12);
+                    doc.setTextColor(0, 0, 0);
+                    const lines = doc.splitTextToSize(r.recette || "Pas de recette disponible.", 170);
+                    lines.forEach(line => {
+                        if (y > 280) { doc.addPage(); y = 20; }
+                        doc.text(line, 20, y);
+                        y += 7;
+                    });
+    
+                    y += 5;
+                });
+    
                 if (y > 280) { doc.addPage(); y = 20; }
-                doc.text(line, 20, y);
-                y += 7;
-            });
-
-            y += 5;
+                doc.setFont("helvetica", "italic");
+                doc.setFontSize(11);
+                doc.setTextColor(100, 100, 100);
+                doc.text("Réalisé par Meffo Lea - WellBeing", pageWidth / 2, y, { align: "center" });
+    
+                doc.save("recettes-wellbeing.pdf");
+            };
         });
-
-        // Signature
-        if (y > 280) { doc.addPage(); y = 20; }
-        doc.setFont("helvetica", "italic");
-        doc.setFontSize(11);
-        doc.setTextColor(100, 100, 100);
-        doc.text("Réalisé par Meffo Lea - WellBeing", 105, y, { align: "center" });
-
-        doc.save("recettes-wellbeing.pdf");
     });
-
+     
     
 });

@@ -1,63 +1,28 @@
 from flask import Blueprint, request, jsonify
-import google.generativeai as genai
-import os
-import json
-import re
-from datetime import datetime
-from pathlib import Path
 import csv
+import os
+from datetime import datetime, timedelta
+
 
 bp = Blueprint('recettes', __name__)
 
 # Charger les recettes en mémoire au démarrage
-BASE_DIR = Path(__file__).resolve().parent.parent
-RECETTES_FILE = BASE_DIR / "recette.csv"
-
+RECETTES_FILE = os.path.join(os.path.dirname(__file__), "/home/mlee/Musique/projet/WellBeing/recette.csv")
 recettes_data = {}
 
-try:
-    if RECETTES_FILE.exists():
-        with open(RECETTES_FILE, "r", encoding="utf-8") as f:
-            reader = csv.DictReader(f)
-            for row in reader:
-                menu = row["menu"].strip()
-                preparation = row["preparation"].strip()
-                recettes_data[menu.lower()] = {
-                    "name": menu,
-                    "recette": preparation,
-                    "temps_preparation": "À préciser",
-                    "temps_cuisson": "À préciser",
-                    "difficulte": "Non spécifié",
-                    "conseils": ""
-                }
-        print(f"[INFO] {len(recettes_data)} recettes chargées depuis {RECETTES_FILE}")
-    else:
-        print(f"[WARNING] Fichier recette.csv introuvable à: {RECETTES_FILE}")
-        # Données de fallback pour éviter les erreurs
-        recettes_data = {
-            "poulet dg": {
-                "name": "Poulet DG",
-                "recette": "Recette de Poulet DG non disponible pour le moment",
-                "temps_preparation": "N/A",
-                "temps_cuisson": "N/A",
-                "difficulte": "N/A",
-                "conseils": ""
-            }
-        }
-        
-except Exception as e:
-    print(f"[ERROR] Erreur chargement recettes CSV: {e}")
-    # Fallback minimal pour éviter la panne de l'application
-    recettes_data = {
-        "ndolé et plantains": {
-            "name": "Ndolé et plantains",
-            "recette": "Recette temporairement indisponible",
-            "temps_preparation": "N/A",
-            "temps_cuisson": "N/A",
-            "difficulte": "N/A",
+with open(RECETTES_FILE, "r", encoding="utf-8") as f:
+    reader = csv.DictReader(f)
+    for row in reader:
+        menu = row["menu"].strip()
+        preparation = row["preparation"].strip()
+        recettes_data[menu.lower()] = {
+            "name": menu,
+            "recette": preparation,
+            "temps_preparation": "À préciser",
+            "temps_cuisson": "À préciser",
+            "difficulte": "Non spécifié",
             "conseils": ""
         }
-    }
 
 @bp.route('/recettes', methods=['POST'])
 def generate_recettes():
@@ -72,19 +37,30 @@ def generate_recettes():
         }), 400
 
     recettes = []
-    for plat in plats:
+    start_date = datetime.today()  # point de départ
+
+    for i, plat in enumerate(plats):
         plat_lower = plat.lower()
+        jour_date = start_date.replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=i)
+        jour_str = jour_date.strftime("%A")  # Jour de la semaine (Lundi, Mardi, …)
+        date_str = jour_date.strftime("%d/%m/%Y")
+
         if plat_lower in recettes_data:
-            recettes.append(recettes_data[plat_lower])
+            recette_info = recettes_data[plat_lower]
         else:
-            recettes.append({
+            recette_info = {
                 "name": plat,
                 "recette": f"❌ Aucune recette trouvée pour « {plat} » dans la base.",
                 "temps_preparation": "N/A",
                 "temps_cuisson": "N/A",
                 "difficulte": "N/A",
                 "conseils": ""
-            })
+            }
+
+        recette_info = dict(recette_info)  # copie pour ajouter nos champs
+        recette_info["jour"] = jour_str
+        recette_info["date"] = date_str
+        recettes.append(recette_info)
 
     return jsonify({
         "success": True,

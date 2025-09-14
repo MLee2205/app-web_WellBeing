@@ -1,27 +1,15 @@
-from flask import Blueprint, request, jsonify, session, render_template
+# Fichier : nutrition.py
 
-import google.generativeai as genai
+from flask import Blueprint, request, jsonify, session, render_template
+import pandas as pd
+import joblib
 import os
 import json
-import random
-from ..models.user import User
-from datetime import datetime,date
+from datetime import datetime, date
 import re
-import csv
-from pathlib import Path
+from models.user import User  # Import manquant
+import random
 
-try:
-    import joblib
-    import pandas as pd
-    from sklearn.preprocessing import StandardScaler
-    from sklearn.ensemble import RandomForestClassifier
-    ML_AVAILABLE = True
-except ImportError as e:
-    print(f"[WARNING] ML dependencies not available: {e}")
-    ML_AVAILABLE = False
-    joblib = None
-    pd = None
-    
 bp = Blueprint('nutrition', __name__)
 
 # Menus prédéfinis avec informations nutritionnelles
@@ -121,17 +109,13 @@ def get_user_complete_data(user_id):
         print(f"[WARNING] Erreur récupération données utilisateur {user_id}: {e}")
         return user_data
 
-
-
-BASE_DIR = Path(__file__).resolve().parent.parent
-ML_DIR = BASE_DIR / "ML_menu"
-
+# --- Chargement des modèles et des fichiers de prétraitement ---
 def load_assets():
     try:
-        model = joblib.load(ML_DIR / "best_mlp_model.pkl")
-        scaler = joblib.load(ML_DIR / "scaler.pkl")
-        le_y = joblib.load(ML_DIR / "label_encoder_y.pkl")
-        df_base = pd.read_csv(ML_DIR / "fich_pretraitement_final.csv")
+        model = joblib.load('ML_menu/best_mlp_model.pkl')
+        scaler = joblib.load('ML_menu/scaler.pkl')
+        le_y = joblib.load('ML_menu/label_encoder_y.pkl')
+        df_base = pd.read_csv("ML_menu/fich_pretraitement_final.csv")
         print("[INFO] Modèles ML chargés avec succès")
         return model, scaler, le_y, df_base
     except FileNotFoundError as e:
@@ -140,7 +124,6 @@ def load_assets():
     except Exception as e:
         print(f"[ERROR] Erreur inattendue lors du chargement ML: {e}")
         return None, None, None, None
-
 
 # Charger les assets au démarrage
 model, scaler, le_y, df_base = load_assets()
@@ -165,168 +148,86 @@ def nutrition_page():
 @bp.route('/nutrition', methods=['POST'])
 def predict_nutrition():
     if model is None or scaler is None or le_y is None or df_base is None:
-        print("[ERROR] Modèles ML non disponibles")
         return jsonify({"error": "Modèles ou fichiers de données manquants."}), 500
 
     try:
-        # Vérifier que la requête est bien JSON
+        # Vérification JSON
         if not request.is_json:
-            print("[ERROR] Requête non JSON. Headers:", dict(request.headers))
-            return jsonify({"error": "Requête attendue en JSON (Content-Type: application/json)"}), 400
-
+            return jsonify({"error": "Requête attendue en JSON"}), 400
         data = request.get_json(silent=True)
         if data is None:
-            print("[ERROR] request.get_json() a renvoyé None")
             return jsonify({"error": "JSON manquant ou mal formé"}), 400
 
-        print("[DEBUG] Données reçues:", data)
-        
-        # Récupération des données utilisateur
-        poids = data.get('poids')
-        taille = data.get('taille')
-        fasting_data = data.get('fasting') or {}
-        fasting_type = fasting_data.get('type', '') if fasting_data else ''
-        fasting_start = fasting_data.get('start', '') if fasting_data else ''
-        fasting_end = fasting_data.get('end', '') if fasting_data else ''
-        preferences = data.get('preferences', [])
-        user_id = session.get('user_id') or data.get('user_id') or 1
-
-        # Récupérer les données utilisateur complètes
+        # --- Récupération données utilisateur ---
+        poids = float(data.get("poids", 0))
+        taille = float(data.get("taille", 0))
+        preferences = data.get("preferences", [])
+        user_id = session.get("user_id") or data.get("user_id") or 1
         user_data = get_user_complete_data(user_id)
 
-        # Calcul de l'IMC — priorité aux valeurs envoyées
-        def to_number(x):
-            try:
-                return float(x) if x is not None else None
-            except Exception:
-                return None
-
-        poids_num = to_number(poids) or to_number(user_data['poids'])
-        taille_num = to_number(taille) or to_number(user_data['taille'])
-
-        if not poids_num or not taille_num:
-            return jsonify({'error': 'Poids et taille invalides ou manquants, impossible de calculer l\'IMC'}), 400
-
+        poids_num = poids or float(user_data.get("poids", 0))
+        taille_num = taille or float(user_data.get("taille", 0))
         imc_info = calculer_imc(poids_num, taille_num)
-        if not imc_info:
-            return jsonify({'error': 'Impossible de calculer l\'IMC avec les données fournies'}), 400
 
-        print(f"[INFO] IMC calculé: {imc_info}")
+        # fallback si âge ou sexe manquants
+        age = user_data.get("age") or 30
+        sexe = user_data.get("sexe", "homme")
 
-        # Récupérer l'âge et le sexe depuis les données utilisateur ou fallback
-        age = user_data.get('age')
-        sexe = user_data.get('sexe', 'Non renseigné')
-        
-        # Convertir âge en nombre si c'est une chaîne
-        if isinstance(age, str) and age != 'Non renseigné':
-            try:
-                age = int(age)
-            except ValueError:
-                age = 30  # Fallback
-        elif age == 'Non renseigné' or age is None:
-            age = 30  # Fallback
-        
-        # Convertir sexe pour le modèle
-        if sexe == 'Non renseigné':
-            sexe = 'homme'  # Fallback
-        
-        print(f"[INFO] Données pour ML - Age: {age}, Sexe: {sexe}")
-
-        # Préparation des données pour le modèle
-        # Créer une ligne avec des valeurs par défaut
+        # --- Préparation features ---
         dummy_row = pd.DataFrame(columns=df_base.columns)
         dummy_row.loc[0, :] = 0
-        
-        # Remplir les données de base
-        dummy_row.loc[0, 'sexe'] = 1 if sexe.lower() == 'femme' else 0
-        dummy_row.loc[0, 'taille'] = taille_num
-        dummy_row.loc[0, 'poids'] = poids_num
-        dummy_row.loc[0, 'age'] = age
-        dummy_row.loc[0, 'imc'] = imc_info['imc']
-        
-        # Encodage de l'interprétation IMC
-        interpretation_imc = imc_info['interpretation'].replace(" ", "_").replace("(", "").replace(")", "")
-        imc_col = f'interpretation_imc_{interpretation_imc}'
-        if imc_col in dummy_row.columns:
-            dummy_row.loc[0, imc_col] = 1
+        dummy_row.loc[0, "sexe"] = 1 if sexe.lower() == "femme" else 0
+        dummy_row.loc[0, "taille"] = taille_num
+        dummy_row.loc[0, "poids"] = poids_num
+        dummy_row.loc[0, "age"] = age
+        dummy_row.loc[0, "imc"] = imc_info["imc"]
 
-        # Encodage du type de jeûne
-        if fasting_type:
-            fasting_col = f'type_jeun_{fasting_type}'
-            if fasting_col in dummy_row.columns:
-                dummy_row.loc[0, fasting_col] = 1
+        # Nettoyage colonnes inutiles
+        X_predict = dummy_row.drop(columns=["sexe", "taille", "poids", "age", "imc"], errors="ignore")
+        X_predict = X_predict.drop(columns=["menu_encoded"], errors="ignore")
 
-        # Encodage de l'horaire de jeûne
-        def get_fasting_hours(start, end):
-            if not start or not end:
-                return "Aucun"
-            try:
-                start_hour = int(start.split(':')[0])
-                end_hour = int(end.split(':')[0])
-                
-                if start_hour == 20 and end_hour == 8: return '20h_8h'
-                if start_hour == 19 and end_hour == 7: return '19h_7h'
-                if start_hour == 18 and end_hour == 8: return '18h_8h'
-                
-                return "Aucun"
-            except:
-                return "Aucun"
+        # --- Prédiction probabiliste ---
+        X_scaled = scaler.transform(X_predict)
+        proba = model.predict_proba(X_scaled)[0]
 
-        horaire_jeun = get_fasting_hours(fasting_start, fasting_end)
-        horaire_col = f'horaire_jeun_{horaire_jeun}'
-        if horaire_col in dummy_row.columns:
-            dummy_row.loc[0, horaire_col] = 1
+        # Associer chaque menu à sa proba
+        menus_proba = list(zip(le_y.inverse_transform(range(len(proba))), proba))
+        menus_proba.sort(key=lambda x: -x[1])  # tri décroissant
+        jours = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"]
+        # Générer 7 menus
+        menus_choisis = []
+        last_menu = None
+        repetition_count = 0
 
-        # Encodage des préférences
-        for pref in preferences:
-            pref_col = f'preferences_alimentaires_{pref.replace(" ", "_")}'
-            if pref_col in dummy_row.columns:
-                dummy_row.loc[0, pref_col] = 1
-        
-        # --- DÉBUT DU CORRECTIF ---
-        # Le modèle et le scaler ont été entraînés sur un DataFrame qui ne contient pas les colonnes brutes
-        # comme 'sexe', 'taille', 'poids', etc., mais seulement les colonnes encodées.
-        # Il faut donc les retirer avant de faire la prédiction.
-        features_to_drop = ['sexe', 'taille', 'poids', 'age', 'imc']
-        X_predict = dummy_row.drop(columns=features_to_drop, errors='ignore')
+        for i, jour in enumerate(jours): #tirage pondéré
+            candidats, poids_proba = zip(*menus_proba)
+            choisi = random.choices(candidats, weights=poids_proba, k=1)[0]
 
-        # Il faut aussi enlever la colonne cible 'menu_encoded' si elle existe
-        X_predict = X_predict.drop(columns=['menu_encoded'], errors='ignore')
-        # --- FIN DU CORRECTIF ---
+            # Vérifier règle de répétition
+            if last_menu == choisi:
+                if repetition_count >= 2:
+                    # forcer un autre choix
+                    autres = [m for m in candidats if m != last_menu]
+                    choisi = random.choice(autres)
+                    repetition_count = 1
+                else:
+                    repetition_count += 1
+            else:
+                repetition_count = 1
+            last_menu = choisi
 
-        # Scaling et prédiction
-        X_predict_scaled = scaler.transform(X_predict)
-        predicted_menu_encoded = model.predict(X_predict_scaled)
-        predicted_menu_name = le_y.inverse_transform(predicted_menu_encoded)[0]
+            info = menu_details.get(choisi, {"calories": 500, "protein": 20, "carbs": 50, "fat": 15})
+            menus_choisis.append({
+                "jour": jours[i],
+                "name": choisi,
+                "calories": info["calories"],
+                "protein": info["protein"],
+                "carbs": info["carbs"],
+                "fat": info["fat"]
+            })
 
-        print(f"[INFO] Menu prédit par ML: {predicted_menu_name}")
+        total_calories = sum(m["calories"] for m in menus_choisis)
 
-        # Récupération des informations nutritionnelles
-        menu_info = menu_details.get(predicted_menu_name, {'calories': 500, 'protein': 20, 'carbs': 50, 'fat': 15})
-
-        # Structure de menu complète (compatible avec l'ancien format)
-        menu_structure = {
-           "repas": [{
-                   "name": predicted_menu_name,
-                   "calories": menu_info['calories'],
-                   "protein": menu_info['protein'],
-                   "carbs": menu_info['carbs'],
-                   "fat": menu_info['fat']
-    }]
-}
-
-
-        # Calculer total calories
-        total_calories = sum(item["calories"] for repas in menu_structure.values() for item in repas)
-
-        # Historique IMC simulé
-        historique_imc = [
-            {"date": "2025-06-01", "imc": 21.5},
-            {"date": "2025-06-15", "imc": 22.0},
-            {"date": "2025-07-01", "imc": 21.8}
-        ]
-
-        # Structure de réponse compatible avec le JavaScript
         response_data = {
             "imc_info": imc_info,
             "user_data": {
@@ -335,22 +236,18 @@ def predict_nutrition():
                 "poids": poids_num,
                 "taille": taille_num
             },
-            "imc_history": historique_imc,
-            "nutrition": menu_structure,
+            "nutrition": {"repas": menus_choisis},
             "total_calories": total_calories,
             "source_menu": "IA",
-            "raw_response": f"Menu prédit par modèle ML: {predicted_menu_name}",
-            "categorie": imc_info['interpretation']
+            "categorie": imc_info["interpretation"]
         }
-        
-        print("[SUCCESS] Réponse ML générée avec succès")
+
         return jsonify(response_data)
-        
+
     except Exception as e:
         import traceback
-        print(f"[ERROR] Exception dans predict_nutrition: {str(e)}")
         traceback.print_exc()
-        return jsonify({'error': f'Erreur interne: {str(e)}'}), 500
+        return jsonify({"error": str(e)}), 500
 
 
 @bp.route('/paiement')
