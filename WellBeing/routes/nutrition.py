@@ -1,14 +1,16 @@
 # Fichier : nutrition.py
 
 from flask import Blueprint, request, jsonify, session, render_template
-import pandas as pd
-import joblib
+
+import google.generativeai as genai
 import os
 import json
-from datetime import datetime, date
-import re
-from ..models.user import User  # Import manquant
 import random
+from ..models.user import User
+from datetime import datetime,date
+import re
+import csv
+from pathlib import Path
 
 bp = Blueprint('nutrition', __name__)
 
