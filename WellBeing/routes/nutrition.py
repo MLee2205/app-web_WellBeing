@@ -11,7 +11,17 @@ from datetime import datetime,date
 import re
 import csv
 from pathlib import Path
-
+try:
+    import joblib
+    import pandas as pd
+    from sklearn.preprocessing import StandardScaler
+    from sklearn.ensemble import RandomForestClassifier
+    ML_AVAILABLE = True
+except ImportError as e:
+    print(f"[WARNING] ML dependencies not available: {e}")
+    ML_AVAILABLE = False
+    joblib = None
+    pd = None
 bp = Blueprint('nutrition', __name__)
 
 # Menus prédéfinis avec informations nutritionnelles
@@ -111,13 +121,17 @@ def get_user_complete_data(user_id):
         print(f"[WARNING] Erreur récupération données utilisateur {user_id}: {e}")
         return user_data
 
-# --- Chargement des modèles et des fichiers de prétraitement ---
+
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+ML_DIR = BASE_DIR / "ML_menu"
+
 def load_assets():
     try:
-        model = joblib.load('ML_menu/best_mlp_model.pkl')
-        scaler = joblib.load('ML_menu/scaler.pkl')
-        le_y = joblib.load('ML_menu/label_encoder_y.pkl')
-        df_base = pd.read_csv("ML_menu/fich_pretraitement_final.csv")
+        model = joblib.load(ML_DIR / "best_mlp_model.pkl")
+        scaler = joblib.load(ML_DIR / "scaler.pkl")
+        le_y = joblib.load(ML_DIR / "label_encoder_y.pkl")
+        df_base = pd.read_csv(ML_DIR / "fich_pretraitement_final.csv")
         print("[INFO] Modèles ML chargés avec succès")
         return model, scaler, le_y, df_base
     except FileNotFoundError as e:
@@ -127,8 +141,10 @@ def load_assets():
         print(f"[ERROR] Erreur inattendue lors du chargement ML: {e}")
         return None, None, None, None
 
+
 # Charger les assets au démarrage
 model, scaler, le_y, df_base = load_assets()
+
 
 # --- Route GET pour la page nutrition ---
 @bp.route('/nutrition', methods=['GET'])
@@ -243,13 +259,14 @@ def predict_nutrition():
             "source_menu": "IA",
             "categorie": imc_info["interpretation"]
         }
-
+        print("[SUCCESS] Réponse ML générée avec succès")
         return jsonify(response_data)
 
     except Exception as e:
         import traceback
+        print(f"[ERROR] Exception dans predict_nutrition: {str(e)}")
         traceback.print_exc()
-        return jsonify({"error": str(e)}), 500
+        return jsonify({'error': f'Erreur interne: {str(e)}'}), 500
 
 
 @bp.route('/paiement')
