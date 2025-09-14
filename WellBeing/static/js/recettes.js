@@ -218,7 +218,8 @@ function showModalAlert(title, message, type = "success") {
                 doc.setFont("helvetica", "bold");
                 doc.setFontSize(22);
                 doc.setTextColor(33, 150, 243);
-                doc.text("WellBeing", logoX + logoWidth + 10, logoY + 12);
+                doc.text("WellBeing", logoX + logoWidth + 2, logoY + logoHeight - 2);
+
     
                 y = logoY + logoHeight + 10;
     
