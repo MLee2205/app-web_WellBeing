@@ -7,7 +7,7 @@ import os
 import json
 from datetime import datetime, date
 import re
-from models.user import User  # Import manquant
+from ..models.user import User  # Import manquant
 import random
 
 bp = Blueprint('nutrition', __name__)
