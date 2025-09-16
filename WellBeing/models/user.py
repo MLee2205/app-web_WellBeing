@@ -28,11 +28,10 @@ class User(db.Model):
 class UserPDF(db.Model):
     __tablename__ = "user_pdf"
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)  # <-- ici
     filename = db.Column(db.String(255), nullable=False)
     original_name = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
-    # Pour stocker les données de la recette qui a généré le PDF
     recette_data = db.Column(db.Text)
     
     def to_dict(self):
@@ -43,3 +42,4 @@ class UserPDF(db.Model):
             'created_at': self.created_at.isoformat() if self.created_at else None,
             'recette_data': json.loads(self.recette_data) if self.recette_data else None
         }
+
