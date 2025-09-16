@@ -6,16 +6,16 @@ import json
 db = SQLAlchemy()
 
 class User(db.Model):
+    __tablename__ = "users"  # <-- nom changé
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
     name = db.Column(db.String(100))
-    renom = db.Column(db.String(100))             
+    renom = db.Column(db.String(100))
     date_naissance = db.Column(db.Date)
     sexe = db.Column(db.String(200))
     poids = db.Column(db.Float)
     taille = db.Column(db.Float)
-    # Relation avec les PDFs stockés
     pdfs = db.relationship('UserPDF', backref='user', lazy=True, cascade='all, delete-orphan')
 
     def set_password(self, password):
@@ -26,6 +26,7 @@ class User(db.Model):
 
 
 class UserPDF(db.Model):
+    __tablename__ = "user_pdf"
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     filename = db.Column(db.String(255), nullable=False)
