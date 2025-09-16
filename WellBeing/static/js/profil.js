@@ -186,6 +186,9 @@ function loadProfileData(userId) {
 }
 
 // ✅ Configuration des gestionnaires d'événements
+f// ... (le code existant reste le même) ...
+
+// ✅ Configuration des gestionnaires d'événements
 function setupFormHandlers(userId) {
     // Gestionnaire de soumission du formulaire
     const profileForm = document.getElementById('profileForm');
@@ -211,17 +214,50 @@ function setupFormHandlers(userId) {
         });
     }
     
-    // Bouton Déconnexion
+    // Bouton Déconnexion - MODIFICATION ICI
     const logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) {
         logoutBtn.replaceWith(logoutBtn.cloneNode(true));
         const newLogoutBtn = document.getElementById('logoutBtn');
         
         newLogoutBtn.addEventListener('click', () => {
-            window.location.href = '/api/logout';
+            logoutUser();
         });
     }
 }
+
+// ✅ NOUVELLE FONCTION pour gérer la déconnexion
+function logoutUser() {
+    fetch('/api/logout', {
+        method: 'GET',
+        credentials: 'include' // Important pour inclure les cookies de session
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Déconnexion réussie !');
+            // Rediriger vers la page de connexion
+            window.location.href = '/login';
+        } else {
+            alert('Erreur lors de la déconnexion');
+        }
+    })
+    .catch(error => {
+        console.error('Erreur déconnexion:', error);
+        alert('Erreur lors de la déconnexion');
+    });
+}
+
+// ... (le reste du code reste le même) ...
+
+// SUPPRIMER ces lignes dupliquées à la fin du fichier :
+// document.getElementById('goToNutritionBtn').addEventListener('click', () => {
+//     window.location.href = '/nutrition';
+// });
+
+// document.getElementById('logoutBtn').addEventListener('click', () => {
+//     window.location.href = '/api/logout';
+// });
 
 // ✅ Fonction pour sauvegarder le profil
 function saveProfile(userId) {
@@ -276,4 +312,201 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
 
 });
 
+// Fonction pour charger les PDFs de l'utilisateur
+function loadUserPDFs() {
+    console.log("Chargement des PDFs utilisateur...");
+    fetch('/api/pdfs', {
+        method: 'GET',
+        credentials: 'include'
+    })
+    .then(response => {
+        console.log("Réponse PDFs:", response.status);
+        if (response.status === 401) {
+            // Utilisateur non connecté
+            document.getElementById('pdfs-container').innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <p>Veuillez vous connecter pour voir vos PDFs sauvegardés</p>
+                </div>
+            `;
+            return;
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log("Données PDFs reçues:", data);
+        if (data && data.pdfs) {
+            displayPDFs(data.pdfs);
+        }
+    })
+    .catch(error => {
+        console.error('Erreur chargement PDFs:', error);
+    });
+}
 
+// Fonction pour afficher les PDFs
+function displayPDFs(pdfs) {
+    const container = document.getElementById('pdfs-container');
+    
+    if (!pdfs || pdfs.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-file-pdf"></i>
+                <p>Aucun PDF sauvegardé pour le moment</p>
+                <small>Générez des PDFs depuis la page Recettes pour les voir apparaître ici</small>
+            </div>
+        `;
+        return;
+    }
+    
+    let html = '';
+    pdfs.forEach(pdf => {
+        const date = new Date(pdf.created_at).toLocaleDateString('fr-FR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+        
+        let previewHtml = '';
+        if (pdf.recette_data && pdf.recette_data.length > 0) {
+            const plats = pdf.recette_data.slice(0, 3).map(r => r.name);
+            previewHtml = `
+                <div class="pdf-recette-preview">
+                    <h4>Plats inclus:</h4>
+                    <div class="preview-items">
+                        ${plats.map(plat => `<span class="preview-item">${plat}</span>`).join('')}
+                        ${pdf.recette_data.length > 3 ? `<span class="preview-item">+${pdf.recette_data.length - 3} autres</span>` : ''}
+                    </div>
+                </div>
+            `;
+        }
+        
+        html += `
+            <div class="pdf-card">
+                <div class="pdf-card-header">
+                    <i class="fas fa-file-pdf pdf-icon"></i>
+                    <div class="pdf-info">
+                        <div class="pdf-title">${pdf.original_name}</div>
+                        <div class="pdf-date">Sauvegardé le: ${date}</div>
+                    </div>
+                </div>
+                ${previewHtml}
+                <div class="pdf-actions">
+                    <button class="pdf-btn pdf-download" onclick="downloadPDF(${pdf.id})">
+                        <i class="fas fa-download"></i> Télécharger
+                    </button>
+                    <button class="pdf-btn pdf-delete" onclick="deletePDF(${pdf.id})">
+                        <i class="fas fa-trash"></i> Supprimer
+                    </button>
+                </div>
+            </div>
+        `;
+    });
+    
+    container.innerHTML = html;
+}
+
+// Fonction pour télécharger un PDF
+function downloadPDF(pdfId) {
+    window.open(`/api/pdf/${pdfId}`, '_blank');
+}
+
+// Fonction pour supprimer un PDF
+function deletePDF(pdfId) {
+    if (confirm('Êtes-vous sûr de vouloir supprimer ce PDF ?')) {
+        fetch(`/api/pdf/${pdfId}`, {
+            method: 'DELETE',
+            credentials: 'include'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                // Recharger la liste après suppression
+                loadUserPDFs();
+            }
+        })
+        .catch(error => {
+            console.error('Erreur suppression PDF:', error);
+        });
+    }
+}
+
+// Vérifier la connexion et charger les PDFs
+function checkSessionAndLoadPDFs() {
+    fetch('/api/check_session')
+    .then(response => response.json())
+    .then(data => {
+        console.log("Session check:", data);
+        if (data.logged_in) {
+            loadUserPDFs();
+        } else {
+            document.getElementById('pdfs-container').innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <p>Veuillez vous connecter pour voir vos PDFs sauvegardés</p>
+                </div>
+            `;
+        }
+    })
+    .catch(error => {
+        console.error('Erreur vérification session:', error);
+    });
+}
+
+// Charger les PDFs après le chargement du profil
+function loadProfileData(userId) {
+    console.log(`[INFO] Chargement du profil pour l'utilisateur ${userId}`);
+    
+    fetch(`/api/profile/${userId}`)
+    .then(res => {
+        if (!res.ok) {
+            if (res.status === 401) {
+                throw new Error('Non autorisé - veuillez vous connecter');
+            } else if (res.status === 403) {
+                throw new Error('Accès refusé à ce profil');
+            } else {
+                throw new Error(`Erreur ${res.status}: ${res.statusText}`);
+            }
+        }
+        return res.json();
+    })
+    .then(data => {
+        console.log('[SUCCESS] Données profil chargées:', data);
+        
+        // Remplir les champs avec les données
+        document.getElementById('email').value = data.email || '';
+        document.getElementById('name').value = data.name || '';
+        document.getElementById('renom').value = data.renom || '';
+        document.getElementById('date_naissance').value = data.date_naissance || '';
+        document.getElementById('sexe').value = data.sexe || '';
+        document.getElementById('poids').value = data.poids || '';
+        document.getElementById('taille').value = data.taille || '';
+        
+        // Stocker l'userId pour les autres fonctions
+        window.currentUserId = userId;
+        
+        // Ajouter les event listeners maintenant que les données sont chargées
+        setupFormHandlers(userId);
+        
+        // Charger les PDFs après le profil
+        checkSessionAndLoadPDFs();
+    })
+    .catch(err => {
+        console.error('[ERROR] Chargement profil:', err);
+        alert('Erreur de chargement: ' + err.message);
+        
+        // Rediriger vers la connexion si non autorisé
+        if (err.message.includes('Non autorisé') || err.message.includes('Accès refusé')) {
+            window.location.href = '/login';
+        }
+    });
+}
+// Bouton Recettes
+const goToRecipesBtn = document.getElementById('goToRecipesBtn');
+if (goToRecipesBtn) {
+    goToRecipesBtn.addEventListener('click', () => {
+        window.location.href = '/recettes';
+    });
+}

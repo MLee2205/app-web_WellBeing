@@ -616,4 +616,3 @@ function checkSubscriptionAndRedirect(platsParam) {
       window.location.href = `/paiement?plats=${platsParam}&user_id=${userId}`;
   }
 }
-

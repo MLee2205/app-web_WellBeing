@@ -182,84 +182,303 @@ function showModalAlert(title, message, type = "success") {
     modal.addEventListener("click", (e) => { if (e.target === modal) modal.remove(); });
 }
 
-    // Export PDF
-    document.getElementById('exportBtn').addEventListener('click', () => {
-        if (!recettesData || recettesData.length === 0) {
-            showModalAlert("Aucune recette à exporter.");
-            return;
-        }
-    
-        // Afficher la bulle de remerciement
-        showModalAlert(
-            "Merci à vous !",
-            "Revenez dans une semaine pour vos nouveaux repas. Entre temps, bonne dégustation 😋.",
-            "success"
-        );
-    
-        // Attendre que l'utilisateur clique sur OK avant de générer le PDF
-        const modalOkBtn = document.querySelector(".custom-modal #modal-ok");
-        modalOkBtn.addEventListener('click', () => {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF({ unit: 'mm', format: 'a4' });
-    
-            let y = 20;
-            const logo = new Image();
-            logo.src = "/static/images/w10.jpeg";
-    
-            logo.onload = function () {
-                const logoWidth = 15;
-                const logoHeight = 15;
-                const pageWidth = doc.internal.pageSize.getWidth();
-                const logoX = pageWidth / 2 - 40;
-                const logoY = 10;
-    
-                doc.addImage(logo, "PNG", logoX, logoY, logoWidth, logoHeight);
-    
-                doc.setFont("helvetica", "bold");
-                doc.setFontSize(22);
-                doc.setTextColor(33, 150, 243);
-                doc.text("WellBeing", logoX + logoWidth + 2, logoY + logoHeight - 2);
+   // Export PDF
+document.getElementById('exportBtn').addEventListener('click', () => {
+    if (!recettesData || recettesData.length === 0) {
+        showModalAlert("Aucune recette à exporter.");
+        return;
+    }
 
-                y = logoY + logoHeight + 10;
-    
+    // Afficher la bulle de remerciement
+    showModalAlert(
+        "Merci à vous !",
+        "Revenez dans une semaine pour vos nouveaux repas. Entre temps, bonne dégustation 😋.",
+        "success"
+    );
+
+    // Attendre que l'utilisateur clique sur OK avant de générer le PDF
+    const modalOkBtn = document.querySelector(".custom-modal #modal-ok");
+    modalOkBtn.addEventListener('click', () => {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+
+        let y = 20;
+        const logo = new Image();
+        logo.src = "/static/images/w10.jpeg";
+
+        logo.onload = function () {
+            const logoWidth = 15;
+            const logoHeight = 15;
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const logoX = pageWidth / 2 - 40;
+            const logoY = 10;
+
+            doc.addImage(logo, "PNG", logoX, logoY, logoWidth, logoHeight);
+
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(22);
+            doc.setTextColor(33, 150, 243);
+            doc.text("WellBeing", logoX + logoWidth + 2, logoY + logoHeight - 2);
+
+            y = logoY + logoHeight + 10;
+
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(16);
+            doc.setTextColor(0, 0, 0);
+            doc.text(" Recueil de Recettes", 105, y, { align: "center" });
+            y += 10;
+
+            recettesData.forEach(r => {
+                if (y > 260) { doc.addPage(); y = 20; }
+
                 doc.setFont("helvetica", "bold");
-                doc.setFontSize(16);
+                doc.setFontSize(14);
+                doc.setTextColor(46, 125, 50);
+                doc.text(`${r.jour} ${r.date} – ${r.name}`, 20, y);
+                y += 8;
+
+                doc.setFont("helvetica", "normal");
+                doc.setFontSize(12);
                 doc.setTextColor(0, 0, 0);
-                doc.text(" Recueil de Recettes", 105, y, { align: "center" });
-                y += 10;
-    
-                recettesData.forEach(r => {
-                    if (y > 260) { doc.addPage(); y = 20; }
-    
-                    doc.setFont("helvetica", "bold");
-                    doc.setFontSize(14);
-                    doc.setTextColor(46, 125, 50);
-                    doc.text(`${r.jour} ${r.date} – ${r.name}`, 20, y);
-                    y += 8;
-    
-                    doc.setFont("helvetica", "normal");
-                    doc.setFontSize(12);
-                    doc.setTextColor(0, 0, 0);
-                    const lines = doc.splitTextToSize(r.recette || "Pas de recette disponible.", 170);
-                    lines.forEach(line => {
-                        if (y > 280) { doc.addPage(); y = 20; }
-                        doc.text(line, 20, y);
-                        y += 7;
-                    });
-    
-                    y += 5;
+                const lines = doc.splitTextToSize(r.recette || "Pas de recette disponible.", 170);
+                lines.forEach(line => {
+                    if (y > 280) { doc.addPage(); y = 20; }
+                    doc.text(line, 20, y);
+                    y += 7;
                 });
+
+                y += 5;
+            });
+
+            if (y > 280) { doc.addPage(); y = 20; }
+            doc.setFont("helvetica", "italic");
+            doc.setFontSize(11);
+            doc.setTextColor(100, 100, 100);
+            doc.text("Réalisé par Meffo Lea - WellBeing", pageWidth / 2, y, { align: "center" });
+
+            // Générer le blob et sauvegarder
+            const pdfBlob = doc.output('blob');
+            const filename = `recettes-wellbeing-${new Date().toISOString().split('T')[0]}.pdf`;
+            
+            // Sauvegarder le PDF
+            savePDF(pdfBlob, filename, recettesData);
+            
+            // Télécharger aussi le PDF
+            doc.save(filename);
+        };
+    });
+});  
     
-                if (y > 280) { doc.addPage(); y = 20; }
-                doc.setFont("helvetica", "italic");
-                doc.setFontSize(11);
-                doc.setTextColor(100, 100, 100);
-                doc.text("Réalisé par Meffo Lea - WellBeing", pageWidth / 2, y, { align: "center" });
+});/*// Fonction pour sauvegarder le PDF
+function savePDF(pdfBlob, filename, recetteData) {
+    const formData = new FormData();
+    formData.append('pdf', pdfBlob, filename);
+    formData.append('recette_data', JSON.stringify(recetteData));
     
-                doc.save("recettes-wellbeing.pdf");
-            };
+    fetch('/api/pdf', {
+        method: 'POST',
+        body: formData,
+        credentials: 'include'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.message) {
+            showModalAlert("Succès", "Votre PDF a été sauvegardé avec succès!", "success");
+        } else {
+            showModalAlert("Erreur", "Erreur lors de la sauvegarde du PDF", "error");
+        }
+    })
+    .catch(error => {
+        console.error('Erreur sauvegarde PDF:', error);
+        showModalAlert("Erreur", "Erreur lors de la sauvegarde du PDF", "error");
+    });
+}
+
+// Modifiez la fonction d'export PDF pour inclure la sauvegarde
+document.getElementById('exportBtn').addEventListener('click', () => {
+    if (!recettesData || recettesData.length === 0) {
+        showModalAlert("Aucune recette à exporter.");
+        return;
+    }
+
+    // Afficher la bulle de remerciement
+    showModalAlert(
+        "Merci à vous !",
+        "Revenez dans une semaine pour vos nouveaux repas. Entre temps, bonne dégustation 😋.",
+        "success"
+    );
+
+    // Attendre que l'utilisateur clique sur OK avant de générer le PDF
+    const modalOkBtn = document.querySelector(".custom-modal #modal-ok");
+    modalOkBtn.addEventListener('click', () => {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+
+        let y = 20;
+        const logo = new Image();
+        logo.src = "/static/images/w10.jpeg";
+
+        logo.onload = function () {
+            const logoWidth = 15;
+            const logoHeight = 15;
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const logoX = pageWidth / 2 - 40;
+            const logoY = 10;
+
+            doc.addImage(logo, "PNG", logoX, logoY, logoWidth, logoHeight);
+
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(22);
+            doc.setTextColor(33, 150, 243);
+            doc.text("WellBeing", logoX + logoWidth + 2, logoY + logoHeight - 2);
+
+            y = logoY + logoHeight + 10;
+
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(16);
+            doc.setTextColor(0, 0, 0);
+            doc.text(" Recueil de Recettes", 105, y, { align: "center" });
+            y += 10;
+
+            recettesData.forEach(r => {
+                if (y > 260) { doc.addPage(); y = 20; }
+
+                doc.setFont("helvetica", "bold");
+                doc.setFontSize(14);
+                doc.setTextColor(46, 125, 50);
+                doc.text(`${r.jour} ${r.date} – ${r.name}`, 20, y);
+                y += 8;
+
+                doc.setFont("helvetica", "normal");
+                doc.setFontSize(12);
+                doc.setTextColor(0, 0, 0);
+                const lines = doc.splitTextToSize(r.recette || "Pas de recette disponible.", 170);
+                lines.forEach(line => {
+                    if (y > 280) { doc.addPage(); y = 20; }
+                    doc.text(line, 20, y);
+                    y += 7;
+                });
+
+                y += 5;
+            });
+
+            if (y > 280) { doc.addPage(); y = 20; }
+            doc.setFont("helvetica", "italic");
+            doc.setFontSize(11);
+            doc.setTextColor(100, 100, 100);
+            doc.text("Réalisé par Meffo Lea - WellBeing", pageWidth / 2, y, { align: "center" });
+
+            // Générer le blob et sauvegarder
+            const pdfBlob = doc.output('blob');
+            const filename = `recettes-wellbeing-${new Date().toISOString().split('T')[0]}.pdf`;
+            
+            // Sauvegarder le PDF
+            savePDF(pdfBlob, filename, recettesData);
+            
+            // Télécharger aussi le PDF
+            doc.save(filename);
+        };
+    });
+});
+
+// Fonction pour charger les PDFs sauvegardés
+function loadSavedPDFs() {
+    fetch('/api/pdfs', {
+        method: 'GET',
+        credentials: 'include'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.pdfs && data.pdfs.length > 0) {
+            displaySavedPDFs(data.pdfs);
+        }
+    })
+    .catch(error => {
+        console.error('Erreur chargement PDFs:', error);
+    });
+}
+
+// Fonction pour afficher les PDFs sauvegardés
+function displaySavedPDFs(pdfs) {
+    const container = document.getElementById('saved-pdfs-container');
+    if (!container) return;
+    
+    container.innerHTML = '<h3>Vos PDFs sauvegardés</h3>';
+    
+    const list = document.createElement('div');
+    list.className = 'pdf-list';
+    
+    pdfs.forEach(pdf => {
+        const pdfElement = document.createElement('div');
+        pdfElement.className = 'pdf-item';
+        pdfElement.innerHTML = `
+            <div class="pdf-info">
+                <h4>${pdf.original_name}</h4>
+                <p>Sauvegardé le: ${new Date(pdf.created_at).toLocaleDateString()}</p>
+            </div>
+            <div class="pdf-actions">
+                <button class="btn-download" data-pdf-id="${pdf.id}">Télécharger</button>
+                <button class="btn-delete" data-pdf-id="${pdf.id}">Supprimer</button>
+            </div>
+        `;
+        
+        list.appendChild(pdfElement);
+    });
+    
+    container.appendChild(list);
+    
+    // Ajouter les événements
+    document.querySelectorAll('.btn-download').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const pdfId = this.getAttribute('data-pdf-id');
+            window.open(`/api/pdf/${pdfId}`, '_blank');
         });
     });
-     
     
-});
+    document.querySelectorAll('.btn-delete').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const pdfId = this.getAttribute('data-pdf-id');
+            deletePDF(pdfId);
+        });
+    });
+}
+
+// Fonction pour supprimer un PDF
+function deletePDF(pdfId) {
+    if (!confirm('Êtes-vous sûr de vouloir supprimer ce PDF?')) return;
+    
+    fetch(`/api/pdf/${pdfId}`, {
+        method: 'DELETE',
+        credentials: 'include'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.message) {
+            showModalAlert("Succès", "PDF supprimé avec succès", "success");
+            loadSavedPDFs(); // Recharger la liste
+        }
+    })
+    .catch(error => {
+        console.error('Erreur suppression PDF:', error);
+        showModalAlert("Erreur", "Erreur lors de la suppression", "error");
+    });
+    // ... votre code existant pour générer le PDF ...
+
+// Après avoir généré le PDF, ajoutez:
+const pdfBlob = doc.output('blob');
+const filename = `recettes-wellbeing-${new Date().toISOString().split('T')[0]}.pdf`;
+
+// Sauvegarder le PDF
+savePDF(pdfBlob, filename, recettesData);
+
+// Télécharger aussi le PDF
+doc.save(filename);
+}
+
+// Charger les PDFs sauvegardés au chargement de la page
+document.addEventListener('DOMContentLoaded', function() {
+    // ... votre code existant ...
+    
+    // Ajouter après le chargement des recettes
+    loadSavedPDFs();
+});*/

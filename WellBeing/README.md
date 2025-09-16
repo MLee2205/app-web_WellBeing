@@ -475,6 +475,14 @@ Ces routes gèrent les opérations d'authentification et de gestion de profil ut
 
 
 
+## Nouvelles URL
+
+/api/check_session ( GET) Vérifier si l'utilisateur est déjà connecté
+/api/profile/<int:user_id>  (GET) :ajout du decorateur pour les routes protegées lorsue l utilisateur n est pas conectées
+/api/pdfs (GET) :recuperer toutles pdfs de l utilisateur connectées
+/api/pdf/<int:pdf_id> (GET) telecharger un pdf specifique de l utilisteur
+/api/pdf (POST) :telecharger un pdf specifique de l uilisateur
+
 
 ##Notes techniques
 
